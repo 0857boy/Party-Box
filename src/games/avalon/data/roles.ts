@@ -12,18 +12,18 @@ export const roles: readonly Role[] = [
     ability: '你會看見梅林與摩甘娜，但不知道兩者誰才是真正的梅林。'
   },
   {
-    id: 'loyal-servant', name: 'Loyal Servant', displayName: '忠臣', team: 'good', selectable: false,
-    atlasPosition: '100% 0%', description: '不掌握額外情報，卻是王國最可靠的力量。',
+    id: 'loyal-servant', name: 'Loyal Servant', displayName: '亞瑟的忠臣', team: 'good', selectable: false,
+    atlasPosition: '0% 50%', description: '不掌握額外情報，卻是王國最可靠的力量。',
     ability: '觀察言行、建立信任，協助正義陣營完成三次任務。'
   },
   {
     id: 'morgana', name: 'Morgana', displayName: '摩甘娜', team: 'evil', selectable: true,
-    atlasPosition: '0% 50%', description: '善於偽裝的女巫，在派西維爾眼中與梅林難以分辨。',
+    atlasPosition: '100% 0%', description: '善於偽裝的女巫，在派西維爾眼中與梅林難以分辨。',
     ability: '你會偽裝成梅林出現在派西維爾的情報中，並認得多數邪惡盟友。'
   },
   {
     id: 'assassin', name: 'Assassin', displayName: '刺客', team: 'evil', selectable: true, required: true,
-    atlasPosition: '50% 50%', description: '潛伏於陰影中的終結者，等待辨認梅林的最後機會。',
+    atlasPosition: '50% 100%', description: '潛伏於陰影中的終結者，等待辨認梅林的最後機會。',
     ability: '正義完成三次任務後，你可以刺殺梅林；成功便讓邪惡逆轉獲勝。'
   },
   {
@@ -38,7 +38,7 @@ export const roles: readonly Role[] = [
   },
   {
     id: 'minion', name: 'Minion of Mordred', displayName: '爪牙', team: 'evil', selectable: false,
-    atlasPosition: '50% 100%', description: '忠於莫德雷德的黑暗爪牙，與同伴共同破壞任務。',
+    atlasPosition: '100% 100%', description: '忠於莫德雷德的黑暗爪牙，與同伴共同破壞任務。',
     ability: '你認得除奧伯倫以外的邪惡盟友。隱藏身份，讓三次任務失敗。'
   }
 ] as const

@@ -21,6 +21,7 @@ export function validateRoleConfig(setup: AvalonSetup): ValidationResult {
   if (new Set(names.map((name) => name.toLocaleLowerCase())).size !== names.length) errors.push('玩家名稱不能重複。')
   if (!setup.enabledRoles.includes('merlin')) errors.push('梅林是必要角色。')
   if (!setup.enabledRoles.includes('assassin')) errors.push('刺客是必要角色。')
+  if (setup.ladyOfLakeEnabled && names.length < 8) errors.push('湖中女神只適用於 8 人以上的遊戲。')
 
   if (composition) {
     const selected = setup.enabledRoles.map((id) => roleById[id]).filter(Boolean)
@@ -32,6 +33,14 @@ export function validateRoleConfig(setup: AvalonSetup): ValidationResult {
 
   if (setup.enabledRoles.includes('morgana') && !setup.enabledRoles.includes('percival')) {
     warnings.push('沒有派西維爾時，摩甘娜的偽裝能力不會生效。')
+  }
+  if (
+    names.length === 5 &&
+    setup.enabledRoles.includes('percival') &&
+    !setup.enabledRoles.includes('morgana') &&
+    !setup.enabledRoles.includes('mordred')
+  ) {
+    errors.push('五人遊戲使用派西維爾時，邪惡方必須加入摩甘娜或莫德雷德。')
   }
   if (setup.enabledRoles.includes('oberon')) warnings.push('奧伯倫不認識邪惡盟友，也不會被他們看見。')
 
@@ -86,7 +95,7 @@ export function getRoleInformation(player: AssignedPlayer, players: readonly Ass
       title: '其中一位是梅林',
       summary: '你看見梅林的候選人，但摩甘娜可能混在其中。',
       visiblePlayerIds: players.filter((candidate) => candidate.role.id === 'merlin' || candidate.role.id === 'morgana').map((candidate) => candidate.id),
-      ambiguity: '身份順序已隨機排列，無法從位置分辨。'
+      ambiguity: '兩個名字不代表任何身份順序，無法分辨誰是真正的梅林。'
     }
   }
   if (player.role.team === 'evil' && roleId !== 'oberon') {

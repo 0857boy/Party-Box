@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
-import { Eye, Fingerprint } from 'lucide-vue-next'
+import { Eye, Fingerprint } from '@lucide/vue'
 
 const emit = defineEmits<{ revealed: [] }>()
 const progress = ref(0)

@@ -12,14 +12,16 @@ export interface AudioPreferences {
 interface Preferences {
   audio: AudioPreferences
   reduceDecorativeMotion: boolean
+  themePreference: 'dark'
 }
 
 const STORAGE_KEY = 'party-box:preferences'
-const VERSION = 1
+const VERSION = 2
 
 const defaults: Preferences = {
   audio: { muted: false, masterVolume: 0.75, musicVolume: 0.5, sfxVolume: 0.85, voiceVolume: 0.85 },
-  reduceDecorativeMotion: false
+  reduceDecorativeMotion: false,
+  themePreference: 'dark'
 }
 
 export const preferences = reactive(loadVersioned(STORAGE_KEY, VERSION, defaults))

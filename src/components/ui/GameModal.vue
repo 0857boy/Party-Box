@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue'
-import { X } from 'lucide-vue-next'
+import { X } from '@lucide/vue'
 
 const props = withDefaults(defineProps<{ open: boolean; title: string; closeLabel?: string }>(), {
   closeLabel: '關閉'

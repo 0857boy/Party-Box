@@ -1,0 +1,64 @@
+:root,
+[data-theme='party-box'] {
+  --game-primary: #f2b95c;
+  --game-secondary: #8e6df2;
+  --game-background: #080b14;
+  --game-surface: rgba(19, 23, 38, 0.88);
+  --game-surface-secondary: rgba(31, 36, 57, 0.74);
+  --game-text: #f8f4eb;
+  --game-text-muted: #9ca3b7;
+  --game-border: rgba(255, 255, 255, 0.11);
+  --game-danger: #f06767;
+  --game-success: #58d3a7;
+  --game-card-border: rgba(242, 185, 92, 0.45);
+  --game-glow: rgba(242, 185, 92, 0.18);
+  --game-gradient: linear-gradient(135deg, #f5ca7b 0%, #d7973c 100%);
+}
+
+[data-theme='avalon'] {
+  --game-primary: #e9b75d;
+  --game-secondary: #7c9ed8;
+  --game-background: #070b12;
+  --game-surface: rgba(16, 23, 33, 0.9);
+  --game-surface-secondary: rgba(25, 35, 49, 0.76);
+  --game-text: #f5f0e7;
+  --game-text-muted: #9da8b5;
+  --game-border: rgba(191, 207, 222, 0.14);
+  --game-danger: #e76f6f;
+  --game-success: #6dc5a0;
+  --game-card-border: rgba(233, 183, 93, 0.48);
+  --game-glow: rgba(233, 183, 93, 0.16);
+  --game-gradient: linear-gradient(135deg, #f2ce87 0%, #c98c36 100%);
+}
+
+[data-theme='undercover'] {
+  --game-primary: #b589ff;
+  --game-secondary: #ff75c3;
+  --game-background: #0c0815;
+  --game-surface: rgba(27, 18, 43, 0.9);
+  --game-surface-secondary: rgba(45, 28, 67, 0.76);
+  --game-text: #fbf7ff;
+  --game-text-muted: #b0a4c0;
+  --game-border: rgba(205, 175, 255, 0.16);
+  --game-danger: #ff6e83;
+  --game-success: #79e0b3;
+  --game-card-border: rgba(181, 137, 255, 0.48);
+  --game-glow: rgba(181, 137, 255, 0.18);
+  --game-gradient: linear-gradient(135deg, #c8a3ff, #925be5);
+}
+
+[data-theme='spyfall'] {
+  --game-primary: #68c6e8;
+  --game-secondary: #6d8dff;
+  --game-background: #071018;
+  --game-surface: rgba(12, 29, 41, 0.9);
+  --game-surface-secondary: rgba(20, 45, 61, 0.76);
+  --game-text: #f1faff;
+  --game-text-muted: #91afbd;
+  --game-border: rgba(153, 220, 245, 0.16);
+  --game-danger: #ff7272;
+  --game-success: #69dbad;
+  --game-card-border: rgba(104, 198, 232, 0.48);
+  --game-glow: rgba(104, 198, 232, 0.18);
+  --game-gradient: linear-gradient(135deg, #8ee0f7, #428caf);
+}

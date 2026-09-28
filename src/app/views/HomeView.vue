@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowRight, Download, Sparkles, UsersRound, WifiOff } from 'lucide-vue-next'
+import { ArrowRight, Download, Sparkles, UsersRound, WifiOff } from '@lucide/vue'
 import { gamesRegistry } from '@/app/config/gamesRegistry'
 </script>
 

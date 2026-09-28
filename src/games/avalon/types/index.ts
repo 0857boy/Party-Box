@@ -38,6 +38,7 @@ export interface RoleInformation {
 export interface AvalonSetup {
   playerNames: string[]
   enabledRoles: RoleId[]
+  ladyOfLakeEnabled: boolean
 }
 
 export interface ValidationResult {
@@ -49,4 +50,67 @@ export interface ValidationResult {
 export interface TeamComposition {
   good: number
   evil: number
+}
+
+export type MissionChoice = 'success' | 'fail'
+export type MissionOutcome = 'success' | 'fail'
+export type GameWinner = Team | null
+
+export type GameplayPhase =
+  | 'team-selection'
+  | 'voting'
+  | 'vote-result'
+  | 'mission-pass'
+  | 'mission'
+  | 'mission-result'
+  | 'lady-select'
+  | 'lady-pass'
+  | 'lady-reveal'
+  | 'assassination-pass'
+  | 'assassination'
+  | 'result'
+
+export interface MissionRecord {
+  round: number
+  leaderId: string
+  teamPlayerIds: string[]
+  approved: boolean
+  missionChoices?: MissionChoice[]
+  outcome?: MissionOutcome
+  requiredFails?: number
+}
+
+export interface LadyInspection {
+  round: number
+  holderId: string
+  targetId: string
+  seenTeam: Team
+}
+
+export interface AvalonGameplayState {
+  phase: GameplayPhase
+  round: number
+  leaderIndex: number
+  rejectionCount: number
+  selectedTeamIds: string[]
+  missionOrderIds: string[]
+  missionIndex: number
+  missionChoiceOrder: MissionChoice[]
+  missionChoices: MissionChoice[]
+  proposals: MissionRecord[]
+  winner: GameWinner
+  winReason: string
+  assassinationTargetId?: string
+  ladyEnabled: boolean
+  ladyHolderId?: string
+  ladyTargetId?: string
+  ladySeenPlayerIds: string[]
+  ladyHistory: LadyInspection[]
+}
+
+export interface AvalonHistoryEntry {
+  id: string
+  completedAt: string
+  players: AssignedPlayer[]
+  gameplay: AvalonGameplayState
 }

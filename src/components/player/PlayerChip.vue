@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { User } from 'lucide-vue-next'
+import { User } from '@lucide/vue'
 defineProps<{ name: string; index?: number; active?: boolean }>()
 </script>
 

@@ -13,6 +13,7 @@ export default defineConfig({
         name: 'Party Box — 聚會遊戲盒',
         short_name: 'Party Box',
         description: '一部裝置，整桌歡樂。可離線遊玩的多人派對遊戲。',
+        lang: 'zh-Hant',
         theme_color: '#080b14',
         background_color: '#080b14',
         display: 'standalone',
@@ -26,6 +27,7 @@ export default defineConfig({
       },
       workbox: {
         cleanupOutdatedCaches: true,
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,svg,png,webp,woff2}'],
         navigateFallback: 'index.html'
       },
@@ -33,5 +35,6 @@ export default defineConfig({
     })
   ],
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+  server: { watch: { ignored: ['**/.artifacts/**'] } },
   base: './'
 })

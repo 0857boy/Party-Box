@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LoaderCircle } from 'lucide-vue-next'
+import { LoaderCircle } from '@lucide/vue'
 
 withDefaults(defineProps<{
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger'

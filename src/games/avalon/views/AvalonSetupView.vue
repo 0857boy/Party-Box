@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { AlertTriangle, ArrowRight, Plus, Shield, Skull, Trash2, UsersRound } from 'lucide-vue-next'
+import { AlertTriangle, ArrowRight, BookOpen, Plus, Shield, Skull, Trash2, UsersRound } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
 import GameButton from '@/components/ui/GameButton.vue'
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue'
 import { selectableRoles } from '../data/roles'
 import { getDefaultEnabledRoles, teamComposition, validateRoleConfig } from '../logic/game'
-import { avalonSession, startAvalonGame } from '../stores/session'
+import { avalonHistory, avalonSession, loadAvalonHistoryEntry, startAvalonGame } from '../stores/session'
 import type { RoleId } from '../types'
 
 const router = useRouter()
@@ -25,6 +25,7 @@ function addPlayer(): void {
 function removePlayer(index: number): void {
   if (avalonSession.setup.playerNames.length <= 5) return
   avalonSession.setup.playerNames.splice(index, 1)
+  if (avalonSession.setup.playerNames.length < 8) avalonSession.setup.ladyOfLakeEnabled = false
 }
 
 function updateRole(id: RoleId, enabled: boolean): void {
@@ -44,6 +45,19 @@ function start(): void {
   if (!validation.value.valid) return
   startAvalonGame()
   void router.push({ name: 'avalon-reveal' })
+}
+
+function openHistory(id: string): void {
+  if (loadAvalonHistoryEntry(id)) void router.push({ name: 'avalon-result' })
+}
+
+function formatCompletedAt(value: string): string {
+  return new Intl.DateTimeFormat('zh-TW', {
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(new Date(value))
 }
 </script>
 
@@ -96,6 +110,33 @@ function start(): void {
           </div>
         </section>
 
+        <section class="setup-panel">
+          <header class="setup-panel__header">
+            <div><span>03</span><h2>進階規則</h2></div>
+          </header>
+          <ToggleSwitch
+            v-model="avalonSession.setup.ladyOfLakeEnabled"
+            label="湖中女神"
+            description="第 2、3、4 次任務後檢視一名玩家的陣營；只適用於 8 人以上。"
+            :disabled="avalonSession.setup.playerNames.length < 8"
+          />
+        </section>
+
+        <section v-if="avalonHistory.length" class="setup-panel history-panel">
+          <header class="setup-panel__header">
+            <div><span>04</span><h2>遊戲紀錄</h2><small>保留最近 20 局</small></div>
+            <BookOpen :size="22" />
+          </header>
+          <p class="history-panel__note">已完成的對局會儲存在這台裝置，不需要另外記復盤代碼。</p>
+          <div class="history-list">
+            <button v-for="entry in avalonHistory" :key="entry.id" type="button" @click="openHistory(entry.id)">
+              <span :class="`history-winner history-winner--${entry.gameplay.winner}`"><component :is="entry.gameplay.winner === 'good' ? Shield : Skull" :size="17" /></span>
+              <span><strong>{{ entry.gameplay.winner === 'good' ? '正義陣營獲勝' : '邪惡陣營獲勝' }}</strong><small>{{ formatCompletedAt(entry.completedAt) }} · {{ entry.players.length }} 人</small></span>
+              <ArrowRight :size="17" />
+            </button>
+          </div>
+        </section>
+
         <div v-if="validation.errors.length || validation.warnings.length" class="validation-box" :class="{ 'validation-box--error': validation.errors.length }">
           <AlertTriangle :size="20" />
           <div><p v-for="message in [...validation.errors, ...validation.warnings]" :key="message">{{ message }}</p></div>
@@ -105,7 +146,7 @@ function start(): void {
           洗牌並分配身份
           <template #trailing><ArrowRight :size="20" /></template>
         </GameButton>
-        <p class="setup-privacy">身份只會短暫顯示在螢幕上，不會儲存在裝置中。</p>
+        <p class="setup-privacy">進行中的秘密身份不會儲存；遊戲結束並公開身份後，復盤才會保留在此裝置。</p>
       </form>
     </div>
   </div>

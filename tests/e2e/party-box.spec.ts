@@ -1,0 +1,226 @@
+import { expect, test, type Page } from '@playwright/test'
+
+async function revealAllRoles(page: Page, playerCount = 5): Promise<Map<string, string>> {
+  const roles = new Map<string, string>()
+  for (let index = 0; index < playerCount; index += 1) {
+    const playerName = `玩家 ${index + 1}`
+    await page.getByRole('button', { name: `我是 ${playerName}，繼續` }).click()
+    const holdButton = page.getByRole('button', { name: '按住以揭露身份' })
+    await holdButton.dispatchEvent('pointerdown')
+    await page.waitForTimeout(720)
+    await expect(page.getByText('PRIVATE INFORMATION')).toBeVisible()
+    roles.set(playerName, (await page.locator('.role-card__content h2').textContent())?.trim() ?? '')
+    await page.getByRole('button', { name: index === playerCount - 1 ? '我看完了，開始遊戲' : '我看完了，交給下一位' }).click()
+  }
+  return roles
+}
+
+async function completeSuccessfulRound(page: Page, playerCount: number, teamSize: number): Promise<void> {
+  const playerButtons = page.locator('.phase-panel .selection-grid button')
+  for (let index = 0; index < teamSize; index += 1) await playerButtons.nth(index).click()
+  await page.getByRole('button', { name: /確認隊伍/ }).click()
+  await page.locator('.choice-card--approve').click()
+  await page.getByRole('button', { name: '進入任務' }).click()
+  for (let member = 0; member < teamSize; member += 1) {
+    await page.getByRole('button', { name: /我是 玩家 \d+，繼續/ }).click()
+    await expect(page.getByRole('button', { name: /任務失敗/ })).toBeVisible()
+    await page.getByRole('button', { name: /任務成功/ }).click()
+  }
+  await expect(page.getByRole('heading', { name: '任務成功' })).toBeVisible()
+  await page.getByRole('button', { name: '繼續' }).click()
+}
+
+test('home and setup stay inside the viewport', async ({ page }, testInfo) => {
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: /一部裝置/ })).toBeVisible()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(await page.evaluate(() => window.innerWidth))
+  await page.screenshot({ path: `.artifacts/screenshots/playwright-${testInfo.project.name}-home.png` })
+
+  await page.getByRole('link', { name: /阿瓦隆/ }).click()
+  await expect(page.getByRole('heading', { name: /召集你的/ })).toBeVisible()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(await page.evaluate(() => window.innerWidth))
+  await expect(page.getByRole('link', { name: '回首頁' })).toBeVisible()
+  await page.screenshot({ path: `.artifacts/screenshots/playwright-${testInfo.project.name}-setup.png` })
+})
+
+test('five players can complete private role distribution', async ({ page }, testInfo) => {
+  await page.goto('/#/avalon/setup')
+  await page.getByRole('button', { name: '洗牌並分配身份' }).click()
+
+  for (let index = 0; index < 5; index += 1) {
+    await page.getByRole('button', { name: /我是 玩家 \d，繼續/ }).click()
+    const holdButton = page.getByRole('button', { name: '按住以揭露身份' })
+    await holdButton.dispatchEvent('pointerdown')
+    await page.waitForTimeout(720)
+    await expect(page.getByText('PRIVATE INFORMATION')).toBeVisible()
+    if (index === 0) {
+      await page.waitForTimeout(650)
+      await page.screenshot({ path: `.artifacts/screenshots/playwright-${testInfo.project.name}-reveal.png` })
+    }
+    await page.getByRole('button', { name: index === 4 ? '我看完了，開始遊戲' : '我看完了，交給下一位' }).click()
+  }
+
+  await expect(page.getByRole('heading', { name: /所有身份/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: '重新洗牌' })).toBeVisible()
+  await page.screenshot({ path: `.artifacts/screenshots/playwright-${testInfo.project.name}-ready.png` })
+})
+
+test('cached production app can complete the flow offline', async ({ page, context }) => {
+  await page.goto('/')
+  await page.evaluate(async () => { await navigator.serviceWorker.ready })
+  await page.reload()
+  await context.setOffline(true)
+  await page.reload()
+  await expect(page.getByRole('heading', { name: /一部裝置/ })).toBeVisible()
+  await page.getByRole('link', { name: /阿瓦隆/ }).click()
+  await page.getByRole('button', { name: '洗牌並分配身份' }).click()
+
+  for (let index = 0; index < 5; index += 1) {
+    await page.getByRole('button', { name: /我是 玩家 \d，繼續/ }).click()
+    const holdButton = page.getByRole('button', { name: '按住以揭露身份' })
+    await holdButton.dispatchEvent('pointerdown')
+    await page.waitForTimeout(720)
+    await expect(page.getByText('PRIVATE INFORMATION')).toBeVisible()
+    await page.getByRole('button', { name: index === 4 ? '我看完了，開始遊戲' : '我看完了，交給下一位' }).click()
+  }
+
+  await expect(page.getByRole('heading', { name: /所有身份/ })).toBeVisible()
+})
+
+test('all required viewport sizes remain usable', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'The viewport matrix only needs one browser project.')
+  const viewports = [
+    { width: 320, height: 568 },
+    { width: 375, height: 667 },
+    { width: 390, height: 844 },
+    { width: 430, height: 932 },
+    { width: 768, height: 1024 },
+    { width: 1024, height: 768 },
+    { width: 1366, height: 1024 }
+  ]
+
+  for (const viewport of viewports) {
+    await page.setViewportSize(viewport)
+    await page.goto('/')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(viewport.width)
+    await expect(page.getByRole('link', { name: /阿瓦隆/ })).toBeVisible()
+    await page.goto('/#/avalon/setup')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(viewport.width)
+    await expect(page.getByRole('button', { name: '洗牌並分配身份' })).toBeAttached()
+  }
+})
+
+test('refreshing a secret screen recovers safely without persisting roles', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'One browser project is sufficient for reload recovery.')
+  await page.goto('/#/avalon/setup')
+  await page.getByRole('button', { name: '洗牌並分配身份' }).click()
+  await expect(page.getByRole('button', { name: /我是 玩家 1，繼續/ })).toBeVisible()
+  await page.reload()
+  await expect(page.getByRole('heading', { name: /召集你的/ })).toBeVisible()
+  await expect(page).toHaveURL(/#\/avalon\/setup$/)
+})
+
+test('three successful missions lead to assassination and a full review', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'The complete match is covered once to keep the suite fast.')
+  await page.goto('/#/avalon/setup')
+  await page.getByRole('button', { name: '洗牌並分配身份' }).click()
+  const roles = await revealAllRoles(page)
+  const merlinName = [...roles.entries()].find(([, role]) => role === '梅林')?.[0]
+  expect(merlinName).toBeTruthy()
+
+  await page.getByRole('button', { name: '開始第一回合' }).click()
+  const teamSizes = [2, 3, 2]
+  for (const teamSize of teamSizes) {
+    const playerButtons = page.locator('.phase-panel .selection-grid button')
+    for (let index = 0; index < teamSize; index += 1) await playerButtons.nth(index).click()
+    await page.getByRole('button', { name: /確認隊伍/ }).click()
+
+    await page.locator('.choice-card--approve').click()
+    await expect(page.getByRole('heading', { name: '隊伍通過' })).toBeVisible()
+    await page.getByRole('button', { name: '進入任務' }).click()
+
+    for (let member = 0; member < teamSize; member += 1) {
+      await page.getByRole('button', { name: /我是 玩家 \d，繼續/ }).click()
+      await expect(page.getByRole('button', { name: /任務失敗/ })).toBeVisible()
+      await page.getByRole('button', { name: /任務成功/ }).click()
+    }
+    await expect(page.getByRole('heading', { name: '任務成功' })).toBeVisible()
+    await page.getByRole('button', { name: '繼續' }).click()
+  }
+
+  await page.getByRole('button', { name: /我是 玩家 \d，繼續/ }).click()
+  await expect(page.getByRole('heading', { name: /找出梅林/ })).toBeVisible()
+  const targets = page.locator('.assassination-panel .selection-grid button')
+  const targetCount = await targets.count()
+  expect(targetCount).toBe(3)
+  const goodRoles = new Set(['梅林', '派西維爾', '亞瑟的忠臣'])
+  for (let index = 0; index < targetCount; index += 1) {
+    const label = (await targets.nth(index).textContent())?.trim() ?? ''
+    const targetName = [...roles.keys()].find((name) => label.includes(name))
+    expect(targetName).toBeTruthy()
+    expect(goodRoles.has(roles.get(targetName ?? '') ?? '')).toBe(true)
+    if (!label.includes(merlinName ?? '')) {
+      await targets.nth(index).click()
+      break
+    }
+  }
+  await page.getByRole('button', { name: '確認刺殺目標' }).click()
+  await page.getByRole('button', { name: '確認刺殺', exact: true }).click()
+  await expect(page.getByRole('heading', { name: '正義陣營獲勝' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '身份揭曉' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '任務與投票紀錄' })).toBeVisible()
+  await page.screenshot({ path: '.artifacts/screenshots/playwright-mobile-result.png' })
+
+  await page.reload()
+  await expect(page.getByRole('heading', { name: /召集你的/ })).toBeVisible()
+  await page.getByRole('button', { name: /正義陣營獲勝/ }).click()
+  await expect(page.getByRole('heading', { name: '正義陣營獲勝' })).toBeVisible()
+})
+
+test('five rejected teams immediately give evil the victory', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'The rejection-loss path is covered once.')
+  await page.goto('/#/avalon/setup')
+  await page.getByRole('button', { name: '洗牌並分配身份' }).click()
+  await revealAllRoles(page)
+  await page.getByRole('button', { name: '開始第一回合' }).click()
+
+  for (let proposal = 1; proposal <= 5; proposal += 1) {
+    const playerButtons = page.locator('.phase-panel .selection-grid button')
+    await playerButtons.nth(0).click()
+    await playerButtons.nth(1).click()
+    await page.getByRole('button', { name: /確認隊伍/ }).click()
+    await page.locator('.choice-card--reject').click()
+    await expect(page.getByRole('heading', { name: '隊伍遭到否決' })).toBeVisible()
+    await page.getByRole('button', { name: proposal === 5 ? '查看遊戲結果' : '交給下一位領袖' }).click()
+  }
+
+  await expect(page.getByRole('heading', { name: '邪惡陣營獲勝' })).toBeVisible()
+  await expect(page.getByText(/連續五次組隊表決失敗/)).toBeVisible()
+})
+
+test('eight-player game can use the Lady of the Lake after round two', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'The expansion flow is covered once.')
+  test.setTimeout(45_000)
+  await page.goto('/#/avalon/setup')
+  for (let index = 0; index < 3; index += 1) await page.getByRole('button', { name: '新增玩家' }).click()
+  await page.getByRole('checkbox', { name: /湖中女神/ }).check({ force: true })
+  await page.getByRole('button', { name: '洗牌並分配身份' }).click()
+  await revealAllRoles(page, 8)
+  await page.getByRole('button', { name: '開始第一回合' }).click()
+  await expect(page.getByText('第 4 回合需 2 張失敗牌才會失敗')).toBeVisible()
+  await page.screenshot({ path: '.artifacts/screenshots/playwright-mobile-avalon-board.png' })
+  await page.setViewportSize({ width: 320, height: 568 })
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
+  await expect(page.getByText('第 4 回合需 2 張失敗牌才會失敗')).toBeVisible()
+  await page.setViewportSize({ width: 390, height: 844 })
+
+  await completeSuccessfulRound(page, 8, 3)
+  await completeSuccessfulRound(page, 8, 4)
+  await expect(page.getByRole('heading', { name: /選擇檢視對象/ })).toBeVisible()
+  await page.locator('.phase-panel .selection-grid button:not([disabled])').first().click()
+  await page.getByRole('button', { name: /我是 玩家 \d+，繼續/ }).click()
+  await expect(page.getByText('LOYALTY REVEALED')).toBeVisible()
+  await expect(page.getByRole('heading', { name: /屬於.*陣營/ })).toBeVisible()
+  await page.getByRole('button', { name: '我記住了，進入下一回合' }).click()
+  await expect(page.getByText('ROUND 3')).toBeVisible()
+})

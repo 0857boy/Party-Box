@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { SlidersHorizontal, Volume2, VolumeX, X } from 'lucide-vue-next'
+import { SlidersHorizontal, Volume2, VolumeX, X } from '@lucide/vue'
 import { useAudioManager } from '@/composables/useAudioManager'
 
 const panelOpen = ref(false)

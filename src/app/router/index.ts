@@ -3,6 +3,8 @@ import HomeView from '@/app/views/HomeView.vue'
 import AvalonSetupView from '@/games/avalon/views/AvalonSetupView.vue'
 import AvalonRevealView from '@/games/avalon/views/AvalonRevealView.vue'
 import AvalonReadyView from '@/games/avalon/views/AvalonReadyView.vue'
+import AvalonPlayView from '@/games/avalon/views/AvalonPlayView.vue'
+import AvalonResultView from '@/games/avalon/views/AvalonResultView.vue'
 import { hasAvalonSession } from '@/games/avalon/stores/session'
 
 export const router = createRouter({
@@ -12,6 +14,8 @@ export const router = createRouter({
     { path: '/avalon/setup', name: 'avalon-setup', component: AvalonSetupView, meta: { theme: 'avalon' } },
     { path: '/avalon/reveal', name: 'avalon-reveal', component: AvalonRevealView, meta: { theme: 'avalon', requiresSession: true } },
     { path: '/avalon/ready', name: 'avalon-ready', component: AvalonReadyView, meta: { theme: 'avalon', requiresSession: true } },
+    { path: '/avalon/play', name: 'avalon-play', component: AvalonPlayView, meta: { theme: 'avalon', requiresSession: true } },
+    { path: '/avalon/result', name: 'avalon-result', component: AvalonResultView, meta: { theme: 'avalon', requiresSession: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ],
   scrollBehavior: () => ({ top: 0 })

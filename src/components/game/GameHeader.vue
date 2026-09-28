@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowLeft, Home } from 'lucide-vue-next'
+import { ArrowLeft, Home } from '@lucide/vue'
 import { useRouter } from 'vue-router'
 
 withDefaults(defineProps<{ title: string; step?: string; back?: boolean }>(), { back: true })

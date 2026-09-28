@@ -8,21 +8,25 @@
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "pretest:e2e": "npm run build",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "latest",
     "@fontsource-variable/playfair-display": "latest",
-    "lucide-vue-next": "latest",
+    "@lucide/vue": "latest",
     "vue": "latest",
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@types/node": "latest",
+    "@playwright/test": "latest",
     "@vitejs/plugin-vue": "latest",
     "autoprefixer": "latest",
     "postcss": "latest",
     "tailwindcss": "^3.4.17",
-    "typescript": "latest",
+    "typescript": "^5.9.3",
     "vite": "latest",
     "vite-plugin-pwa": "latest",
     "vitest": "latest",

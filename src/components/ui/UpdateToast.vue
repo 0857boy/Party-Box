@@ -1,9 +1,20 @@
 <script setup lang="ts">
-import { Download, WifiOff, X } from 'lucide-vue-next'
+import { onBeforeUnmount, watch } from 'vue'
+import { Download, WifiOff, X } from '@lucide/vue'
 import GameButton from './GameButton.vue'
 
-defineProps<{ needRefresh: boolean; offlineReady: boolean }>()
-defineEmits<{ close: []; update: [] }>()
+const props = defineProps<{ needRefresh: boolean; offlineReady: boolean }>()
+const emit = defineEmits<{ close: []; update: [] }>()
+let dismissTimer: ReturnType<typeof setTimeout> | undefined
+
+watch(() => props.offlineReady, (ready) => {
+  if (dismissTimer) clearTimeout(dismissTimer)
+  if (ready && !props.needRefresh) dismissTimer = setTimeout(() => emit('close'), 4200)
+}, { immediate: true })
+
+onBeforeUnmount(() => {
+  if (dismissTimer) clearTimeout(dismissTimer)
+})
 </script>
 
 <template>

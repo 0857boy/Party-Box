@@ -1,4 +1,4 @@
-import { Crown, Fingerprint, MapPin, Sparkles } from 'lucide-vue-next'
+import { Crown, Fingerprint, MapPin, Sparkles } from '@lucide/vue'
 import type { PartyGame } from '@/types/game'
 
 export const gamesRegistry: readonly PartyGame[] = [
