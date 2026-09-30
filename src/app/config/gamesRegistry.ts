@@ -18,13 +18,14 @@ export const gamesRegistry: readonly PartyGame[] = [
   {
     id: 'undercover',
     name: '誰是臥底',
-    eyebrow: '詞語推理 · 即將推出',
+    eyebrow: '詞語推理 · 4–12 人',
     description: '用一句話藏住自己的詞，從細節找出人群中的臥底。',
     minPlayers: 4,
     maxPlayers: 12,
     theme: 'undercover',
     icon: Fingerprint,
-    available: false,
+    routeName: 'undercover-setup',
+    available: true,
     accent: '霓虹紫'
   },
   {

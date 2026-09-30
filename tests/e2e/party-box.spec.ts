@@ -224,3 +224,39 @@ test('eight-player game can use the Lady of the Lake after round two', async ({ 
   await page.getByRole('button', { name: '我記住了，進入下一回合' }).click()
   await expect(page.getByText('ROUND 3')).toBeVisible()
 })
+
+test('undercover can distribute Taiwanese words and resolve an elimination', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'The complete undercover match is covered once.')
+  await page.goto('/#/undercover/setup')
+  await expect(page.getByRole('heading', { name: /一句提示/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: /台灣美食/ })).toBeVisible()
+  await page.getByRole('button', { name: '抽詞並分配' }).click()
+
+  const wordsByPlayer = new Map<string, string>()
+  for (let index = 0; index < 5; index += 1) {
+    const playerName = `玩家 ${index + 1}`
+    await page.getByRole('button', { name: `我是 ${playerName}，繼續` }).click()
+    const holdButton = page.getByRole('button', { name: '按住以揭露身份' })
+    await holdButton.dispatchEvent('pointerdown')
+    await page.waitForTimeout(720)
+    const word = (await page.locator('.secret-word-card__front h1').textContent())?.trim() ?? ''
+    wordsByPlayer.set(playerName, word)
+    await page.getByRole('button', { name: index === 4 ? '我記住了，開始遊戲' : '我記住了，交給下一位' }).click()
+  }
+
+  await expect(page.getByRole('heading', { name: /開始描述/ })).toBeVisible()
+  await page.getByRole('button', { name: '描述完成，開始指認' }).click()
+  const wordCounts = [...wordsByPlayer.values()].reduce((counts, word) => counts.set(word, (counts.get(word) ?? 0) + 1), new Map<string, number>())
+  const undercoverName = [...wordsByPlayer.entries()].find(([, word]) => wordCounts.get(word) === 1)?.[0]
+  expect(undercoverName).toBeTruthy()
+  if (!undercoverName) throw new Error('The undercover player could not be identified from the distributed words')
+  await page.locator('.elimination-grid button').filter({ hasText: undercoverName }).click()
+  await page.getByRole('button', { name: new RegExp(`確認淘汰 ${undercoverName}`) }).click()
+  await page.getByRole('button', { name: '確認淘汰', exact: true }).click()
+  await expect(page.getByRole('heading', { name: new RegExp(`${undercoverName} 是.*臥底`) })).toBeVisible()
+  await page.getByRole('button', { name: '查看完整結果' }).click()
+  await expect(page.getByRole('heading', { name: '平民陣營獲勝' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '本局詞語' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '身份揭曉' })).toBeVisible()
+  await page.screenshot({ path: '.artifacts/screenshots/playwright-mobile-undercover-result.png' })
+})

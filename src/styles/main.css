@@ -387,6 +387,91 @@ em { color: var(--game-primary); font-family: 'Playfair Display Variable', Georg
 .game-modal__header h2 { margin: 5px 0 0; font-size: 1.25rem; }
 .game-modal__body, .game-modal__footer { padding: 20px; }
 .game-modal__footer { border-top: 1px solid var(--game-border); }
+/* Undercover */
+.undercover-intro h1 em { color: var(--game-primary); }
+.undercover-rule-card { display: grid; gap: 9px; margin-top: 28px; padding: 18px; border: 1px solid var(--game-border); border-radius: 18px; background: var(--game-surface); }
+.undercover-rule-card strong { margin-bottom: 3px; color: var(--game-primary); font-size: 1rem; }
+.undercover-rule-card span { color: var(--game-text-muted); font-size: .86rem; }
+.undercover-rules-details { margin-top: 12px; border: 1px solid var(--game-border); border-radius: 14px; background: color-mix(in srgb, var(--game-surface) 82%, transparent); }
+.undercover-rules-details summary { min-height: 48px; display: flex; align-items: center; padding: 10px 14px; color: var(--game-primary); font-size: .9rem; font-weight: 800; cursor: pointer; }
+.undercover-rules-details ol { display: grid; gap: 10px; margin: 0; padding: 0 20px 18px 38px; color: var(--game-text-muted); font-size: .84rem; line-height: 1.6; }
+.undercover-rules-details li::marker { color: var(--game-primary); font-weight: 800; }
+.undercover-rules-details strong { color: var(--game-text); }
+.word-category-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.word-category-grid button { min-height: 76px; display: grid; align-content: center; gap: 5px; padding: 12px 14px; border: 1px solid var(--game-border); border-radius: 14px; background: rgba(0,0,0,.13); color: var(--game-text); text-align: left; cursor: pointer; }
+.word-category-grid button strong { font-size: .92rem; }
+.word-category-grid button small { color: var(--game-text-muted); font-size: .72rem; line-height: 1.4; }
+.word-category-grid button.active { border-color: var(--game-primary); background: color-mix(in srgb, var(--game-primary) 10%, var(--game-surface)); box-shadow: 0 0 20px var(--game-glow); }
+.undercover-count-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.undercover-count-picker button { min-height: 54px; border: 1px solid var(--game-border); border-radius: 14px; background: rgba(0,0,0,.13); color: var(--game-text-muted); font-weight: 750; cursor: pointer; }
+.undercover-count-picker button.active { border-color: var(--game-primary); background: color-mix(in srgb, var(--game-primary) 12%, var(--game-surface)); color: var(--game-text); }
+.undercover-count-picker button:disabled { opacity: .35; cursor: not-allowed; }
+.undercover-setup-note { margin: 13px 0 0; color: var(--game-text-muted); font-size: .82rem; line-height: 1.6; }
+
+.undercover-reveal-stage { width: min(100%, 560px); min-height: calc(100svh - 104px); display: flex; flex-direction: column; justify-content: center; gap: 15px; margin-inline: auto; padding-block: 28px 58px; }
+.undercover-reveal-stage .identity-owner, .undercover-reveal-stage .hold-button { width: 100%; }
+.secret-word-card { min-height: 400px; display: grid; overflow: hidden; border: 1px solid var(--game-card-border); border-radius: 28px; background: radial-gradient(circle at 50% 12%, color-mix(in srgb, var(--game-primary) 18%, transparent), transparent 45%), var(--game-surface); box-shadow: 0 28px 75px rgba(0,0,0,.38), 0 0 45px var(--game-glow); }
+.secret-word-card__back, .secret-word-card__front { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; text-align: center; }
+.secret-word-card__back { color: var(--game-primary); }
+.secret-word-card__back strong { margin-top: 26px; color: var(--game-text); font-size: 1.35rem; }
+.secret-word-card__back small { margin-top: 8px; color: var(--game-text-muted); font-size: .88rem; }
+.secret-word-card__front > span { display: inline-flex; align-items: center; gap: 7px; color: var(--game-primary); font-size: .84rem; font-weight: 800; }
+.secret-word-card__front > small { margin-top: 54px; color: var(--game-text-muted); font-size: .92rem; }
+.secret-word-card__front h1 { margin: 12px 0 50px; color: var(--game-text); font-family: 'Playfair Display Variable', serif; font-size: clamp(3.5rem, 13vw, 6.5rem); line-height: 1.05; }
+.secret-word-card__front p { display: flex; align-items: center; gap: 7px; margin: 0; color: var(--game-text-muted); font-size: .9rem; }
+
+.undercover-play-layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 24px; align-items: start; padding-block: 28px 90px; }
+.undercover-status-board { position: sticky; top: 100px; display: grid; gap: 9px; padding: 15px; border: 1px solid var(--game-border); border-radius: 19px; background: var(--game-surface); }
+.undercover-status-board > div { min-height: 62px; display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 12px; background: rgba(0,0,0,.13); }
+.undercover-status-board span { color: var(--game-text-muted); font-size: .84rem; }
+.undercover-status-board strong { color: var(--game-primary); font-size: 1.45rem; }
+.undercover-discussion h1 { font-size: clamp(2.8rem, 6vw, 5rem); }
+.speaking-order { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 24px 0 14px; }
+.speaking-order > div { min-height: 60px; display: grid; grid-template-columns: 32px 1fr; align-items: center; gap: 2px 10px; padding: 9px 12px; border: 1px solid var(--game-border); border-radius: 13px; background: rgba(0,0,0,.12); }
+.speaking-order > div > span { grid-row: 1 / 3; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; color: var(--game-primary); background: color-mix(in srgb, var(--game-primary) 10%, transparent); font-size: .78rem; }
+.speaking-order strong { font-size: .95rem; }
+.speaking-order small { color: var(--game-text-muted); font-size: .7rem; }
+.speaking-order > div.active { border-color: var(--game-primary); background: color-mix(in srgb, var(--game-primary) 9%, var(--game-surface)); }
+.undercover-callout { display: flex; align-items: center; gap: 9px; margin: 14px 0 18px; padding: 13px; border-radius: 12px; background: color-mix(in srgb, var(--game-primary) 8%, transparent); color: var(--game-primary); font-size: .86rem; line-height: 1.5; }
+.elimination-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin: 24px 0 16px; }
+.elimination-grid button { min-height: 62px; display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 10px; padding: 10px 13px; border: 1px solid var(--game-border); border-radius: 14px; background: rgba(0,0,0,.13); color: var(--game-text); text-align: left; cursor: pointer; }
+.elimination-grid button > span { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 10px; background: var(--game-surface-secondary); color: var(--game-primary); font-size: .75rem; }
+.elimination-grid button strong { font-size: 1rem; }
+.elimination-grid button.active { border-color: var(--game-danger); background: color-mix(in srgb, var(--game-danger) 9%, var(--game-surface)); }
+.elimination-grid button.active > svg { color: var(--game-danger); }
+.undercover-elimination-result > p { margin-bottom: 24px; }
+.undercover-win-preview { display: grid; grid-template-columns: auto 1fr; gap: 3px 9px; align-items: center; margin: 20px 0; padding: 16px; border: 1px solid var(--game-card-border); border-radius: 14px; text-align: left; background: color-mix(in srgb, var(--game-primary) 8%, transparent); }
+.undercover-win-preview svg { grid-row: 1 / 3; color: var(--game-primary); }
+.undercover-win-preview strong { font-size: 1rem; }
+.undercover-win-preview span { color: var(--game-text-muted); font-size: .82rem; line-height: 1.5; }
+.undercover-confirm { display: flex; align-items: center; gap: 17px; color: var(--game-danger); }
+.undercover-confirm p { margin: 0; color: var(--game-text-muted); line-height: 1.65; }
+.undercover-confirm strong { color: var(--game-text); }
+
+.undercover-winner-hero { --winner-glow: color-mix(in srgb, var(--game-primary) 20%, transparent); }
+.undercover-word-reveal { margin-top: 18px; padding: 22px; border: 1px solid var(--game-border); border-radius: 20px; background: var(--game-surface); }
+.undercover-word-reveal > header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; color: var(--game-primary); }
+.undercover-word-reveal > header div { display: grid; }
+.undercover-word-reveal > header small { font-size: .72rem; }
+.undercover-word-reveal h2 { margin: 0; color: var(--game-text); }
+.undercover-word-reveal > div { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.undercover-word-reveal article { display: grid; gap: 7px; padding: 18px; border-radius: 14px; background: rgba(0,0,0,.14); }
+.undercover-word-reveal article span { color: var(--game-text-muted); font-size: .78rem; }
+.undercover-word-reveal article strong { color: var(--game-primary); font-size: 1.55rem; }
+.undercover-role-review { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.undercover-role-review article { min-height: 72px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 11px; padding: 12px; border: 1px solid var(--game-border); border-radius: 14px; background: var(--game-surface); }
+.undercover-role-review article > span { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; background: var(--game-surface-secondary); }
+.undercover-role-review article > div { display: grid; gap: 3px; }
+.undercover-role-review article small { color: var(--game-text-muted); font-size: .76rem; }
+.undercover-role-review article > em { color: var(--game-text-muted); font-family: inherit; font-size: .7rem; font-style: normal; }
+.undercover-role-review--undercover { border-color: color-mix(in srgb, var(--game-danger) 38%, transparent) !important; }
+.undercover-role-review--undercover > span { color: var(--game-danger); }
+.undercover-role-review--civilian > span { color: var(--game-success); }
+.undercover-timeline { display: grid; gap: 8px; }
+.undercover-timeline > div { min-height: 52px; display: grid; grid-template-columns: 100px 1fr auto; align-items: center; gap: 10px; padding: 10px 13px; border: 1px solid var(--game-border); border-radius: 12px; background: var(--game-surface); }
+.undercover-timeline span { color: var(--game-text-muted); font-size: .78rem; }
+.undercover-timeline em { font-family: inherit; font-size: .78rem; font-style: normal; }
+
 .update-toast { position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); z-index: 120; width: min(calc(100% - 28px), 560px); display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--game-border); border-radius: 16px; background: rgba(17,23,34,.96); box-shadow: 0 18px 60px rgba(0,0,0,.48); transform: translateX(-50%); }
 .update-toast > svg { color: var(--game-primary); }
 .update-toast__copy { flex: 1; display: grid; gap: 2px; }
@@ -468,6 +553,19 @@ em { color: var(--game-primary); font-family: 'Playfair Display Variable', Georg
   .game-grid { grid-template-columns: repeat(3, 1fr); }
   .game-tile--avalon { grid-column: span 2; }
   .game-tile--avalon .game-tile__copy h3 { font-size: 2.5rem; }
+}
+
+@media (max-width: 767px) {
+  .word-category-grid { grid-template-columns: 1fr; }
+  .undercover-reveal-stage { min-height: calc(100svh - 82px); padding-block: 20px 48px; }
+  .secret-word-card { min-height: 350px; border-radius: 22px; }
+  .undercover-play-layout { grid-template-columns: 1fr; gap: 13px; padding-block: 14px 90px; }
+  .undercover-status-board { position: static; grid-template-columns: repeat(3, 1fr); padding: 10px; }
+  .undercover-status-board > div { min-height: 54px; display: grid; justify-items: center; padding: 7px; }
+  .undercover-status-board strong { font-size: 1.25rem; }
+  .speaking-order, .elimination-grid, .undercover-role-review { grid-template-columns: 1fr; }
+  .undercover-word-reveal > div { grid-template-columns: 1fr; }
+  .undercover-timeline > div { grid-template-columns: 78px 1fr auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {

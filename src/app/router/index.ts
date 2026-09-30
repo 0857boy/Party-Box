@@ -6,6 +6,11 @@ import AvalonReadyView from '@/games/avalon/views/AvalonReadyView.vue'
 import AvalonPlayView from '@/games/avalon/views/AvalonPlayView.vue'
 import AvalonResultView from '@/games/avalon/views/AvalonResultView.vue'
 import { hasAvalonSession } from '@/games/avalon/stores/session'
+import UndercoverSetupView from '@/games/undercover/views/UndercoverSetupView.vue'
+import UndercoverRevealView from '@/games/undercover/views/UndercoverRevealView.vue'
+import UndercoverPlayView from '@/games/undercover/views/UndercoverPlayView.vue'
+import UndercoverResultView from '@/games/undercover/views/UndercoverResultView.vue'
+import { hasUndercoverSession } from '@/games/undercover/stores/session'
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -16,6 +21,10 @@ export const router = createRouter({
     { path: '/avalon/ready', name: 'avalon-ready', component: AvalonReadyView, meta: { theme: 'avalon', requiresSession: true } },
     { path: '/avalon/play', name: 'avalon-play', component: AvalonPlayView, meta: { theme: 'avalon', requiresSession: true } },
     { path: '/avalon/result', name: 'avalon-result', component: AvalonResultView, meta: { theme: 'avalon', requiresSession: true } },
+    { path: '/undercover/setup', name: 'undercover-setup', component: UndercoverSetupView, meta: { theme: 'undercover' } },
+    { path: '/undercover/reveal', name: 'undercover-reveal', component: UndercoverRevealView, meta: { theme: 'undercover', requiresUndercoverSession: true } },
+    { path: '/undercover/play', name: 'undercover-play', component: UndercoverPlayView, meta: { theme: 'undercover', requiresUndercoverSession: true } },
+    { path: '/undercover/result', name: 'undercover-result', component: UndercoverResultView, meta: { theme: 'undercover', requiresUndercoverSession: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ],
   scrollBehavior: () => ({ top: 0 })
@@ -23,4 +32,5 @@ export const router = createRouter({
 
 router.beforeEach((to) => {
   if (to.meta.requiresSession && !hasAvalonSession()) return { name: 'avalon-setup' }
+  if (to.meta.requiresUndercoverSession && !hasUndercoverSession()) return { name: 'undercover-setup' }
 })
