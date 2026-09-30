@@ -35,11 +35,9 @@ const targetPoint = computed(() => point(props.target, 115))
 
 <template>
   <svg class="spectrum-dial" viewBox="0 0 400 224" role="img" :aria-label="reveal ? `指針位置 ${guess}，目標位置 ${target}` : '隱藏的目標轉盤'">
-    <defs><filter id="spectrum-glow"><feGaussianBlur stdDeviation="7" /></filter></defs>
     <path :d="arc(0, 100)" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="45" stroke-linecap="round" />
     <path :d="arc(0, 100)" fill="none" stroke="rgba(197,214,255,.23)" stroke-width="29" stroke-linecap="round" />
     <g v-if="reveal">
-      <path v-for="(band, index) in bands" :key="`${index}-glow`" :d="band.path" fill="none" :stroke="band.color" stroke-width="31" stroke-linecap="butt" opacity=".45" filter="url(#spectrum-glow)" />
       <path v-for="(band, index) in bands" :key="index" :d="band.path" fill="none" :stroke="band.color" stroke-width="29" stroke-linecap="butt" />
       <circle :cx="targetPoint.x" :cy="targetPoint.y" r="5" fill="#fff4c5" />
     </g>

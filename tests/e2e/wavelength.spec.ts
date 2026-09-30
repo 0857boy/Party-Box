@@ -30,7 +30,7 @@ test('same frequency keeps the target private through clue, discussion and oppos
   await page.getByRole('button', { name: '揭曉目標' }).click()
   await expect(page.locator('.wavelength-awards')).toBeVisible()
   await expect(page.locator('.spectrum-dial path[stroke="#ffe18b"]').first()).toBeVisible()
-  await page.screenshot({ path: `.artifacts/screenshots/playwright-${testInfo.project.name}-wavelength-reveal.png` })
+  await page.screenshot({ path: `.artifacts/screenshots/playwright-${testInfo.project.name}-wavelength-reveal.png`, animations: 'disabled' })
   await page.getByRole('button', { name: '下一回合' }).click()
   await expect(page.getByRole('button', { name: '我是 玩家 2，繼續' })).toBeVisible()
 })
