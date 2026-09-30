@@ -347,7 +347,7 @@ test('fake artist completes identity reveal, two drawing passes, voting, and rev
       const style = getComputedStyle(element)
       return [style.borderColor, style.backgroundImage, style.boxShadow].join('|')
     }))
-    if ((await page.locator('.fake-role-card__front h1').textContent())?.trim() === '偽畫家') fakeArtistName = playerName
+    if ((await page.locator('.fake-role-card__front h1').textContent())?.trim() === '假畫家') fakeArtistName = playerName
     await page.getByRole('button', { name: index === 5 ? '我記住了，開始作畫' : '我記住了，交給下一位' }).click()
   }
   expect(fakeArtistName).not.toBe('')
@@ -366,7 +366,7 @@ test('fake artist completes identity reveal, two drawing passes, voting, and rev
     await page.getByRole('button', { name: '送出這一筆' }).click()
   }
 
-  await expect(page.getByRole('heading', { name: /誰是.*偽畫家/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /誰是.*假畫家/ })).toBeVisible()
   await expect(page.locator('.fake-vote-canvas polyline')).toHaveCount(12)
   await page.locator('.fake-suspect-grid button').filter({ hasText: fakeArtistName }).click()
   await page.getByRole('button', { name: '確認指認結果' }).click()

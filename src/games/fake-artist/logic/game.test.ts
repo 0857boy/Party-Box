@@ -17,7 +17,7 @@ describe('Fake artist rules', () => {
 
   it('validates the official player range', () => {
     expect(validateFakeArtistSetup(setup)).toEqual([])
-    expect(validateFakeArtistSetup({ ...setup, playerNames: ['A', 'B', 'C', 'D'] })).toContain('誰是偽畫家需要 5–10 位玩家。')
+    expect(validateFakeArtistSetup({ ...setup, playerNames: ['A', 'B', 'C', 'D'] })).toContain('誰是假畫家需要 5–10 位玩家。')
   })
 
   it('filters topics and avoids the previous topic', () => {

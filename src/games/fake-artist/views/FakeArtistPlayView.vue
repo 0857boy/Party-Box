@@ -32,7 +32,7 @@ const title = computed(() => {
   switch (game.value?.phase) {
     case 'draw-pass': case 'drawing': return `共同作畫 · 第 ${currentDrawingPass.value} 輪`
     case 'vote': return '同步指認'
-    case 'guess-pass': case 'guess': return '偽畫家反猜'
+    case 'guess-pass': case 'guess': return '假畫家反猜'
     case 'adjudicate': return '判定答案'
     default: return '本輪結果'
   }
@@ -93,10 +93,10 @@ function routeIfFinished(): void {
       <section class="fake-vote-canvas"><DrawingCanvas :strokes="game.strokes" color="#111111" disabled /></section>
       <section class="phase-panel">
         <span class="eyebrow"><Vote :size="15" /> 3, 2, 1, POINT!</span>
-        <h1>誰是<br /><em>偽畫家？</em></h1>
+        <h1>誰是<br /><em>假畫家？</em></h1>
         <p>所有人先在現實中同時指出一人，再由持機者登記唯一最高票。若最高票不只一人，請選平票。</p>
         <div class="fake-suspect-grid"><button v-for="player in fakeArtistSession.players" :key="player.id" type="button" :class="{ active: game.selectedSuspectId === player.id && !game.tiedVote }" @click="chooseSuspect(player.id)"><span :style="{ background: player.color }" /><strong>{{ player.name }}</strong><Check v-if="game.selectedSuspectId === player.id && !game.tiedVote" :size="18" /></button></div>
-        <button type="button" class="fake-tie-button" :class="{ active: game.tiedVote }" @click="chooseSuspect(undefined)"><UsersRound :size="19" /><span><strong>最高票平票／沒有共識</strong><small>依原規則，平票視為偽畫家沒有被抓到</small></span></button>
+        <button type="button" class="fake-tie-button" :class="{ active: game.tiedVote }" @click="chooseSuspect(undefined)"><UsersRound :size="19" /><span><strong>最高票平票／沒有共識</strong><small>依原規則，平票視為假畫家沒有被抓到</small></span></button>
         <GameButton block :disabled="!game.selectedSuspectId && !game.tiedVote" @click="resolveVote">確認指認結果</GameButton>
       </section>
     </main>
@@ -112,13 +112,13 @@ function routeIfFinished(): void {
 
     <main v-else-if="game.phase === 'adjudicate'" class="fake-adjudicate page-container page-container--game">
       <section class="phase-panel phase-panel--center">
-        <span class="eyebrow"><Palette :size="15" /> REVEAL THE ANSWER</span><h1>偽畫家猜<br /><em>「{{ game.fakeGuess }}」</em></h1><div class="fake-answer-reveal"><small>真正題目</small><strong>{{ game.prompt.answer }}</strong><span>類別 · {{ game.prompt.categoryName }}</span></div><p>若是同義詞、俗稱或合理答案，請由全桌共同判定。</p><div class="modal-actions"><GameButton variant="danger" @click="adjudicate(false)"><template #icon><X :size="18" /></template>猜錯了</GameButton><GameButton @click="adjudicate(true)"><template #icon><Check :size="18" /></template>算猜對</GameButton></div>
+        <span class="eyebrow"><Palette :size="15" /> REVEAL THE ANSWER</span><h1>假畫家猜<br /><em>「{{ game.fakeGuess }}」</em></h1><div class="fake-answer-reveal"><small>真正題目</small><strong>{{ game.prompt.answer }}</strong><span>類別 · {{ game.prompt.categoryName }}</span></div><p>若是同義詞、俗稱或合理答案，請由全桌共同判定。</p><div class="modal-actions"><GameButton variant="danger" @click="adjudicate(false)"><template #icon><X :size="18" /></template>猜錯了</GameButton><GameButton @click="adjudicate(true)"><template #icon><Check :size="18" /></template>算猜對</GameButton></div>
       </section>
     </main>
 
     <main v-else-if="game.phase === 'round-result' && game.roundWinner" class="charades-stage page-container page-container--game">
       <section class="phase-panel phase-panel--center fake-round-result">
-        <div class="result-emblem" :class="game.roundWinner === 'artists' ? 'result-emblem--success' : 'result-emblem--fail'"><Palette v-if="game.roundWinner === 'artists'" :size="42" /><HelpCircle v-else :size="42" /></div><span class="eyebrow">ROUND {{ game.round }} COMPLETE</span><h1><em>{{ game.roundWinner === 'artists' ? '真正畫家' : '偽畫家' }}</em><br />本輪獲勝</h1><p>{{ game.roundReason }}</p><div class="fake-score-strip"><span v-for="player in [...fakeArtistSession.players].sort((a, b) => b.score - a.score)" :key="player.id"><i :style="{ background: player.color }" /><strong>{{ player.name }}</strong><em>{{ player.score }}</em></span></div><GameButton block @click="nextRound"><template #icon><RotateCcw :size="19" /></template>開始下一輪</GameButton>
+        <div class="result-emblem" :class="game.roundWinner === 'artists' ? 'result-emblem--success' : 'result-emblem--fail'"><Palette v-if="game.roundWinner === 'artists'" :size="42" /><HelpCircle v-else :size="42" /></div><span class="eyebrow">ROUND {{ game.round }} COMPLETE</span><h1><em>{{ game.roundWinner === 'artists' ? '真正畫家' : '假畫家' }}</em><br />本輪獲勝</h1><p>{{ game.roundReason }}</p><div class="fake-score-strip"><span v-for="player in [...fakeArtistSession.players].sort((a, b) => b.score - a.score)" :key="player.id"><i :style="{ background: player.color }" /><strong>{{ player.name }}</strong><em>{{ player.score }}</em></span></div><GameButton block @click="nextRound"><template #icon><RotateCcw :size="19" /></template>開始下一輪</GameButton>
       </section>
     </main>
   </div>

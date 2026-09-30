@@ -51,16 +51,16 @@ onMounted(() => {
         <span class="eyebrow"><Palette :size="15" /> ONE CANVAS. ONE IMPOSTOR.</span>
         <h1>大家都會畫，<br /><em>只有一個人不知道。</em></h1>
         <p>每人輪流在共同畫布上留下一筆。真正畫家要證明自己知道答案，卻又不能畫得太明顯。</p>
-        <div class="undercover-rule-card"><strong>快速規則</strong><span>① 偷看題目或偽畫家身份</span><span>② 每人一筆，共畫兩輪</span><span>③ 同步指認，偽畫家反猜答案</span></div>
+        <div class="undercover-rule-card"><strong>快速規則</strong><span>① 偷看題目或假畫家身份</span><span>② 每人一筆，共畫兩輪</span><span>③ 同步指認，假畫家反猜答案</span></div>
         <details class="undercover-rules-details">
           <summary>查看完整規則</summary>
           <ol>
             <li><strong>系統出題：</strong>Party Box 代替原版出題者，所有玩家都能參與作畫。</li>
-            <li><strong>秘密身份：</strong>真正畫家看到類別與答案；偽畫家只知道類別。</li>
+            <li><strong>秘密身份：</strong>真正畫家看到類別與答案；假畫家只知道類別。</li>
             <li><strong>共同作畫：</strong>玩家依序各畫一條不間斷的線，完整進行兩輪。</li>
-            <li><strong>同步指認：</strong>畫完後所有人同時指出偽畫家；最高票平票視為沒抓到。</li>
-            <li><strong>最後反猜：</strong>偽畫家若被唯一最高票抓到，仍有一次猜答案的翻盤機會。</li>
-            <li><strong>計分：</strong>偽畫家逃脫或猜中得 2 分；否則每位真正畫家得 1 分。</li>
+            <li><strong>同步指認：</strong>畫完後所有人同時指出假畫家；最高票平票視為沒抓到。</li>
+            <li><strong>最後反猜：</strong>假畫家若被唯一最高票抓到，仍有一次猜答案的翻盤機會。</li>
+            <li><strong>計分：</strong>假畫家逃脫或猜中得 2 分；否則每位真正畫家得 1 分。</li>
           </ol>
         </details>
       </section>

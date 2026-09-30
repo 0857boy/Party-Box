@@ -33,7 +33,7 @@ function continueReveal(): void {
           <div class="identity-owner"><span>現在查看</span><strong>{{ currentFakeArtistRevealPlayer.name }}</strong></div>
           <div class="fake-role-card">
             <div v-if="stage !== 'revealed'" class="fake-role-card__back"><Palette :size="74" /><strong>你的題目藏在這裡</strong><small>按住下方按鈕揭露</small></div>
-            <div v-else class="fake-role-card__front"><span>類別 · {{ game.prompt.categoryName }}</span><HelpCircle v-if="isFake" :size="72" /><Palette v-else :size="72" /><small>{{ isFake ? '你的身份' : '共同題目' }}</small><h1>{{ isFake ? '偽畫家' : game.prompt.answer }}</h1><p>{{ isFake ? '觀察其他人的線條，假裝你知道答案' : '畫得讓同伴看懂，但別讓偽畫家猜到' }}</p></div>
+            <div v-else class="fake-role-card__front"><span>類別 · {{ game.prompt.categoryName }}</span><HelpCircle v-if="isFake" :size="72" /><Palette v-else :size="72" /><small>{{ isFake ? '你的身份' : '共同題目' }}</small><h1>{{ isFake ? '假畫家' : game.prompt.answer }}</h1><p>{{ isFake ? '觀察其他人的線條，假裝你知道答案' : '畫得讓同伴看懂，但別讓假畫家猜到' }}</p></div>
           </div>
           <HoldToReveal v-if="stage === 'hold'" @revealed="stage = 'revealed'" />
           <template v-else><div class="hide-warning"><EyeOff :size="18" /><span>記住內容，不要念出來。</span></div><GameButton block @click="continueReveal"><template #icon><Check :size="20" /></template>{{ isLast ? '我記住了，開始作畫' : '我記住了，交給下一位' }}</GameButton></template>

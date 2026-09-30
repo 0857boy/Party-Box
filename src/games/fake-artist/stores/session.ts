@@ -90,11 +90,11 @@ export function resolveFakeArtistVote(): void {
   const game = requireGame()
   if (game.phase !== 'vote' || (!game.tiedVote && !game.selectedSuspectId)) return
   if (game.tiedVote) {
-    finishRound('fake', '最高票平票，偽畫家成功藏在人群中。')
+    finishRound('fake', '最高票平票，假畫家成功藏在人群中。')
     return
   }
   if (game.selectedSuspectId !== game.fakePlayerId) {
-    finishRound('fake', '大家抓錯人，偽畫家成功蒙混過關。')
+    finishRound('fake', '大家抓錯人，假畫家成功蒙混過關。')
     return
   }
   game.phase = 'guess-pass'
@@ -116,8 +116,8 @@ export function adjudicateFakeArtistGuess(correct: boolean): void {
   const game = requireGame()
   if (game.phase !== 'adjudicate') return
   finishRound(correct ? 'fake' : 'artists', correct
-    ? '偽畫家被抓到，但成功猜中題目，漂亮翻盤。'
-    : '偽畫家被抓到且沒有猜中題目，真正畫家守住答案。')
+    ? '假畫家被抓到，但成功猜中題目，漂亮翻盤。'
+    : '假畫家被抓到且沒有猜中題目，真正畫家守住答案。')
 }
 
 export function startNextFakeArtistRound(): void {

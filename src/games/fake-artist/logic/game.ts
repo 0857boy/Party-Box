@@ -5,7 +5,7 @@ import type { FakeArtistCategory, FakeArtistPrompt, FakeArtistSetup } from '../t
 export function validateFakeArtistSetup(setup: FakeArtistSetup): string[] {
   const errors: string[] = []
   const names = setup.playerNames.map((name) => name.trim())
-  if (names.length < 5 || names.length > 10) errors.push('誰是偽畫家需要 5–10 位玩家。')
+  if (names.length < 5 || names.length > 10) errors.push('誰是假畫家需要 5–10 位玩家。')
   if (names.some((name) => !name)) errors.push('每位玩家都需要名稱。')
   if (new Set(names).size !== names.length) errors.push('玩家名稱不可重複。')
   if (![1, 3, 5].includes(setup.targetScore)) errors.push('請選擇有效的勝利分數。')

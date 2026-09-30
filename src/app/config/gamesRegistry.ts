@@ -43,9 +43,9 @@ export const gamesRegistry: readonly PartyGame[] = [
   },
   {
     id: 'fake-artist',
-    name: '誰是偽畫家',
+    name: '誰是假畫家',
     eyebrow: '共同畫圖 · 5–10 人',
-    description: '所有人一起畫同一題，只有偽畫家不知道答案。畫得太清楚，反而可能害了全隊。',
+    description: '所有人一起畫同一題，只有假畫家不知道答案。畫得太清楚，反而可能害了全隊。',
     minPlayers: 5,
     maxPlayers: 10,
     theme: 'fake-artist',
