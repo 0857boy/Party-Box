@@ -1,4 +1,4 @@
-import { taiwanWordPairs } from '../data/words'
+import { undercoverWordPairs } from '../data/words'
 import type {
   UndercoverPlayer,
   UndercoverRole,
@@ -21,16 +21,20 @@ export function validateUndercoverSetup(setup: UndercoverSetup): UndercoverValid
   if (setup.undercoverCount < 1 || setup.undercoverCount >= Math.ceil(names.length / 2)) {
     errors.push('臥底人數必須至少 1 人，且少於玩家人數的一半。')
   }
+  if (setup.blankEnabled && names.length < 5) errors.push('白板模式至少需要 5 位玩家。')
+  if (setup.undercoverCount + (setup.blankEnabled ? 1 : 0) >= Math.ceil(names.length / 2)) {
+    errors.push('臥底與白板總數必須少於玩家人數的一半。')
+  }
   return { valid: errors.length === 0, errors }
 }
 
 export function selectWordPair(setup: UndercoverSetup, random: () => number = Math.random): WordPair {
   const funnyCategories = new Set(['awkward', 'relationship', 'workplace', 'internet'])
   const pool = setup.category === 'mixed'
-    ? taiwanWordPairs
+    ? undercoverWordPairs
     : setup.category === 'funny'
-      ? taiwanWordPairs.filter((pair) => funnyCategories.has(pair.category))
-      : taiwanWordPairs.filter((pair) => pair.category === setup.category)
+      ? undercoverWordPairs.filter((pair) => funnyCategories.has(pair.category))
+      : undercoverWordPairs.filter((pair) => pair.category === setup.category)
   if (!pool.length) throw new Error('No undercover word pairs are available')
   return pool[Math.floor(random() * pool.length) % pool.length]!
 }
@@ -40,7 +44,11 @@ export function assignUndercoverPlayers(
   pair: WordPair,
   random: () => number = Math.random
 ): UndercoverPlayer[] {
-  const roles: UndercoverRole[] = setup.playerNames.map((_, index) => index < setup.undercoverCount ? 'undercover' : 'civilian')
+  const roles: UndercoverRole[] = setup.playerNames.map((_, index) => {
+    if (index < setup.undercoverCount) return 'undercover'
+    if (setup.blankEnabled && index === setup.undercoverCount) return 'blank'
+    return 'civilian'
+  })
   shuffleInPlace(roles, random)
   const flipped = random() >= 0.5
   const civilianWord = pair.words[flipped ? 1 : 0]
@@ -49,7 +57,7 @@ export function assignUndercoverPlayers(
     id: `undercover-player-${index + 1}`,
     name: name.trim(),
     role: roles[index]!,
-    word: roles[index] === 'undercover' ? undercoverWord : civilianWord,
+    word: roles[index] === 'blank' ? '' : roles[index] === 'undercover' ? undercoverWord : civilianWord,
     alive: true
   }))
 }
@@ -57,9 +65,11 @@ export function assignUndercoverPlayers(
 export function getUndercoverWinner(players: readonly UndercoverPlayer[]): UndercoverWinner {
   const alive = players.filter((player) => player.alive)
   const undercoverCount = alive.filter((player) => player.role === 'undercover').length
-  const civilianCount = alive.length - undercoverCount
-  if (undercoverCount === 0) return 'civilian'
-  if (undercoverCount >= civilianCount) return 'undercover'
+  const blankCount = alive.filter((player) => player.role === 'blank').length
+  const hiddenCount = undercoverCount + blankCount
+  const civilianCount = alive.length - hiddenCount
+  if (hiddenCount === 0) return 'civilian'
+  if (hiddenCount >= civilianCount) return 'undercover'
   return null
 }
 

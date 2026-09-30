@@ -21,6 +21,7 @@ import {
   shouldUseLadyAfterRound
 } from '../logic/flow'
 import { loadVersioned, saveVersioned } from '@/utils/storage'
+import { getSharedPlayerNames, rememberPlayerRoster } from '@/stores/playerRosters'
 
 interface StoredSetup {
   playerNames: string[]
@@ -51,7 +52,7 @@ interface SessionState {
 
 export const avalonSession = reactive<SessionState>({
   setup: {
-    playerNames: [...saved.playerNames],
+    playerNames: getSharedPlayerNames(saved.playerNames, 5, 10),
     enabledRoles: [...saved.enabledRoles],
     ladyOfLakeEnabled: saved.ladyOfLakeEnabled
   },
@@ -92,6 +93,7 @@ export function saveSetup(): void {
 watch(() => avalonSession.setup, saveSetup, { deep: true })
 
 export function startAvalonGame(): void {
+  rememberPlayerRoster(avalonSession.setup.playerNames)
   avalonSession.players = assignRoles(avalonSession.setup)
   avalonSession.currentRevealIndex = 0
   avalonSession.gameplay = createGameplayState()

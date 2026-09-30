@@ -1,5 +1,6 @@
 import { computed, reactive, watch } from 'vue'
 import { loadVersioned, saveVersioned } from '@/utils/storage'
+import { getSharedPlayerNames, rememberPlayerRoster } from '@/stores/playerRosters'
 import { wordCategories } from '../data/words'
 import {
   assignUndercoverPlayers,
@@ -16,12 +17,13 @@ import type {
 } from '../types'
 
 const STORAGE_KEY = 'party-box:undercover:setup'
-const VERSION = 2
+const VERSION = 3
 const fallbackNames = ['玩家 1', '玩家 2', '玩家 3', '玩家 4', '玩家 5']
 const saved = loadVersioned<UndercoverSetup>(STORAGE_KEY, VERSION, {
   playerNames: fallbackNames,
   category: 'funny',
-  undercoverCount: 1
+  undercoverCount: 1,
+  blankEnabled: false
 })
 
 interface UndercoverSessionState {
@@ -33,9 +35,10 @@ interface UndercoverSessionState {
 
 export const undercoverSession = reactive<UndercoverSessionState>({
   setup: {
-    playerNames: [...saved.playerNames],
+    playerNames: getSharedPlayerNames(saved.playerNames, 4, 12),
     category: saved.category,
-    undercoverCount: saved.undercoverCount
+    undercoverCount: saved.undercoverCount,
+    blankEnabled: saved.blankEnabled
   },
   players: [],
   currentRevealIndex: 0,
@@ -57,6 +60,7 @@ export function syncRecommendedUndercoverCount(): void {
 }
 
 export function startUndercoverGame(): void {
+  rememberPlayerRoster(undercoverSession.setup.playerNames)
   const pair = selectWordPair(undercoverSession.setup, cryptoRandom)
   undercoverSession.players = assignUndercoverPlayers(undercoverSession.setup, pair, cryptoRandom)
   undercoverSession.currentRevealIndex = 0
@@ -100,8 +104,8 @@ export function confirmUndercoverElimination(): void {
   if (winner) {
     game.winner = winner
     game.winReason = winner === 'civilian'
-      ? '所有臥底都已被找出，平民陣營獲勝。'
-      : '存活臥底人數已不少於平民，臥底陣營成功潛伏到最後。'
+      ? '所有臥底與白板都已被找出，平民陣營獲勝。'
+      : '存活潛伏方人數已不少於平民，臥底與白板成功潛伏到最後。'
   }
   game.phase = 'elimination-result'
 }

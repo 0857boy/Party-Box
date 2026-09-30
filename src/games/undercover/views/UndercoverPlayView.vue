@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { AlertTriangle, ArrowRight, Fingerprint, MessageCircle, RotateCcw, Skull, UsersRound, Vote } from '@lucide/vue'
+import { AlertTriangle, ArrowRight, FileQuestion, Fingerprint, MessageCircle, RotateCcw, Skull, UsersRound, Vote } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
 import GameButton from '@/components/ui/GameButton.vue'
 import GameModal from '@/components/ui/GameModal.vue'
@@ -20,6 +20,7 @@ const router = useRouter()
 const confirmationOpen = ref(false)
 const game = computed(() => undercoverSession.gameplay)
 const selectedPlayer = computed(() => undercoverSession.players.find((player) => player.id === game.value?.selectedEliminationId))
+const aliveHiddenCount = computed(() => aliveUndercoverPlayers.value.filter((player) => player.role !== 'civilian').length)
 const speakingOrder = computed(() => {
   const alive = aliveUndercoverPlayers.value
   const start = alive.findIndex((player) => player.id === game.value?.startingSpeakerId)
@@ -35,6 +36,12 @@ function nextRoundOrResult(): void {
   continueUndercoverGame()
   if (game.value?.phase === 'result') void router.replace({ name: 'undercover-result' })
 }
+
+function roleLabel(role: 'civilian' | 'undercover' | 'blank'): string {
+  if (role === 'undercover') return '臥底'
+  if (role === 'blank') return '白板'
+  return '平民'
+}
 </script>
 
 <template>
@@ -44,7 +51,7 @@ function nextRoundOrResult(): void {
       <aside class="undercover-status-board">
         <div><span>回合</span><strong>{{ game.round }}</strong></div>
         <div><span>存活</span><strong>{{ aliveUndercoverPlayers.length }}</strong></div>
-        <div><span>臥底</span><strong>{{ undercoverSession.setup.undercoverCount }}</strong></div>
+        <div><span>潛伏</span><strong>{{ aliveHiddenCount }}</strong></div>
       </aside>
 
       <section v-if="game.phase === 'discussion'" class="phase-panel undercover-discussion">
@@ -69,11 +76,11 @@ function nextRoundOrResult(): void {
       </section>
 
       <section v-else-if="game.phase === 'elimination-result' && lastEliminatedPlayer" class="phase-panel phase-panel--center undercover-elimination-result">
-        <div class="result-emblem" :class="lastEliminatedPlayer.role === 'undercover' ? 'result-emblem--fail' : 'result-emblem--success'"><Fingerprint v-if="lastEliminatedPlayer.role === 'undercover'" :size="42" /><UsersRound v-else :size="42" /></div>
+        <div class="result-emblem" :class="lastEliminatedPlayer.role !== 'civilian' ? 'result-emblem--fail' : 'result-emblem--success'"><Fingerprint v-if="lastEliminatedPlayer.role === 'undercover'" :size="42" /><FileQuestion v-else-if="lastEliminatedPlayer.role === 'blank'" :size="42" /><UsersRound v-else :size="42" /></div>
         <span class="eyebrow">IDENTITY REVEALED</span>
-        <h1>{{ lastEliminatedPlayer.name }} 是<br /><em>{{ lastEliminatedPlayer.role === 'undercover' ? '臥底' : '平民' }}</em></h1>
+        <h1>{{ lastEliminatedPlayer.name }} 是<br /><em>{{ roleLabel(lastEliminatedPlayer.role) }}</em></h1>
         <p v-if="!game.winner">詞語暫不公開，存活玩家繼續推理。</p>
-        <div v-if="game.winner" class="undercover-win-preview"><Skull v-if="game.winner === 'undercover'" :size="20" /><UsersRound v-else :size="20" /><strong>{{ game.winner === 'undercover' ? '臥底陣營獲勝' : '平民陣營獲勝' }}</strong><span>{{ game.winReason }}</span></div>
+        <div v-if="game.winner" class="undercover-win-preview"><Skull v-if="game.winner === 'undercover'" :size="20" /><UsersRound v-else :size="20" /><strong>{{ game.winner === 'undercover' ? '潛伏方獲勝' : '平民陣營獲勝' }}</strong><span>{{ game.winReason }}</span></div>
         <GameButton block @click="nextRoundOrResult">{{ game.winner ? '查看完整結果' : '進入下一輪' }}<template #trailing><ArrowRight :size="19" /></template></GameButton>
       </section>
     </main>

@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { AlertTriangle, ArrowRight, BookOpen, Plus, Shield, Skull, Trash2, UsersRound } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
 import GameButton from '@/components/ui/GameButton.vue'
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue'
+import PlayerRosterHistory from '@/components/player/PlayerRosterHistory.vue'
+import { normalizeRosterForGame, playerRosterStore } from '@/stores/playerRosters'
 import { selectableRoles } from '../data/roles'
 import { getDefaultEnabledRoles, teamComposition, validateRoleConfig } from '../logic/game'
 import { avalonHistory, avalonSession, loadAvalonHistoryEntry, startAvalonGame } from '../stores/session'
@@ -40,6 +42,18 @@ function updateRole(id: RoleId, enabled: boolean): void {
 function resetRecommended(): void {
   avalonSession.setup.enabledRoles = getDefaultEnabledRoles(avalonSession.setup.playerNames.length)
 }
+
+function applyRecentRoster(names: string[]): void {
+  avalonSession.setup.playerNames = normalizeRosterForGame(names, 5, 10)
+  avalonSession.setup.enabledRoles = getDefaultEnabledRoles(avalonSession.setup.playerNames.length)
+  if (avalonSession.setup.playerNames.length < 8) avalonSession.setup.ladyOfLakeEnabled = false
+}
+
+onMounted(() => {
+  if (playerRosterStore.currentNames.length && playerRosterStore.currentNames.join('\u0000') !== avalonSession.setup.playerNames.join('\u0000')) {
+    applyRecentRoster(playerRosterStore.currentNames)
+  }
+})
 
 function start(): void {
   if (!validation.value.valid) return
@@ -90,6 +104,7 @@ function formatCompletedAt(value: string): string {
             </label>
           </div>
           <button v-if="avalonSession.setup.playerNames.length < 10" class="add-player" type="button" @click="addPlayer"><Plus :size="18" /> 新增玩家</button>
+          <PlayerRosterHistory @select="applyRecentRoster" />
         </section>
 
         <section class="setup-panel role-setup">

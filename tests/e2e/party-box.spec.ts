@@ -225,7 +225,7 @@ test('eight-player game can use the Lady of the Lake after round two', async ({ 
   await expect(page.getByText('ROUND 3')).toBeVisible()
 })
 
-test('undercover can distribute Taiwanese words and resolve an elimination', async ({ page }, testInfo) => {
+test('undercover can distribute words and resolve an elimination', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'The complete undercover match is covered once.')
   await page.goto('/#/undercover/setup')
   await expect(page.getByRole('heading', { name: /一句提示/ })).toBeVisible()
@@ -259,4 +259,37 @@ test('undercover can distribute Taiwanese words and resolve an elimination', asy
   await expect(page.getByRole('heading', { name: '本局詞語' })).toBeVisible()
   await expect(page.getByRole('heading', { name: '身份揭曉' })).toBeVisible()
   await page.screenshot({ path: '.artifacts/screenshots/playwright-mobile-undercover-result.png' })
+})
+
+test('undercover can include exactly one blank card', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'The optional blank-card flow is covered once.')
+  await page.goto('/#/undercover/setup')
+  await page.getByRole('checkbox', { name: /加入白板/ }).check()
+  await page.getByRole('button', { name: '抽詞並分配' }).click()
+
+  const revealedPrompts: string[] = []
+  for (let index = 0; index < 5; index += 1) {
+    await page.getByRole('button', { name: `我是 玩家 ${index + 1}，繼續` }).click()
+    const holdButton = page.getByRole('button', { name: '按住以揭露身份' })
+    await holdButton.dispatchEvent('pointerdown')
+    await page.waitForTimeout(720)
+    revealedPrompts.push((await page.locator('.secret-word-card__front h1').textContent())?.trim() ?? '')
+    await page.getByRole('button', { name: index === 4 ? '我記住了，開始遊戲' : '我記住了，交給下一位' }).click()
+  }
+
+  expect(revealedPrompts.filter((prompt) => prompt === '白板')).toHaveLength(1)
+  await expect(page.getByText('潛伏').first()).toBeVisible()
+})
+
+test('player roster is shared between games', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'Cross-game local roster storage is covered once.')
+  const names = ['小安', '阿哲', '美玲', '大雄', '小葵']
+  await page.goto('/#/undercover/setup')
+  const inputs = page.locator('.player-input input')
+  for (let index = 0; index < names.length; index += 1) await inputs.nth(index).fill(names[index]!)
+  await page.getByRole('button', { name: '抽詞並分配' }).click()
+
+  await page.goto('/#/avalon/setup')
+  for (let index = 0; index < names.length; index += 1) await expect(page.locator('.player-input input').nth(index)).toHaveValue(names[index]!)
+  await expect(page.getByText(names.join('、'))).toBeVisible()
 })

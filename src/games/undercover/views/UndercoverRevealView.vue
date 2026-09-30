@@ -44,7 +44,12 @@ function hideAndContinue(): void {
           <div class="identity-owner"><span>現在查看</span><strong>{{ currentUndercoverPlayer.name }}</strong></div>
           <div class="secret-word-card" :class="{ 'secret-word-card--revealed': stage === 'revealed' }">
             <div v-if="stage !== 'revealed'" class="secret-word-card__back"><Fingerprint :size="74" /><strong>你的詞藏在這裡</strong><small>按住下方按鈕揭露</small></div>
-            <div v-else class="secret-word-card__front"><span><Tag :size="16" />{{ category }}</span><small>你的秘密詞語</small><h1>{{ currentUndercoverPlayer.word }}</h1><p><HelpCircle :size="17" />你不知道自己是平民還是臥底</p></div>
+            <div v-else class="secret-word-card__front" :class="{ 'secret-word-card__front--blank': currentUndercoverPlayer.role === 'blank' }">
+              <span><Tag :size="16" />{{ category }}</span>
+              <small>{{ currentUndercoverPlayer.role === 'blank' ? '你的特殊身份' : '你的秘密詞語' }}</small>
+              <h1>{{ currentUndercoverPlayer.role === 'blank' ? '白板' : currentUndercoverPlayer.word }}</h1>
+              <p><HelpCircle :size="17" />{{ currentUndercoverPlayer.role === 'blank' ? '你沒有詞語，請聽其他人的描述即興發言' : '你不知道自己是平民還是臥底' }}</p>
+            </div>
           </div>
           <HoldToReveal v-if="stage === 'hold'" @revealed="stage = 'revealed'" />
           <template v-else>

@@ -1,4 +1,4 @@
-export type UndercoverRole = 'civilian' | 'undercover'
+export type UndercoverRole = 'civilian' | 'undercover' | 'blank'
 export type WordCategoryId =
   | 'food'
   | 'daily'
@@ -10,6 +10,11 @@ export type WordCategoryId =
   | 'relationship'
   | 'workplace'
   | 'internet'
+  | 'animals'
+  | 'objects'
+  | 'people'
+  | 'places'
+  | 'sports'
 export type WordCategorySelection = WordCategoryId | 'mixed' | 'funny'
 
 export interface WordCategory {
@@ -28,6 +33,7 @@ export interface UndercoverSetup {
   playerNames: string[]
   category: WordCategorySelection
   undercoverCount: number
+  blankEnabled: boolean
 }
 
 export interface UndercoverPlayer {
