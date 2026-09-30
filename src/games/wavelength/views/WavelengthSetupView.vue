@@ -51,7 +51,7 @@ onMounted(() => {
         <span class="eyebrow"><Radio :size="16" /> FIND THE SAME FREQUENCY</span>
         <h1>你說的那個，<br /><em>到底有多那個？</em></h1>
         <p>提示者看到藏在兩個極端之間的目標，再用一個有趣的例子傳遞感覺。大家討論，把指針停在心目中的位置。</p>
-        <div class="wavelength-preview"><span>超便宜</span><div><i /></div><span>超昂貴</span></div>
+        <div class="wavelength-preview"><span>便宜</span><div><i /></div><span>超貴</span></div>
         <div class="undercover-rule-card"><strong>一分鐘學會</strong><span>① 提示者私下看目標，給一個線索</span><span>② 隊友討論並鎖定指針</span><span>③ 對手猜左右，揭曉並計分</span></div>
         <details class="undercover-rules-details">
           <summary>查看完整規則</summary>
