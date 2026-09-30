@@ -1,4 +1,4 @@
-import { Crown, Fingerprint, MapPin, Sparkles, Theater } from '@lucide/vue'
+import { Crown, Fingerprint, MapPin, Paintbrush, Sparkles, Theater } from '@lucide/vue'
 import type { PartyGame } from '@/types/game'
 
 export const gamesRegistry: readonly PartyGame[] = [
@@ -40,6 +40,19 @@ export const gamesRegistry: readonly PartyGame[] = [
     routeName: 'charades-setup',
     available: true,
     accent: '珊瑚橘'
+  },
+  {
+    id: 'fake-artist',
+    name: '誰是偽畫家',
+    eyebrow: '共同畫圖 · 5–10 人',
+    description: '所有人一起畫同一題，只有偽畫家不知道答案。畫得太清楚，反而可能害了全隊。',
+    minPlayers: 5,
+    maxPlayers: 10,
+    theme: 'fake-artist',
+    icon: Paintbrush,
+    routeName: 'fake-artist-setup',
+    available: true,
+    accent: '畫布青'
   },
   {
     id: 'spyfall',

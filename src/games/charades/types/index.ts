@@ -5,6 +5,8 @@ export type CharadesPhase = 'turn-ready' | 'playing' | 'turn-result' | 'round-re
 
 export interface CharadesSetup {
   playerNames: string[]
+  teamNames: [string, string]
+  teamAssignments: Array<0 | 1>
   category: CharadesCategory
   deckSize: number
   turnSeconds: number

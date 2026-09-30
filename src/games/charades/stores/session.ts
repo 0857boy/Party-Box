@@ -1,25 +1,33 @@
 import { computed, reactive, watch } from 'vue'
 import { createScoreboard, awardPoint, totalScore } from '@/engine/scoreManager'
 import { classicGuessingRounds, lowerScoringTeamIndex } from '@/engine/roundManager'
-import { createAlternatingTeams, nextTeamMember } from '@/engine/teamManager'
+import { createTeamsFromAssignments, nextTeamMember } from '@/engine/teamManager'
 import { getSharedPlayerNames, rememberPlayerRoster } from '@/stores/playerRosters'
 import { loadVersioned, saveVersioned } from '@/utils/storage'
 import { rebuildRoundDeck, selectCharadesDeck } from '../logic/game'
 import type { CharadesGameState, CharadesSessionState, CharadesSetup } from '../types'
 
 const STORAGE_KEY = 'party-box:charades:setup'
-const VERSION = 1
+const VERSION = 2
 const fallback: CharadesSetup = {
   playerNames: ['玩家 1', '玩家 2', '玩家 3', '玩家 4', '玩家 5', '玩家 6'],
+  teamNames: ['閃電隊', '火箭隊'],
+  teamAssignments: [0, 1, 0, 1, 0, 1],
   category: 'mixed',
   deckSize: 32,
   turnSeconds: 60
 }
 const saved = loadVersioned<CharadesSetup>(STORAGE_KEY, VERSION, fallback)
+const initialNames = getSharedPlayerNames(saved.playerNames, 4, 16)
+const initialAssignments = saved.teamAssignments.length === initialNames.length
+  ? saved.teamAssignments
+  : Array.from({ length: initialNames.length }, (_, index) => index % 2 as 0 | 1)
 
 export const charadesSession = reactive<CharadesSessionState>({
   setup: {
-    playerNames: getSharedPlayerNames(saved.playerNames, 4, 16),
+    playerNames: initialNames,
+    teamNames: [...saved.teamNames],
+    teamAssignments: [...initialAssignments],
     category: saved.category,
     deckSize: saved.deckSize,
     turnSeconds: saved.turnSeconds
@@ -48,7 +56,11 @@ watch(() => charadesSession.setup, () => saveVersioned(STORAGE_KEY, VERSION, cha
 export function startCharadesGame(): void {
   rememberPlayerRoster(charadesSession.setup.playerNames)
   charadesSession.players = charadesSession.setup.playerNames.map((name, index) => ({ id: `charades-player-${index + 1}`, name: name.trim() }))
-  charadesSession.teams = createAlternatingTeams(charadesSession.players.map((player) => player.id))
+  charadesSession.teams = createTeamsFromAssignments(
+    charadesSession.players.map((player) => player.id),
+    charadesSession.setup.teamAssignments,
+    charadesSession.setup.teamNames.map((name) => name.trim()) as [string, string]
+  )
   const selectedCards = selectCharadesDeck(charadesSession.setup, cryptoRandom)
   const currentClueGiverIds = Object.fromEntries(charadesSession.teams.map((team) => [team.id, team.playerIds[0]!]))
   charadesSession.game = {

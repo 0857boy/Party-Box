@@ -63,6 +63,22 @@
   --game-gradient: linear-gradient(135deg, #ffb078, #f26f52);
 }
 
+[data-theme='fake-artist'] {
+  --game-primary: #58d6c7;
+  --game-secondary: #ffcb6b;
+  --game-background: #071312;
+  --game-surface: rgba(16, 38, 36, 0.9);
+  --game-surface-secondary: rgba(25, 57, 53, 0.76);
+  --game-text: #f5fffc;
+  --game-text-muted: #9ebbb6;
+  --game-border: rgba(144, 231, 217, 0.16);
+  --game-danger: #ff747f;
+  --game-success: #65dda7;
+  --game-card-border: rgba(88, 214, 199, 0.48);
+  --game-glow: rgba(88, 214, 199, 0.18);
+  --game-gradient: linear-gradient(135deg, #7be6d8, #36afaa);
+}
+
 [data-theme='spyfall'] {
   --game-primary: #68c6e8;
   --game-secondary: #6d8dff;

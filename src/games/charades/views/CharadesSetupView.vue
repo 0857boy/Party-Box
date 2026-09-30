@@ -5,7 +5,7 @@ import { AlertTriangle, ArrowRight, Clock3, Layers3, Plus, Shuffle, Trash2, User
 import GameHeader from '@/components/game/GameHeader.vue'
 import PlayerRosterHistory from '@/components/player/PlayerRosterHistory.vue'
 import GameButton from '@/components/ui/GameButton.vue'
-import { createAlternatingTeams } from '@/engine/teamManager'
+import { createRandomTeamAssignments, createTeamsFromAssignments } from '@/engine/teamManager'
 import { normalizeRosterForGame, playerRosterStore } from '@/stores/playerRosters'
 import { charadesCategories } from '../data/cards'
 import { validateCharadesSetup } from '../logic/game'
@@ -14,20 +14,55 @@ import type { CharadesCategory } from '../types'
 
 const router = useRouter()
 const errors = computed(() => validateCharadesSetup(charadesSession.setup))
-const teamPreview = computed(() => createAlternatingTeams(charadesSession.setup.playerNames.map((_, index) => String(index))))
+const teamPreview = computed(() => createTeamsFromAssignments(
+  charadesSession.setup.playerNames.map((_, index) => String(index)),
+  charadesSession.setup.teamAssignments,
+  charadesSession.setup.teamNames
+))
 
 function addPlayer(): void {
   if (charadesSession.setup.playerNames.length >= 16) return
   charadesSession.setup.playerNames.push(`玩家 ${charadesSession.setup.playerNames.length + 1}`)
+  const firstTeamSize = charadesSession.setup.teamAssignments.filter((team) => team === 0).length
+  const secondTeamSize = charadesSession.setup.teamAssignments.filter((team) => team === 1).length
+  charadesSession.setup.teamAssignments.push(firstTeamSize <= secondTeamSize ? 0 : 1)
 }
 
 function removePlayer(index: number): void {
   if (charadesSession.setup.playerNames.length <= 4) return
   charadesSession.setup.playerNames.splice(index, 1)
+  charadesSession.setup.teamAssignments.splice(index, 1)
+  rebalanceTeams()
 }
 
 function applyRoster(names: string[]): void {
   charadesSession.setup.playerNames = normalizeRosterForGame(names, 4, 16)
+  charadesSession.setup.teamAssignments = alternatingAssignments(charadesSession.setup.playerNames.length)
+}
+
+function reshuffleTeams(): void {
+  const current = charadesSession.setup.teamAssignments.join('')
+  const next = createRandomTeamAssignments(charadesSession.setup.playerNames.length)
+  if (next.join('') === current) {
+    const first = next.findIndex((team) => team === 0)
+    const second = next.findIndex((team) => team === 1)
+    if (first >= 0 && second >= 0) [next[first], next[second]] = [next[second]!, next[first]!]
+  }
+  charadesSession.setup.teamAssignments = next
+}
+
+function alternatingAssignments(playerCount: number): Array<0 | 1> {
+  return Array.from({ length: playerCount }, (_, index) => index % 2 as 0 | 1)
+}
+
+function rebalanceTeams(): void {
+  const assignments = charadesSession.setup.teamAssignments
+  const firstSize = assignments.filter((team) => team === 0).length
+  const secondSize = assignments.length - firstSize
+  if (Math.abs(firstSize - secondSize) <= 1) return
+  const largerTeam: 0 | 1 = firstSize > secondSize ? 0 : 1
+  const index = assignments.lastIndexOf(largerTeam)
+  if (index >= 0) assignments[index] = largerTeam === 0 ? 1 : 0
 }
 
 function start(): void {
@@ -59,7 +94,7 @@ onMounted(() => {
         <details class="undercover-rules-details">
           <summary>查看完整規則</summary>
           <ol>
-            <li><strong>自動分隊：</strong>依玩家順序交錯分成兩隊，兩隊輪流派一名提示者。</li>
+            <li><strong>自由分隊：</strong>預設依玩家順序交錯分隊，也可以按「打亂重分」隨機分組。</li>
             <li><strong>限時猜牌：</strong>時間內猜對越多越好；猜對一張得 1 分，也可以先跳過。</li>
             <li><strong>輪流提示：</strong>每位隊員都當過提示者後，才會輪回同一位玩家。</li>
             <li><strong>清空牌庫：</strong>整副牌猜完才結束該輪，接著把同一副牌洗牌重玩。</li>
@@ -80,9 +115,11 @@ onMounted(() => {
             </label>
           </div>
           <button v-if="charadesSession.setup.playerNames.length < 16" class="add-player" type="button" @click="addPlayer"><Plus :size="18" /> 新增玩家</button>
+          <div class="charades-team-toolbar"><strong>隊伍設定</strong><button type="button" @click="reshuffleTeams"><Shuffle :size="16" />打亂重分</button></div>
           <div class="charades-team-preview">
             <article v-for="team in teamPreview" :key="team.id" :class="`charades-team-preview--${team.id}`">
-              <strong>{{ team.name }}</strong><span>{{ team.playerIds.map((id) => charadesSession.setup.playerNames[Number(id)]).join('、') }}</span>
+              <label><span class="sr-only">{{ team.id === 'team-a' ? '第一隊' : '第二隊' }}隊名</span><input v-model.trim="charadesSession.setup.teamNames[team.id === 'team-a' ? 0 : 1]" type="text" maxlength="12" :aria-label="team.id === 'team-a' ? '第一隊隊名' : '第二隊隊名'" /></label>
+              <span>{{ team.playerIds.map((id) => charadesSession.setup.playerNames[Number(id)]).join('、') }}</span>
             </article>
           </div>
           <PlayerRosterHistory @select="applyRoster" />

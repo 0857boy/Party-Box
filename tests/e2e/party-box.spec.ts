@@ -301,8 +301,15 @@ test('party charades reuses the same deck across all three rounds', async ({ pag
   await page.setViewportSize({ width: 320, height: 568 })
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
   await page.setViewportSize({ width: 390, height: 844 })
+  await page.getByRole('textbox', { name: '第一隊隊名' }).fill('珍奶隊')
+  await page.getByRole('textbox', { name: '第二隊隊名' }).fill('雞排隊')
+  const teamsBeforeShuffle = await page.locator('.charades-team-preview article > span').allTextContents()
+  await page.getByRole('button', { name: '打亂重分' }).click()
+  const teamsAfterShuffle = await page.locator('.charades-team-preview article > span').allTextContents()
+  expect(teamsAfterShuffle).not.toEqual(teamsBeforeShuffle)
   await page.getByRole('button', { name: '24 張' }).click()
   await page.getByRole('button', { name: '建立牌庫並分隊' }).click()
+  await expect(page.getByText(/珍奶隊|雞排隊/).first()).toBeVisible()
 
   for (let round = 1; round <= 3; round += 1) {
     await expect(page.getByText(`PARTY CHARADES · ROUND ${round}/3`)).toBeVisible()
@@ -313,5 +320,63 @@ test('party charades reuses the same deck across all three rounds', async ({ pag
 
   await expect(page.getByRole('heading', { name: /獲勝|平手/ })).toBeVisible()
   await expect(page.getByRole('heading', { name: '三輪得分' })).toBeVisible()
+  await expect(page.locator('.charades-final-scores').getByText('珍奶隊', { exact: true })).toBeVisible()
+  await expect(page.locator('.charades-final-scores').getByText('雞排隊', { exact: true })).toBeVisible()
   await page.screenshot({ path: '.artifacts/screenshots/playwright-mobile-charades-result.png' })
+})
+
+test('fake artist completes identity reveal, two drawing passes, voting, and review', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'The complete shared-canvas game is covered once.')
+  await page.goto('/#/fake-artist/setup')
+  await expect(page.getByRole('heading', { name: /大家都會畫/ })).toBeVisible()
+  await page.setViewportSize({ width: 320, height: 568 })
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.getByRole('button', { name: '單局決勝' }).click()
+  await page.getByRole('button', { name: '抽題並分配身份' }).click()
+
+  let fakeArtistName = ''
+  const revealCardFrames: string[] = []
+  for (let index = 0; index < 6; index += 1) {
+    const playerName = `玩家 ${index + 1}`
+    await page.getByRole('button', { name: `我是 ${playerName}，繼續` }).click()
+    const holdButton = page.getByRole('button', { name: '按住以揭露身份' })
+    await holdButton.dispatchEvent('pointerdown')
+    await page.waitForTimeout(720)
+    revealCardFrames.push(await page.locator('.fake-role-card').evaluate((element) => {
+      const style = getComputedStyle(element)
+      return [style.borderColor, style.backgroundImage, style.boxShadow].join('|')
+    }))
+    if ((await page.locator('.fake-role-card__front h1').textContent())?.trim() === '偽畫家') fakeArtistName = playerName
+    await page.getByRole('button', { name: index === 5 ? '我記住了，開始作畫' : '我記住了，交給下一位' }).click()
+  }
+  expect(fakeArtistName).not.toBe('')
+  expect(new Set(revealCardFrames).size).toBe(1)
+
+  for (let stroke = 0; stroke < 12; stroke += 1) {
+    await page.getByRole('button', { name: /我是 玩家 \d+，繼續/ }).click()
+    const canvas = page.locator('.drawing-canvas svg')
+    const box = await canvas.boundingBox()
+    if (!box) throw new Error('Drawing canvas was not visible')
+    const offset = (stroke % 6) * 8
+    await page.mouse.move(box.x + 50 + offset, box.y + 60 + offset)
+    await page.mouse.down()
+    await page.mouse.move(box.x + 120 + offset, box.y + 110 + offset, { steps: 4 })
+    await page.mouse.up()
+    await page.getByRole('button', { name: '送出這一筆' }).click()
+  }
+
+  await expect(page.getByRole('heading', { name: /誰是.*偽畫家/ })).toBeVisible()
+  await expect(page.locator('.fake-vote-canvas polyline')).toHaveCount(12)
+  await page.locator('.fake-suspect-grid button').filter({ hasText: fakeArtistName }).click()
+  await page.getByRole('button', { name: '確認指認結果' }).click()
+  await page.getByRole('button', { name: new RegExp(`我是 ${fakeArtistName}，繼續`) }).click()
+  await page.getByRole('textbox', { name: '輸入你的答案' }).fill('完全猜錯')
+  await page.getByRole('button', { name: '鎖定答案' }).click()
+  await page.getByRole('button', { name: '猜錯了' }).click()
+
+  await expect(page.getByRole('heading', { name: /獲勝/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '畫作復盤' })).toBeVisible()
+  await expect(page.locator('.fake-gallery polyline')).toHaveCount(12)
+  await page.screenshot({ path: '.artifacts/screenshots/playwright-mobile-fake-artist-result.png' })
 })

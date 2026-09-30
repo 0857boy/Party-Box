@@ -15,6 +15,11 @@ import CharadesSetupView from '@/games/charades/views/CharadesSetupView.vue'
 import CharadesPlayView from '@/games/charades/views/CharadesPlayView.vue'
 import CharadesResultView from '@/games/charades/views/CharadesResultView.vue'
 import { hasCharadesSession } from '@/games/charades/stores/session'
+import FakeArtistSetupView from '@/games/fake-artist/views/FakeArtistSetupView.vue'
+import FakeArtistRevealView from '@/games/fake-artist/views/FakeArtistRevealView.vue'
+import FakeArtistPlayView from '@/games/fake-artist/views/FakeArtistPlayView.vue'
+import FakeArtistResultView from '@/games/fake-artist/views/FakeArtistResultView.vue'
+import { hasFakeArtistSession } from '@/games/fake-artist/stores/session'
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -32,6 +37,10 @@ export const router = createRouter({
     { path: '/charades/setup', name: 'charades-setup', component: CharadesSetupView, meta: { theme: 'charades' } },
     { path: '/charades/play', name: 'charades-play', component: CharadesPlayView, meta: { theme: 'charades', requiresCharadesSession: true } },
     { path: '/charades/result', name: 'charades-result', component: CharadesResultView, meta: { theme: 'charades', requiresCharadesSession: true } },
+    { path: '/fake-artist/setup', name: 'fake-artist-setup', component: FakeArtistSetupView, meta: { theme: 'fake-artist' } },
+    { path: '/fake-artist/reveal', name: 'fake-artist-reveal', component: FakeArtistRevealView, meta: { theme: 'fake-artist', requiresFakeArtistSession: true } },
+    { path: '/fake-artist/play', name: 'fake-artist-play', component: FakeArtistPlayView, meta: { theme: 'fake-artist', requiresFakeArtistSession: true } },
+    { path: '/fake-artist/result', name: 'fake-artist-result', component: FakeArtistResultView, meta: { theme: 'fake-artist', requiresFakeArtistSession: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ],
   scrollBehavior: () => ({ top: 0 })
@@ -41,4 +50,5 @@ router.beforeEach((to) => {
   if (to.meta.requiresSession && !hasAvalonSession()) return { name: 'avalon-setup' }
   if (to.meta.requiresUndercoverSession && !hasUndercoverSession()) return { name: 'undercover-setup' }
   if (to.meta.requiresCharadesSession && !hasCharadesSession()) return { name: 'charades-setup' }
+  if (to.meta.requiresFakeArtistSession && !hasFakeArtistSession()) return { name: 'fake-artist-setup' }
 })
