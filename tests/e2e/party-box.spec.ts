@@ -264,7 +264,7 @@ test('undercover can distribute words and resolve an elimination', async ({ page
 test('undercover can include exactly one blank card', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'The optional blank-card flow is covered once.')
   await page.goto('/#/undercover/setup')
-  await page.getByRole('checkbox', { name: /加入白板/ }).check()
+  await page.getByText('加入白板', { exact: true }).click()
   await page.getByRole('button', { name: '抽詞並分配' }).click()
 
   const revealedPrompts: string[] = []
