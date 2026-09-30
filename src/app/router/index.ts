@@ -20,6 +20,9 @@ import FakeArtistRevealView from '@/games/fake-artist/views/FakeArtistRevealView
 import FakeArtistPlayView from '@/games/fake-artist/views/FakeArtistPlayView.vue'
 import FakeArtistResultView from '@/games/fake-artist/views/FakeArtistResultView.vue'
 import { hasFakeArtistSession } from '@/games/fake-artist/stores/session'
+import WavelengthSetupView from '@/games/wavelength/views/WavelengthSetupView.vue'
+import WavelengthPlayView from '@/games/wavelength/views/WavelengthPlayView.vue'
+import { hasWavelengthSession } from '@/games/wavelength/stores/session'
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -41,6 +44,8 @@ export const router = createRouter({
     { path: '/fake-artist/reveal', name: 'fake-artist-reveal', component: FakeArtistRevealView, meta: { theme: 'fake-artist', requiresFakeArtistSession: true } },
     { path: '/fake-artist/play', name: 'fake-artist-play', component: FakeArtistPlayView, meta: { theme: 'fake-artist', requiresFakeArtistSession: true } },
     { path: '/fake-artist/result', name: 'fake-artist-result', component: FakeArtistResultView, meta: { theme: 'fake-artist', requiresFakeArtistSession: true } },
+    { path: '/wavelength/setup', name: 'wavelength-setup', component: WavelengthSetupView, meta: { theme: 'wavelength' } },
+    { path: '/wavelength/play', name: 'wavelength-play', component: WavelengthPlayView, meta: { theme: 'wavelength', requiresWavelengthSession: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ],
   scrollBehavior: () => ({ top: 0 })
@@ -51,4 +56,5 @@ router.beforeEach((to) => {
   if (to.meta.requiresUndercoverSession && !hasUndercoverSession()) return { name: 'undercover-setup' }
   if (to.meta.requiresCharadesSession && !hasCharadesSession()) return { name: 'charades-setup' }
   if (to.meta.requiresFakeArtistSession && !hasFakeArtistSession()) return { name: 'fake-artist-setup' }
+  if (to.meta.requiresWavelengthSession && !hasWavelengthSession()) return { name: 'wavelength-setup' }
 })

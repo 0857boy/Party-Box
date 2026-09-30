@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, ref } from 'vue'
 import { Eye, Fingerprint } from '@lucide/vue'
 
 const emit = defineEmits<{ revealed: [] }>()
+withDefaults(defineProps<{ label?: string }>(), { label: '按住以揭露身份' })
 const progress = ref(0)
 const holding = ref(false)
 let frame = 0
@@ -65,6 +66,6 @@ onBeforeUnmount(() => cancelAnimationFrame(frame))
     <span class="hold-button__progress" />
     <Fingerprint v-if="!holding" :size="23" />
     <Eye v-else :size="23" />
-    <span>{{ holding ? '繼續按住…' : '按住以揭露身份' }}</span>
+    <span>{{ holding ? '繼續按住…' : label }}</span>
   </button>
 </template>

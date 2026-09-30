@@ -1,4 +1,4 @@
-import { Crown, Fingerprint, MapPin, Paintbrush, Sparkles, Theater } from '@lucide/vue'
+import { Crown, Fingerprint, MapPin, Paintbrush, Radio, Sparkles, Theater } from '@lucide/vue'
 import type { PartyGame } from '@/types/game'
 
 export const gamesRegistry: readonly PartyGame[] = [
@@ -53,6 +53,19 @@ export const gamesRegistry: readonly PartyGame[] = [
     routeName: 'fake-artist-setup',
     available: true,
     accent: '畫布青'
+  },
+  {
+    id: 'wavelength',
+    name: '默契頻道',
+    eyebrow: '光譜猜心 · 2–12 人',
+    description: '一個線索，一個藏起來的目標。討論它落在兩個極端之間的哪裡，轉動指針揭曉默契。',
+    minPlayers: 2,
+    maxPlayers: 12,
+    theme: 'wavelength',
+    icon: Radio,
+    routeName: 'wavelength-setup',
+    available: true,
+    accent: '電波紫'
   },
   {
     id: 'spyfall',

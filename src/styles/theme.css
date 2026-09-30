@@ -79,6 +79,22 @@
   --game-gradient: linear-gradient(135deg, #7be6d8, #36afaa);
 }
 
+[data-theme='wavelength'] {
+  --game-primary: #aa9cff;
+  --game-secondary: #59d8f1;
+  --game-background: #0a0b1b;
+  --game-surface: rgba(23, 25, 53, 0.92);
+  --game-surface-secondary: rgba(38, 41, 77, 0.8);
+  --game-text: #f7f6ff;
+  --game-text-muted: #aaaac8;
+  --game-border: rgba(178, 179, 250, 0.18);
+  --game-danger: #ff7792;
+  --game-success: #75e3c4;
+  --game-card-border: rgba(170, 156, 255, 0.48);
+  --game-glow: rgba(132, 117, 255, 0.22);
+  --game-gradient: linear-gradient(135deg, #c0aaff, #6a74e9);
+}
+
 [data-theme='spyfall'] {
   --game-primary: #68c6e8;
   --game-secondary: #6d8dff;

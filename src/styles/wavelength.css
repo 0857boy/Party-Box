@@ -1,0 +1,91 @@
+/* Same Frequency */
+.wavelength-page { background: radial-gradient(circle at 50% 15%, rgba(119, 109, 255, .09), transparent 48%); }
+.wavelength-intro h1 em { color: var(--game-primary); }
+.wavelength-preview { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; margin: 28px 0; color: var(--game-text); font-size: .8rem; font-weight: 850; }
+.wavelength-preview div { position: relative; height: 6px; border-radius: 99px; background: linear-gradient(90deg, #59d8f1, #aa9cff, #ffe18b); box-shadow: 0 0 25px var(--game-glow); }
+.wavelength-preview i { position: absolute; left: 58%; top: 50%; width: 18px; height: 18px; border: 3px solid #fff; border-radius: 50%; background: var(--game-primary); transform: translate(-50%, -50%); box-shadow: 0 0 16px var(--game-primary); }
+.wavelength-shuffle { min-height: 45px; display: inline-flex; align-items: center; gap: 8px; margin: 0 0 14px; padding: 0 14px; border: 1px solid var(--game-card-border); border-radius: 11px; background: color-mix(in srgb, var(--game-primary) 10%, transparent); color: var(--game-primary); font-size: .79rem; font-weight: 850; cursor: pointer; }
+.wavelength-centered { min-height: calc(100svh - 76px); display: grid; place-items: center; padding-block: 30px 70px; }
+.wavelength-centered .pass-device { width: min(100%, 650px); }
+.wavelength-stage { width: min(calc(100% - 28px), 730px); display: grid; gap: 20px; padding-block: clamp(24px, 5vw, 52px) 80px; }
+.wavelength-stage h1, .wavelength-board h1, .wavelength-finale h1 { margin: 0; font-size: clamp(2.2rem, 6vw, 4.6rem); line-height: 1.08; letter-spacing: -.05em; }
+.wavelength-stage h1 em { color: var(--game-primary); }
+.wavelength-helper, .wavelength-board__intro p, .wavelength-finale > p { max-width: 670px; margin: 0; color: var(--game-text-muted); font-size: clamp(.88rem, 1.6vw, 1rem); line-height: 1.65; }
+.wavelength-kicker { display: flex; align-items: center; gap: 8px; color: var(--game-primary); font-size: .82rem; font-weight: 850; }
+.wavelength-instrument { min-width: 0; padding: clamp(18px, 3vw, 30px); border: 1px solid var(--game-card-border); border-radius: 26px; background: radial-gradient(circle at 50% 0, rgba(154, 141, 255, .2), transparent 52%), linear-gradient(145deg, #1b1c3b, #0f1229); box-shadow: 0 28px 70px rgba(0,0,0,.33), 0 0 48px var(--game-glow); }
+.wavelength-spectrum-title { display: grid; justify-items: center; gap: 9px; text-align: center; }
+.wavelength-spectrum-title > span { color: var(--game-secondary); font-size: .72rem; font-weight: 850; letter-spacing: .14em; }
+.wavelength-spectrum-title > strong { font-size: clamp(1.2rem, 3vw, 2rem); line-height: 1.35; }
+.wavelength-spectrum-title i { margin-inline: .35em; color: var(--game-primary); font-style: normal; }
+.spectrum-dial { display: block; width: min(100%, 680px); height: auto; margin: clamp(8px, 2vw, 24px) auto 0; overflow: visible; }
+.spectrum-dial__needle { transform-origin: 200px 191px; transition: x2 .16s ease, y2 .16s ease; filter: drop-shadow(0 0 10px #bfb3ff); }
+.spectrum-dial g { transform-origin: 200px 191px; animation: wavelength-target-in .7s cubic-bezier(.2,.8,.2,1) both; }
+.wavelength-awards { animation: wavelength-target-in .48s .2s ease-out both; }
+@keyframes wavelength-target-in { from { opacity: 0; transform: scale(.86); } to { opacity: 1; transform: scale(1); } }
+.wavelength-scale { display: flex; justify-content: space-between; gap: 12px; margin-top: -2px; color: var(--game-text); font-size: clamp(.8rem, 2vw, 1.1rem); text-align: center; }
+.wavelength-scale strong { max-width: 43%; }
+.wavelength-clue-display { display: grid; justify-items: center; gap: 5px; margin: 18px auto 0; text-align: center; }
+.wavelength-clue-display small { color: var(--game-text-muted); font-size: .72rem; font-weight: 800; }
+.wavelength-clue-display strong { font-size: clamp(1.5rem, 4vw, 2.7rem); line-height: 1.4; overflow-wrap: anywhere; }
+.wavelength-slider { display: flex; align-items: center; margin: 20px 0 0; padding: 12px 0; }
+.wavelength-slider input { width: 100%; height: 10px; margin: 0; appearance: none; border-radius: 999px; background: linear-gradient(90deg, #59d8f1, #aa9cff, #ffe18b); cursor: pointer; touch-action: none; }
+.wavelength-slider input::-webkit-slider-thumb { width: 29px; height: 29px; appearance: none; border: 4px solid #fff; border-radius: 50%; background: #aa9cff; box-shadow: 0 0 18px #aa9cff; }
+.wavelength-slider input::-moz-range-thumb { width: 22px; height: 22px; border: 4px solid #fff; border-radius: 50%; background: #aa9cff; box-shadow: 0 0 18px #aa9cff; }
+.wavelength-range-hint { margin: 0; color: var(--game-text-muted); font-size: .72rem; text-align: center; }
+.wavelength-target-readout, .wavelength-hidden { min-height: 42px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; color: var(--game-primary); font-size: .85rem; font-weight: 850; text-align: center; }
+.wavelength-hidden { color: var(--game-text-muted); }
+.wavelength-clue-card { display: grid; gap: 6px; padding: 24px; border: 1px solid var(--game-card-border); border-radius: 20px; background: var(--game-surface); }
+.wavelength-clue-card small { color: var(--game-text-muted); font-size: .75rem; }
+.wavelength-clue-card strong { font-size: clamp(1.4rem, 4vw, 2rem); }
+.wavelength-clue-card span { color: var(--game-primary); }
+.wavelength-clue-form { display: grid; gap: 10px; }
+.wavelength-clue-form label { font-size: .85rem; font-weight: 850; }
+.wavelength-clue-form input { width: 100%; min-height: 62px; padding: 0 16px; border: 1px solid var(--game-card-border); border-radius: 14px; outline: 0; background: var(--game-surface); color: var(--game-text); font-size: 1.15rem; }
+.wavelength-clue-form input:focus { box-shadow: 0 0 25px var(--game-glow); }
+.wavelength-clue-form p { margin: 0 0 12px; color: var(--game-text-muted); font-size: .75rem; line-height: 1.6; }
+.wavelength-board { width: min(calc(100% - 28px), 760px); display: grid; gap: 18px; padding-block: 25px 75px; }
+.wavelength-board__intro { display: grid; gap: 10px; }
+.wavelength-scores { display: flex; justify-content: center; gap: clamp(10px, 5vw, 35px); padding: 13px 18px; border: 1px solid var(--game-border); border-radius: 14px; background: var(--game-surface); }
+.wavelength-scores span { display: flex; align-items: center; gap: 12px; color: var(--game-text-muted); font-size: .83rem; font-weight: 750; }
+.wavelength-scores strong { color: var(--game-text); font-size: 1.2rem; }
+.wavelength-direction-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.wavelength-direction-actions button { min-height: 76px; display: flex; align-items: center; justify-content: center; gap: 12px; border: 1px solid var(--game-card-border); border-radius: 16px; background: var(--game-surface-secondary); color: var(--game-text); cursor: pointer; }
+.wavelength-direction-actions button:hover { background: color-mix(in srgb, var(--game-primary) 18%, var(--game-surface)); }
+.wavelength-direction-actions svg { color: var(--game-primary); }
+.wavelength-direction-actions strong { font-size: clamp(.84rem, 2vw, 1.1rem); }
+.wavelength-awards { display: flex; justify-content: center; gap: 35px; margin-top: 10px; text-align: center; }
+.wavelength-awards > div { display: grid; gap: 3px; }
+.wavelength-awards small { color: var(--game-text-muted); font-size: .76rem; }
+.wavelength-awards strong { color: #ffe18b; font-size: 2.2rem; line-height: 1; }
+.wavelength-finale { width: min(calc(100% - 28px), 780px); display: grid; gap: 17px; padding-block: 35px 80px; }
+.wavelength-final-scores { display: flex; gap: 10px; }
+.wavelength-final-scores > div { flex: 1; display: grid; gap: 6px; padding: 20px; border: 1px solid var(--game-card-border); border-radius: 16px; background: var(--game-surface); }
+.wavelength-final-scores small { color: var(--game-text-muted); }
+.wavelength-final-scores strong { color: var(--game-primary); font-size: 3rem; line-height: 1; }
+.wavelength-history { display: grid; gap: 9px; margin-block: 12px; }
+.wavelength-history h2 { margin: 0 0 8px; font-size: 1.3rem; }
+.wavelength-history article { display: grid; grid-template-columns: 35px minmax(0, 1fr) auto; align-items: center; gap: 13px; padding: 13px; border: 1px solid var(--game-border); border-radius: 13px; background: var(--game-surface); }
+.wavelength-history article > span { color: var(--game-primary); font-size: .73rem; font-weight: 900; }
+.wavelength-history article > div { min-width: 0; display: grid; gap: 3px; }
+.wavelength-history article strong { font-size: .9rem; }
+.wavelength-history article small { color: var(--game-text-muted); font-size: .73rem; overflow-wrap: anywhere; }
+.wavelength-history article b { color: #ffe18b; font-size: 1.3rem; }
+@media (min-width: 900px) and (orientation: landscape) {
+  .wavelength-board { width: min(calc(100% - 38px), 1180px); grid-template-columns: minmax(270px, .68fr) minmax(490px, 1.32fr); align-items: center; gap: 18px 30px; padding-top: 35px; }
+  .wavelength-board__intro { align-self: start; padding-top: 25px; }
+  .wavelength-board > .wavelength-instrument { grid-column: 2; grid-row: 1 / 4; }
+  .wavelength-board .wavelength-instrument { padding: 16px 22px; }
+  .wavelength-board .spectrum-dial { width: min(100%, 450px); margin-top: 3px; }
+  .wavelength-board .wavelength-clue-display { margin-top: 8px; }
+  .wavelength-board .wavelength-clue-display strong { font-size: 1.7rem; }
+  .wavelength-board > .game-button, .wavelength-board > .wavelength-scores { grid-column: 1; }
+  .wavelength-board > .wavelength-scores { align-self: start; }
+}
+@media (max-width: 600px) {
+  .wavelength-stage, .wavelength-board, .wavelength-finale { gap: 14px; padding-block: 20px 65px; }
+  .wavelength-instrument { padding: 16px; border-radius: 20px; }
+  .wavelength-direction-actions button { min-height: 64px; gap: 5px; }
+  .wavelength-scores { gap: 12px; }
+  .wavelength-scores span { gap: 6px; font-size: .72rem; }
+  .wavelength-history article { gap: 8px; }
+}

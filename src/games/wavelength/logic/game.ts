@@ -1,5 +1,5 @@
 import { spectrumCards } from '../data/spectra'
-import type { SpectrumCard, WavelengthSetup } from '../types'
+import type { SpectrumCard, WavelengthGame, WavelengthSetup } from '../types'
 
 export function clampPosition(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)))
@@ -16,6 +16,12 @@ export function scoreGuess(target: number, guess: number): number {
 export function scoreDirection(target: number, guess: number, direction: 'left' | 'right' | null, earned: number): number {
   if (!direction || earned === 4 || target === guess) return 0
   return (target < guess ? 'left' : 'right') === direction ? 1 : 0
+}
+
+export function isWavelengthGameOver(game: WavelengthGame): boolean {
+  if (game.round.earned < 0) return false
+  if (game.mode === 'co-op') return game.round.number >= 6
+  return game.round.number % 2 === 0 && Math.max(...game.scores) >= 12 && game.scores[0] !== game.scores[1]
 }
 
 export function selectSpectrumCard(usedIds: readonly string[], random: () => number): SpectrumCard {

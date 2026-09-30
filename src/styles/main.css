@@ -1,4 +1,5 @@
 @import './theme.css';
+@import './wavelength.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -77,6 +78,7 @@ em { color: var(--game-primary); font-family: 'Playfair Display Variable', Georg
 .game-tile--undercover { color: #b88bff; }
 .game-tile--charades { color: #ff9b67; }
 .game-tile--fake-artist { color: #58d6c7; }
+.game-tile--wavelength { color: #aa9cff; }
 .game-tile--spyfall { color: #66c8eb; }
 .game-tile--secret-mission { color: #70d7a7; }
 .game-tile__top, .game-tile__footer { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; }
