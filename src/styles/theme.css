@@ -47,6 +47,22 @@
   --game-gradient: linear-gradient(135deg, #c8a3ff, #925be5);
 }
 
+[data-theme='charades'] {
+  --game-primary: #ff9b67;
+  --game-secondary: #ffd166;
+  --game-background: #130b0a;
+  --game-surface: rgba(42, 24, 22, 0.9);
+  --game-surface-secondary: rgba(67, 37, 31, 0.76);
+  --game-text: #fff8f1;
+  --game-text-muted: #c2aaa0;
+  --game-border: rgba(255, 191, 151, 0.16);
+  --game-danger: #ff6f78;
+  --game-success: #6fe0ae;
+  --game-card-border: rgba(255, 155, 103, 0.5);
+  --game-glow: rgba(255, 126, 82, 0.2);
+  --game-gradient: linear-gradient(135deg, #ffb078, #f26f52);
+}
+
 [data-theme='spyfall'] {
   --game-primary: #68c6e8;
   --game-secondary: #6d8dff;

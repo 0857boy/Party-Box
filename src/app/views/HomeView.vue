@@ -19,7 +19,7 @@ import { gamesRegistry } from '@/app/config/gamesRegistry'
         <h1>一部裝置，<br /><em>整桌都是遊戲。</em></h1>
         <p>不需登入、不需下載。把手機放到桌中央，選一款遊戲，就讓今晚開始。</p>
         <div class="hero__meta">
-          <span><UsersRound :size="18" /> 3–12 人</span>
+          <span><UsersRound :size="18" /> 3–16 人</span>
           <span><Download :size="18" /> 可安裝 PWA</span>
         </div>
       </div>

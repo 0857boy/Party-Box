@@ -293,3 +293,25 @@ test('player roster is shared between games', async ({ page }, testInfo) => {
   for (let index = 0; index < names.length; index += 1) await expect(page.locator('.player-input input').nth(index)).toHaveValue(names[index]!)
   await expect(page.getByText(names.join('、'))).toBeVisible()
 })
+
+test('party charades reuses the same deck across all three rounds', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'The complete three-round charades game is covered once.')
+  await page.goto('/#/charades/setup')
+  await expect(page.getByRole('heading', { name: /同一個答案/ })).toBeVisible()
+  await page.setViewportSize({ width: 320, height: 568 })
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.getByRole('button', { name: '24 張' }).click()
+  await page.getByRole('button', { name: '建立牌庫並分隊' }).click()
+
+  for (let round = 1; round <= 3; round += 1) {
+    await expect(page.getByText(`PARTY CHARADES · ROUND ${round}/3`)).toBeVisible()
+    await page.getByRole('button', { name: '開始計時' }).click()
+    for (let card = 0; card < 24; card += 1) await page.getByRole('button', { name: '猜對' }).click()
+    if (round < 3) await page.getByRole('button', { name: `進入第 ${round + 1} 輪` }).click()
+  }
+
+  await expect(page.getByRole('heading', { name: /獲勝|平手/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: '三輪得分' })).toBeVisible()
+  await page.screenshot({ path: '.artifacts/screenshots/playwright-mobile-charades-result.png' })
+})

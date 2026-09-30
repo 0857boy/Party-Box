@@ -11,6 +11,10 @@ import UndercoverRevealView from '@/games/undercover/views/UndercoverRevealView.
 import UndercoverPlayView from '@/games/undercover/views/UndercoverPlayView.vue'
 import UndercoverResultView from '@/games/undercover/views/UndercoverResultView.vue'
 import { hasUndercoverSession } from '@/games/undercover/stores/session'
+import CharadesSetupView from '@/games/charades/views/CharadesSetupView.vue'
+import CharadesPlayView from '@/games/charades/views/CharadesPlayView.vue'
+import CharadesResultView from '@/games/charades/views/CharadesResultView.vue'
+import { hasCharadesSession } from '@/games/charades/stores/session'
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -25,6 +29,9 @@ export const router = createRouter({
     { path: '/undercover/reveal', name: 'undercover-reveal', component: UndercoverRevealView, meta: { theme: 'undercover', requiresUndercoverSession: true } },
     { path: '/undercover/play', name: 'undercover-play', component: UndercoverPlayView, meta: { theme: 'undercover', requiresUndercoverSession: true } },
     { path: '/undercover/result', name: 'undercover-result', component: UndercoverResultView, meta: { theme: 'undercover', requiresUndercoverSession: true } },
+    { path: '/charades/setup', name: 'charades-setup', component: CharadesSetupView, meta: { theme: 'charades' } },
+    { path: '/charades/play', name: 'charades-play', component: CharadesPlayView, meta: { theme: 'charades', requiresCharadesSession: true } },
+    { path: '/charades/result', name: 'charades-result', component: CharadesResultView, meta: { theme: 'charades', requiresCharadesSession: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ],
   scrollBehavior: () => ({ top: 0 })
@@ -33,4 +40,5 @@ export const router = createRouter({
 router.beforeEach((to) => {
   if (to.meta.requiresSession && !hasAvalonSession()) return { name: 'avalon-setup' }
   if (to.meta.requiresUndercoverSession && !hasUndercoverSession()) return { name: 'undercover-setup' }
+  if (to.meta.requiresCharadesSession && !hasCharadesSession()) return { name: 'charades-setup' }
 })

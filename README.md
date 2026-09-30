@@ -1,6 +1,6 @@
 # Party Box
 
-以手機與平板為主要裝置、local-first 的多人派對遊戲 PWA。平台首頁由遊戲 registry 產生，目前可遊玩 Avalon／阿瓦隆與誰是臥底。
+以手機與平板為主要裝置、local-first 的多人派對遊戲 PWA。平台首頁由遊戲 registry 產生，目前可遊玩 Avalon／阿瓦隆、誰是臥底與爆笑猜詞。
 
 ## 功能
 
@@ -17,6 +17,8 @@
 - 4–12 人誰是臥底：秘密抽詞、可選白板、輪流描述、實體同步指認、淘汰與勝負結算
 - 300 組原創詞組，題材涵蓋生活、世界與搞笑情境，統一採用台灣常用詞彙
 - 跨遊戲共用玩家名單，並在 localStorage 保留最近使用的 5 組名單
+- 4–16 人爆笑猜詞：自動分隊、共用牌庫、60 秒計時、滑動判定與三輪累積計分
+- 120 張原創猜詞卡；三輪依序使用自由描述、一字提示與無聲演出
 - 手機直向、平板直向與平板橫向的流動式排版
 - 共用 Theme token、RoleCard、GameButton、PlayerChip、GameHeader 與 AudioControl
 - 版本化 localStorage（玩家、角色偏好、音量與主題偏好）
@@ -54,3 +56,8 @@ npm run test:e2e
 ## 部署
 
 `npm run build` 會輸出純靜態內容至 `dist/`。路由使用 hash history，`base` 為相對路徑，可部署至 GitHub Pages、Cloudflare Pages 或 Vercel。部署平台的 build command 設為 `npm run build`，output directory 設為 `dist`。
+
+
+## 註解
+Party Box is an unofficial, non-commercial fan-made project for personal use.
+Game names and trademarks belong to their respective owners. This project is not affiliated with or endorsed by the original publishers.

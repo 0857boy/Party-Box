@@ -1,4 +1,4 @@
-import { Crown, Fingerprint, MapPin, Sparkles } from '@lucide/vue'
+import { Crown, Fingerprint, MapPin, Sparkles, Theater } from '@lucide/vue'
 import type { PartyGame } from '@/types/game'
 
 export const gamesRegistry: readonly PartyGame[] = [
@@ -27,6 +27,19 @@ export const gamesRegistry: readonly PartyGame[] = [
     routeName: 'undercover-setup',
     available: true,
     accent: '霓虹紫'
+  },
+  {
+    id: 'charades',
+    name: '爆笑猜詞',
+    eyebrow: '團隊猜詞 · 4–16 人',
+    description: '同一副牌連玩三輪：自由描述、一字提示，最後只能靠肢體演到隊友懂。',
+    minPlayers: 4,
+    maxPlayers: 16,
+    theme: 'charades',
+    icon: Theater,
+    routeName: 'charades-setup',
+    available: true,
+    accent: '珊瑚橘'
   },
   {
     id: 'spyfall',
