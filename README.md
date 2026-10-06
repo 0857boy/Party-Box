@@ -59,6 +59,19 @@ npm run test:e2e
 
 `npm run build` 會輸出純靜態內容至 `dist/`。路由使用 hash history，`base` 為相對路徑，可部署至 GitHub Pages、Cloudflare Pages 或 Vercel。部署平台的 build command 設為 `npm run build`，output directory 設為 `dist`。
 
+### GitHub Pages（GitHub Actions）
+
+部署流程位於 `.github/workflows/deploy-pages.yml`，使用 GitHub 官方 Pages artifact 部署，不需要 `gh-pages` 分支或額外的 token。
+
+1. 到 repository 的 **Settings → Pages → Build and deployment**，將 **Source** 設為 **GitHub Actions**。
+2. 將變更推送到 `main`；也可以在 **Actions → Deploy Party Box to GitHub Pages → Run workflow** 手動執行。
+3. 流程使用 Node.js 24 與 `npm ci` 安裝鎖定的套件，通過單元測試後建置並部署 `dist/`。
+
+網站網址：<https://0857boy.github.io/Party-Box/>
+
+Actions 會依 Pages 設定自動傳入 Vite 的 `--base`，使 JS、CSS、圖片、manifest 與 service worker 都使用正確的專案子路徑；本機開發仍沿用相對路徑。未來新增自訂網域時，也會自動調整至根目錄。
+
+部署機制參考 [GitHub Pages 官方文件](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)。
 
 ## 註解
 Party Box is an unofficial, non-commercial fan-made project for personal use.
