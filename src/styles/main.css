@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 * { box-sizing: border-box; }
-html { color-scheme: dark; background: var(--game-background); }
+html { color-scheme: dark; background-color: var(--game-background); scroll-padding-bottom: 120px; }
 body {
   margin: 0;
   min-width: 320px;
@@ -32,7 +32,7 @@ em { color: var(--game-primary); font-family: 'Playfair Display Variable', Georg
 
 .app-shell { position: relative; min-height: 100svh; overflow: hidden; background: var(--game-background); isolation: isolate; }
 .app-shell::before { content: ''; position: fixed; inset: 0; z-index: -3; opacity: .28; background-image: linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px); background-size: 44px 44px; mask-image: linear-gradient(to bottom, black, transparent 82%); }
-.ambient { position: fixed; width: 36rem; height: 36rem; border-radius: 50%; filter: blur(100px); opacity: .11; pointer-events: none; z-index: -2; }
+.ambient { position: absolute; width: 36rem; height: 36rem; border-radius: 50%; filter: blur(100px); opacity: .11; pointer-events: none; z-index: -2; }
 .ambient--one { top: -18rem; right: -16rem; background: var(--game-primary); }
 .ambient--two { left: -20rem; bottom: -20rem; background: var(--game-secondary); }
 .app-main { min-height: 100svh; }

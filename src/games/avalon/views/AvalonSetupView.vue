@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { AlertTriangle, ArrowRight, BookOpen, Plus, Shield, Skull, Trash2, UsersRound } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
+import SetupFlow from '@/components/game/SetupFlow.vue'
 import GameButton from '@/components/ui/GameButton.vue'
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue'
 import PlayerRosterHistory from '@/components/player/PlayerRosterHistory.vue'
@@ -90,7 +91,7 @@ function formatCompletedAt(value: string): string {
         </div>
       </section>
 
-      <form class="setup-form" @submit.prevent="start">
+      <SetupFlow :steps="['玩家', '角色', '規則']" :summary="`${avalonSession.setup.playerNames.length} 人 · 正義 ${composition?.good}／邪惡 ${composition?.evil}`" @submit="start">
         <section class="setup-panel">
           <header class="setup-panel__header">
             <div><span>01</span><h2>玩家</h2><small>{{ avalonSession.setup.playerNames.length }} / 10</small></div>
@@ -137,7 +138,7 @@ function formatCompletedAt(value: string): string {
           />
         </section>
 
-        <section v-if="avalonHistory.length" class="setup-panel history-panel">
+        <template #extra><details v-if="avalonHistory.length" class="setup-history-extra"><summary>查看遊戲紀錄（{{ avalonHistory.length }} 局）</summary><section class="setup-panel history-panel">
           <header class="setup-panel__header">
             <div><span>04</span><h2>遊戲紀錄</h2><small>保留最近 20 局</small></div>
             <BookOpen :size="22" />
@@ -150,19 +151,19 @@ function formatCompletedAt(value: string): string {
               <ArrowRight :size="17" />
             </button>
           </div>
-        </section>
+        </section></details></template>
 
         <div v-if="validation.errors.length || validation.warnings.length" class="validation-box" :class="{ 'validation-box--error': validation.errors.length }">
           <AlertTriangle :size="20" />
           <div><p v-for="message in [...validation.errors, ...validation.warnings]" :key="message">{{ message }}</p></div>
         </div>
 
-        <GameButton type="submit" block :disabled="!validation.valid">
+        <template #action><GameButton type="submit" block :disabled="!validation.valid">
           洗牌並分配身份
           <template #trailing><ArrowRight :size="20" /></template>
-        </GameButton>
+        </GameButton></template>
         <p class="setup-privacy">進行中的秘密身份不會儲存；遊戲結束並公開身份後，復盤才會保留在此裝置。</p>
-      </form>
+      </SetupFlow>
     </div>
   </div>
 </template>

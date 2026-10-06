@@ -3,6 +3,8 @@ import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { AlertTriangle, ArrowRight, Palette, Plus, Target, Trash2, UsersRound } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
+import SetupFlow from '@/components/game/SetupFlow.vue'
+import CategoryPicker from '@/components/game/CategoryPicker.vue'
 import PlayerRosterHistory from '@/components/player/PlayerRosterHistory.vue'
 import GameButton from '@/components/ui/GameButton.vue'
 import { normalizeRosterForGame, playerRosterStore } from '@/stores/playerRosters'
@@ -13,6 +15,7 @@ import type { FakeArtistCategory } from '../types'
 
 const router = useRouter()
 const errors = computed(() => validateFakeArtistSetup(fakeArtistSession.setup))
+const categoryOptions = fakeArtistCategories.map(category => ({ ...category, id: category.id as FakeArtistCategory }))
 
 function addPlayer(): void {
   if (fakeArtistSession.setup.playerNames.length >= 10) return
@@ -26,10 +29,6 @@ function removePlayer(index: number): void {
 
 function applyRoster(names: string[]): void {
   fakeArtistSession.setup.playerNames = normalizeRosterForGame(names, 5, 10)
-}
-
-function selectCategory(category: FakeArtistCategory): void {
-  fakeArtistSession.setup.category = category
 }
 
 function start(): void {
@@ -65,7 +64,7 @@ onMounted(() => {
         </details>
       </section>
 
-      <form class="setup-form" @submit.prevent="start">
+      <SetupFlow :steps="['玩家', '主題', '勝利分數']" :summary="`${fakeArtistSession.setup.playerNames.length} 人 · ${categoryOptions.find(option => option.id === fakeArtistSession.setup.category)?.name} · ${fakeArtistSession.setup.targetScore === 1 ? '單局決勝' : `先得 ${fakeArtistSession.setup.targetScore} 分`}`" @submit="start">
         <section class="setup-panel">
           <header class="setup-panel__header"><div><span>01</span><h2>玩家</h2><small>{{ fakeArtistSession.setup.playerNames.length }} / 10</small></div><UsersRound :size="22" /></header>
           <div class="player-inputs">
@@ -77,7 +76,7 @@ onMounted(() => {
 
         <section class="setup-panel">
           <header class="setup-panel__header"><div><span>02</span><h2>題目類別</h2></div><Palette :size="21" /></header>
-          <div class="word-category-grid"><button v-for="category in fakeArtistCategories" :key="category.id" type="button" :class="{ active: fakeArtistSession.setup.category === category.id }" @click="selectCategory(category.id as FakeArtistCategory)"><strong>{{ category.name }}</strong><small>{{ category.description }}</small></button></div>
+          <CategoryPicker v-model="fakeArtistSession.setup.category" :options="categoryOptions" />
         </section>
 
         <section class="setup-panel">
@@ -87,8 +86,8 @@ onMounted(() => {
         </section>
 
         <div v-if="errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in errors" :key="error">{{ error }}</p></div></div>
-        <GameButton type="submit" block :disabled="Boolean(errors.length)">抽題並分配身份<template #trailing><ArrowRight :size="20" /></template></GameButton>
-      </form>
+        <template #action><GameButton type="submit" block :disabled="Boolean(errors.length)">抽題並分配身份<template #trailing><ArrowRight :size="20" /></template></GameButton></template>
+      </SetupFlow>
     </div>
   </div>
 </template>

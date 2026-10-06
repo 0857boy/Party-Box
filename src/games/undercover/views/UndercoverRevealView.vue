@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Check, EyeOff, Fingerprint, HelpCircle, Tag } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
+import ActionDock from '@/components/game/ActionDock.vue'
 import HoldToReveal from '@/components/game/HoldToReveal.vue'
 import PassDevice from '@/components/game/PassDevice.vue'
 import GameButton from '@/components/ui/GameButton.vue'
@@ -51,11 +52,12 @@ function hideAndContinue(): void {
               <p><HelpCircle :size="17" />{{ currentUndercoverPlayer.role === 'blank' ? '你沒有詞語，請聽其他人的描述即興發言' : '你不知道自己是平民還是臥底' }}</p>
             </div>
           </div>
-          <HoldToReveal v-if="stage === 'hold'" @revealed="stage = 'revealed'" />
+          <ActionDock><HoldToReveal v-if="stage === 'hold'" @revealed="stage = 'revealed'" />
           <template v-else>
             <div class="hide-warning"><EyeOff :size="18" /><span>確認記住詞語後，系統會立即隱藏。</span></div>
             <GameButton block @click="hideAndContinue"><template #icon><Check :size="20" /></template>{{ isLast ? '我記住了，開始遊戲' : '我記住了，交給下一位' }}</GameButton>
           </template>
+          </ActionDock>
         </section>
       </Transition>
     </main>

@@ -173,6 +173,7 @@ test('three successful missions lead to assassination and a full review', async 
 
   await page.reload()
   await expect(page.getByRole('heading', { name: /召集你的/ })).toBeVisible()
+  await page.getByText(/查看遊戲紀錄/).click()
   await page.getByRole('button', { name: /正義陣營獲勝/ }).click()
   await expect(page.getByRole('heading', { name: '正義陣營獲勝' })).toBeVisible()
 })
@@ -203,6 +204,7 @@ test('eight-player game can use the Lady of the Lake after round two', async ({ 
   test.setTimeout(45_000)
   await page.goto('/#/avalon/setup')
   for (let index = 0; index < 3; index += 1) await page.getByRole('button', { name: '新增玩家' }).click()
+  await page.getByRole('navigation', { name: '設定分頁' }).getByRole('button', { name: /規則/ }).click()
   await page.getByRole('checkbox', { name: /湖中女神/ }).check({ force: true })
   await page.getByRole('button', { name: '洗牌並分配身份' }).click()
   await revealAllRoles(page, 8)
@@ -229,7 +231,8 @@ test('undercover can distribute words and resolve an elimination', async ({ page
   test.skip(testInfo.project.name !== 'mobile', 'The complete undercover match is covered once.')
   await page.goto('/#/undercover/setup')
   await expect(page.getByRole('heading', { name: /一句提示/ })).toBeVisible()
-  await expect(page.getByRole('button', { name: /台灣美食/ })).toBeVisible()
+  await page.getByRole('navigation', { name: '設定分頁' }).getByRole('button', { name: /主題/ }).click()
+  await page.getByRole('combobox', { name: '選擇題目主題' }).selectOption({ label: '台灣美食' })
   await page.getByRole('button', { name: '抽詞並分配' }).click()
 
   const wordsByPlayer = new Map<string, string>()
@@ -264,6 +267,7 @@ test('undercover can distribute words and resolve an elimination', async ({ page
 test('undercover can include exactly one blank card', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'The optional blank-card flow is covered once.')
   await page.goto('/#/undercover/setup')
+  await page.getByRole('navigation', { name: '設定分頁' }).getByRole('button', { name: /規則/ }).click()
   await page.getByText('加入白板', { exact: true }).click()
   await page.getByRole('button', { name: '抽詞並分配' }).click()
 
@@ -307,6 +311,7 @@ test('party charades reuses the same deck across all three rounds', async ({ pag
   await page.getByRole('button', { name: '打亂重分' }).click()
   const teamsAfterShuffle = await page.locator('.charades-team-preview article > span').allTextContents()
   expect(teamsAfterShuffle).not.toEqual(teamsBeforeShuffle)
+  await page.getByRole('navigation', { name: '設定分頁' }).getByRole('button', { name: /節奏/ }).click()
   await page.getByRole('button', { name: '24 張' }).click()
   await page.getByRole('button', { name: '建立牌庫並分隊' }).click()
   await expect(page.getByText(/珍奶隊|雞排隊/).first()).toBeVisible()
@@ -332,6 +337,7 @@ test('fake artist completes identity reveal, two drawing passes, voting, and rev
   await page.setViewportSize({ width: 320, height: 568 })
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
   await page.setViewportSize({ width: 390, height: 844 })
+  await page.getByRole('navigation', { name: '設定分頁' }).getByRole('button', { name: /勝利分數/ }).click()
   await page.getByRole('button', { name: '單局決勝' }).click()
   await page.getByRole('button', { name: '抽題並分配身份' }).click()
 

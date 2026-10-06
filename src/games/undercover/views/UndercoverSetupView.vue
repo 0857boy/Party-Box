@@ -3,6 +3,8 @@ import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { AlertTriangle, ArrowRight, Fingerprint, Plus, Sparkles, Trash2, UsersRound } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
+import SetupFlow from '@/components/game/SetupFlow.vue'
+import CategoryPicker from '@/components/game/CategoryPicker.vue'
 import GameButton from '@/components/ui/GameButton.vue'
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue'
 import PlayerRosterHistory from '@/components/player/PlayerRosterHistory.vue'
@@ -14,6 +16,11 @@ import type { WordCategorySelection } from '../types'
 
 const router = useRouter()
 const validation = computed(() => validateUndercoverSetup(undercoverSession.setup))
+const categoryOptions: readonly { id: WordCategorySelection; name: string; description: string }[] = [
+  { id: 'funny', name: '爆笑混合', description: '尷尬、感情、職場與網路修羅場' },
+  { id: 'mixed', name: '綜合題庫', description: '各種題材，以台灣常用詞彙呈現' },
+  ...wordCategories
+]
 
 function addPlayer(): void {
   if (undercoverSession.setup.playerNames.length >= 12) return
@@ -33,10 +40,6 @@ onMounted(() => {
     applyRecentRoster(playerRosterStore.currentNames)
   }
 })
-
-function selectCategory(category: WordCategorySelection): void {
-  undercoverSession.setup.category = category
-}
 
 function applyRecentRoster(names: string[]): void {
   undercoverSession.setup.playerNames = normalizeRosterForGame(names, 4, 12)
@@ -75,7 +78,7 @@ function start(): void {
         </details>
       </section>
 
-      <form class="setup-form" @submit.prevent="start">
+      <SetupFlow :steps="['玩家', '主題', '規則']" :summary="`${undercoverSession.setup.playerNames.length} 人 · ${categoryOptions.find(option => option.id === undercoverSession.setup.category)?.name} · ${undercoverSession.setup.undercoverCount} 名臥底${undercoverSession.setup.blankEnabled ? '＋白板' : ''}`" @submit="start">
         <section class="setup-panel">
           <header class="setup-panel__header">
             <div><span>01</span><h2>玩家</h2><small>{{ undercoverSession.setup.playerNames.length }} / 12</small></div>
@@ -94,11 +97,7 @@ function start(): void {
 
         <section class="setup-panel">
           <header class="setup-panel__header"><div><span>02</span><h2>詞語主題</h2></div><Sparkles :size="21" /></header>
-          <div class="word-category-grid">
-            <button type="button" :class="{ active: undercoverSession.setup.category === 'funny' }" @click="selectCategory('funny')"><strong>爆笑混合</strong><small>尷尬、感情、職場與網路修羅場</small></button>
-            <button type="button" :class="{ active: undercoverSession.setup.category === 'mixed' }" @click="selectCategory('mixed')"><strong>綜合題庫</strong><small>各種題材，以台灣常用詞彙呈現</small></button>
-            <button v-for="category in wordCategories" :key="category.id" type="button" :class="{ active: undercoverSession.setup.category === category.id }" @click="selectCategory(category.id)"><strong>{{ category.name }}</strong><small>{{ category.description }}</small></button>
-          </div>
+          <CategoryPicker v-model="undercoverSession.setup.category" :options="categoryOptions" />
         </section>
 
         <section class="setup-panel">
@@ -114,9 +113,9 @@ function start(): void {
         </section>
 
         <div v-if="validation.errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in validation.errors" :key="error">{{ error }}</p></div></div>
-        <GameButton type="submit" block :disabled="!validation.valid">抽詞並分配<template #trailing><ArrowRight :size="20" /></template></GameButton>
+        <template #action><GameButton type="submit" block :disabled="!validation.valid">抽詞並分配<template #trailing><ArrowRight :size="20" /></template></GameButton></template>
         <p class="setup-privacy">詞語與身份只在本局記憶體中使用，重新整理會安全返回設定。</p>
-      </form>
+      </SetupFlow>
     </div>
   </div>
 </template>

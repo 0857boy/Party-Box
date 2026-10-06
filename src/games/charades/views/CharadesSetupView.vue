@@ -3,6 +3,8 @@ import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { AlertTriangle, ArrowRight, Clock3, Layers3, Plus, Shuffle, Trash2, UsersRound } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
+import SetupFlow from '@/components/game/SetupFlow.vue'
+import CategoryPicker from '@/components/game/CategoryPicker.vue'
 import PlayerRosterHistory from '@/components/player/PlayerRosterHistory.vue'
 import GameButton from '@/components/ui/GameButton.vue'
 import { createRandomTeamAssignments, createTeamsFromAssignments } from '@/engine/teamManager'
@@ -10,7 +12,6 @@ import { normalizeRosterForGame, playerRosterStore } from '@/stores/playerRoster
 import { charadesCategories } from '../data/cards'
 import { validateCharadesSetup } from '../logic/game'
 import { charadesSession, startCharadesGame } from '../stores/session'
-import type { CharadesCategory } from '../types'
 
 const router = useRouter()
 const errors = computed(() => validateCharadesSetup(charadesSession.setup))
@@ -104,7 +105,7 @@ onMounted(() => {
         </details>
       </section>
 
-      <form class="setup-form" @submit.prevent="start">
+      <SetupFlow :steps="['玩家分隊', '主題', '節奏']" :summary="`${charadesSession.setup.playerNames.length} 人 · ${charadesSession.setup.deckSize} 張 · 每次 ${charadesSession.setup.turnSeconds} 秒`" @submit="start">
         <section class="setup-panel">
           <header class="setup-panel__header"><div><span>01</span><h2>玩家與隊伍</h2><small>{{ charadesSession.setup.playerNames.length }} / 16</small></div><UsersRound :size="22" /></header>
           <div class="player-inputs">
@@ -127,9 +128,7 @@ onMounted(() => {
 
         <section class="setup-panel">
           <header class="setup-panel__header"><div><span>02</span><h2>題目主題</h2></div><Layers3 :size="21" /></header>
-          <div class="word-category-grid">
-            <button v-for="category in charadesCategories" :key="category.id" type="button" :class="{ active: charadesSession.setup.category === category.id }" @click="charadesSession.setup.category = category.id as CharadesCategory"><strong>{{ category.name }}</strong><small>{{ category.description }}</small></button>
-          </div>
+          <CategoryPicker v-model="charadesSession.setup.category" :options="charadesCategories" />
         </section>
 
         <section class="setup-panel">
@@ -146,8 +145,8 @@ onMounted(() => {
         </section>
 
         <div v-if="errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in errors" :key="error">{{ error }}</p></div></div>
-        <GameButton type="submit" block :disabled="Boolean(errors.length)">建立牌庫並分隊<template #trailing><ArrowRight :size="20" /></template></GameButton>
-      </form>
+        <template #action><GameButton type="submit" block :disabled="Boolean(errors.length)">建立牌庫並分隊<template #trailing><ArrowRight :size="20" /></template></GameButton></template>
+      </SetupFlow>
     </div>
   </div>
 </template>

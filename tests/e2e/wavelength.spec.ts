@@ -39,6 +39,7 @@ test('two players complete the six round cooperative game', async ({ page }, tes
   test.skip(testInfo.project.name !== 'mobile', 'The cooperative ending is covered once.')
   await page.goto('/#/wavelength/setup')
   for (let number = 6; number > 2; number -= 1) await page.getByRole('button', { name: `移除玩家 ${number}` }).click()
+  await page.getByRole('navigation', { name: '設定分頁' }).getByRole('button', { name: /隊伍/ }).click()
   await expect(page.getByText('合作模式', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: '開始調頻' }).click()
 

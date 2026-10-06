@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Check, EyeOff, Info, ShieldCheck } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
+import ActionDock from '@/components/game/ActionDock.vue'
 import HoldToReveal from '@/components/game/HoldToReveal.vue'
 import PassDevice from '@/components/game/PassDevice.vue'
 import RoleCard from '@/components/game/RoleCard.vue'
@@ -23,6 +24,7 @@ const visiblePlayers = computed(() => {
 })
 const currentNumber = computed(() => avalonSession.currentRevealIndex + 1)
 const isLast = computed(() => avalonSession.currentRevealIndex === avalonSession.players.length - 1)
+const card = computed(() => currentPlayer.value ? getAvalonRoleCard(currentPlayer.value.role) : undefined)
 
 function hideAndContinue(): void {
   stage.value = 'pass'
@@ -47,16 +49,17 @@ function hideAndContinue(): void {
           :total="avalonSession.players.length"
           @ready="stage = 'hold'"
         />
-        <section v-else :key="`reveal-${currentPlayer.id}`" class="identity-layout">
+        <section v-else :key="`reveal-${currentPlayer.id}`" class="identity-layout" :class="{ 'identity-layout--revealed': stage === 'revealed' }">
           <div class="identity-card-area">
             <div class="identity-owner"><span>現在查看</span><strong>{{ currentPlayer.name }}</strong></div>
-            <RoleCard :card="getAvalonRoleCard(currentPlayer.role)" :revealed="stage === 'revealed'" />
-            <HoldToReveal v-if="stage === 'hold'" @revealed="stage = 'revealed'" />
+            <RoleCard :card="card" :revealed="stage === 'revealed'" />
+            <ActionDock v-if="stage === 'hold'"><HoldToReveal @revealed="stage = 'revealed'" /></ActionDock>
           </div>
           <Transition name="role-info">
             <div v-if="stage === 'revealed' && information" class="identity-info">
+              <div class="identity-current-player"><span>現在查看</span><strong>{{ currentPlayer.name }}</strong></div>
               <span class="eyebrow"><ShieldCheck :size="15" /> PRIVATE INFORMATION</span>
-              <h1>你是<br /><em>{{ currentPlayer.role.displayName }}</em></h1>
+              <div class="identity-heading"><div v-if="card" class="identity-portrait" role="img" :aria-label="card.imageAlt" :style="{ backgroundImage: `url(${card.imageUrl})`, backgroundPosition: card.imagePosition ?? 'center' }" /><h1>你是<br /><em>{{ currentPlayer.role.displayName }}</em></h1></div>
               <p class="ability-copy">{{ currentPlayer.role.ability }}</p>
               <div class="intel-box">
                 <header><Info :size="18" /><strong>{{ information.title }}</strong></header>
@@ -67,11 +70,12 @@ function hideAndContinue(): void {
                 <span v-else class="no-intel">沒有玩家名單</span>
                 <small v-if="information.ambiguity">{{ information.ambiguity }}</small>
               </div>
-              <div class="hide-warning"><EyeOff :size="18" /><span>確認記住身份後，系統會立即蓋牌。</span></div>
+              <details class="identity-details"><summary>角色能力與說明</summary><p class="ability-copy">{{ currentPlayer.role.ability }}</p></details>
+              <ActionDock><div class="hide-warning"><EyeOff :size="18" /><span>記住身份與名單後，交給下一位。</span></div>
               <GameButton block @click="hideAndContinue">
                 <template #icon><Check :size="20" /></template>
                 {{ isLast ? '我看完了，開始遊戲' : '我看完了，交給下一位' }}
-              </GameButton>
+              </GameButton></ActionDock>
             </div>
           </Transition>
         </section>

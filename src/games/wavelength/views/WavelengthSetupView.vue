@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { AlertTriangle, ArrowRight, Plus, Radio, Shuffle, Trash2, UsersRound } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
+import SetupFlow from '@/components/game/SetupFlow.vue'
 import PlayerRosterHistory from '@/components/player/PlayerRosterHistory.vue'
 import GameButton from '@/components/ui/GameButton.vue'
 import { normalizeRosterForGame, playerRosterStore } from '@/stores/playerRosters'
@@ -66,7 +67,7 @@ onMounted(() => {
         </details>
       </section>
 
-      <form class="setup-form" @submit.prevent="start">
+      <SetupFlow :steps="['玩家', '隊伍']" :summary="`${setup.playerNames.length} 人 · ${mode === 'co-op' ? '合作挑戰 6 回合' : '兩隊對戰・12 分獲勝'}`" @submit="start">
         <section class="setup-panel">
           <header class="setup-panel__header"><div><span>01</span><h2>玩家</h2><small>{{ setup.playerNames.length }} / 12</small></div><UsersRound :size="22" /></header>
           <div class="player-inputs">
@@ -87,8 +88,8 @@ onMounted(() => {
           </template>
         </section>
         <div v-if="errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in errors" :key="error">{{ error }}</p></div></div>
-        <GameButton type="submit" block :disabled="Boolean(errors.length)">開始調頻<template #trailing><ArrowRight :size="20" /></template></GameButton>
-      </form>
+        <template #action><GameButton type="submit" block :disabled="Boolean(errors.length)">開始調頻<template #trailing><ArrowRight :size="20" /></template></GameButton></template>
+      </SetupFlow>
     </div>
   </div>
 </template>
