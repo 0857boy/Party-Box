@@ -18,7 +18,8 @@ export const rejectedUndercoverPairs = [
   ['海豚', '虎鯨'], ['鄉民', '網友'], ['報帳', '核銷'], ['麻糬', '大福'],
   ['可樂', '汽水'], ['翻譯員', '口譯員'], ['週一症候群', '收假症候群'],
   ['部門會議', '晨間會議'], ['颱風假', '補班日'], ['爆雷', '暴雷警告'],
-  ['和好', '復合'], ['曖昧對象', '單戀對象'], ['升旗', '朝會']
+  ['和好', '復合'], ['曖昧對象', '單戀對象'], ['升旗', '朝會'],
+  ['農場', '牧場'], ['編劇', '作家'], ['超車', '換車道'], ['爆胎', '拋錨']
 ] as const
 
 export function validateUndercoverPairs(pairs: readonly WordPair[]): string[] {
@@ -44,7 +45,7 @@ export function validateUndercoverPairs(pairs: readonly WordPair[]): string[] {
     if (!pair.sharedTraits.length || pair.sharedTraits.some(trait => trait.trim().length < 2) || pair.sharedTraits.join('').length < 8) errors.push(`缺少有效共同點：${pair.id}`)
     if (!pair.differences.length || pair.differences.some(difference => difference.trim().length < 3) || pair.differences.join('').length < 8) errors.push(`缺少有效差異：${pair.id}`)
     if (pair.sharedTraits.length && pair.sharedTraits.join() === pair.differences.join()) errors.push(`共同點與差異相同：${pair.id}`)
-    if (/[见气强洁规较经现损关紧发讨历内换论]/u.test([...pair.words, ...pair.sharedTraits, ...pair.differences].join())) errors.push(`疑似簡體字：${pair.id}`)
+    if (/[见气强洁规较经现损关紧发讨历内换论学运铁铃钞]/u.test([...pair.words, ...pair.sharedTraits, ...pair.differences].join())) errors.push(`疑似簡體字：${pair.id}`)
     if (pair.category === 'animals' && pair.words.some(word => /葉|仙人掌|多肉|彩虹|極光|颱風|龍捲風/u.test(word))) errors.push(`非動物混入：${pair.id}`)
   }
   return errors

@@ -21,6 +21,36 @@ test('fourteen themes plus derived mixes support every difficulty directly in th
   await page.screenshot({ path: '.artifacts/screenshots/undercover-vocabulary-setup.png' })
 })
 
+test('the expansion unlocks new pairs without clearing an exhausted legacy history', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'Vocabulary upgrade compatibility is covered once.')
+  const legacyIds = undercoverWordPairs.filter(pair => Number(pair.id.split('-')[1]) < 100).map(pair => pair.id)
+  const expansion = undercoverWordPairs.filter(pair => !legacyIds.includes(pair.id))
+  await page.goto('/#/undercover/setup')
+  await page.evaluate(usedPairIds => {
+    localStorage.setItem('party-box:undercover:draw-history', JSON.stringify({ version: 1, data: { usedPairIds } }))
+    const saved = JSON.parse(localStorage.getItem('party-box:undercover:setup') || '{"version":3,"data":{}}')
+    saved.data.category = 'mixed'; saved.data.difficulty = 'all'
+    localStorage.setItem('party-box:undercover:setup', JSON.stringify(saved))
+  }, legacyIds)
+  await page.reload()
+  await expect(page.locator('.setup-mode-hint')).toContainText(`${expansion.length} / ${undercoverWordPairs.length} 組未玩`)
+  await page.getByRole('button', { name: '抽詞並分配' }).click()
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('party-box:undercover:draw-history')!).data)
+  expect(Object.keys(stored)).toEqual(['usedPairIds'])
+  expect(stored.usedPairIds.slice(0, legacyIds.length)).toEqual(legacyIds)
+  expect(stored.usedPairIds).toHaveLength(legacyIds.length + 1)
+  const drawn = expansion.find(pair => pair.id === stored.usedPairIds.at(-1))!
+  expect(drawn).toBeDefined()
+  await page.getByRole('button', { name: '我是 玩家 1，繼續' }).click()
+  await page.getByRole('button', { name: '按住以揭露身份' }).dispatchEvent('pointerdown')
+  await expect(page.locator('.secret-word-card__front h1')).toBeVisible()
+  expect(drawn.words).toContain((await page.locator('.secret-word-card__front h1').textContent())!.trim())
+  const body = await page.locator('body').textContent()
+  for (const note of [...drawn.sharedTraits, ...drawn.differences]) expect(body).not.toContain(note)
+  await page.reload()
+  await expect(page.locator('.setup-mode-hint')).toContainText(`${expansion.length - 1} / ${undercoverWordPairs.length} 組未玩`)
+})
+
 test('legacy sports preferences migrate without losing names or whiteboard mode', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'Migration is covered once.')
   await page.addInitScript(() => localStorage.setItem('party-box:undercover:setup', JSON.stringify({ version: 3, data: {

@@ -8,17 +8,29 @@ import charadesSourceChecks from '../../charades/data/source-checks.json'
 describe('undercover vocabulary quality', () => {
   it('ships fourteen editorially checked categories and derives both mixes without duplicate data', () => {
     expect(wordCategories).toHaveLength(14)
-    expect(undercoverWordPairs.length).toBeGreaterThanOrEqual(480)
+    expect(undercoverWordPairs.length).toBeGreaterThanOrEqual(800)
     expect(validateUndercoverPairs(undercoverWordPairs)).toEqual([])
     expect(getUndercoverPairs('mixed')).toEqual(undercoverWordPairs)
     expect(getUndercoverPairs('mixed')).not.toBe(undercoverWordPairs)
     expect(getUndercoverPairs('funny').every(pair => ['awkward', 'relationship', 'workplace', 'internet'].includes(pair.category))).toBe(true)
     for (const category of wordCategories) {
-      expect(getUndercoverPairs(category.id).length, category.id).toBeGreaterThanOrEqual(32)
+      expect(getUndercoverPairs(category.id).length, category.id).toBeGreaterThanOrEqual(52)
       for (const difficulty of ['easy', 'normal', 'hard'] as const) {
         expect(getUndercoverPairs(category.id, difficulty).length, `${category.id}/${difficulty}`).toBeGreaterThanOrEqual(2)
       }
     }
+  })
+
+  it('expands every theme with short reviewed pairs while keeping notes out of word labels', () => {
+    const expansion = undercoverWordPairs.filter(pair => Number(pair.id.split('-')[1]) >= 100)
+    expect(expansion.length).toBeGreaterThanOrEqual(315)
+    for (const category of wordCategories) {
+      expect(expansion.filter(pair => pair.category === category.id).length, category.id).toBeGreaterThanOrEqual(20)
+    }
+    expect(expansion.find(pair => pair.id === 'daily-100')?.words).toEqual(['裝睡', '裝醉'])
+    expect(expansion.find(pair => pair.id === 'places-116')?.words).toEqual(['果園', '牧場'])
+    expect(expansion.find(pair => pair.id === 'transport-108')?.words).toEqual(['爆胎', '沒油'])
+    expect(expansion.every(pair => pair.status === 'reviewed' && pair.words.every(word => [...word].length <= 7))).toBe(true)
   })
 
   it('preserves good legacy IDs, relocates nature and sports, and shortens comedy phrases', () => {
@@ -43,13 +55,14 @@ describe('undercover vocabulary quality', () => {
 
   it('rejects aliases, strong containment, invalid categories, draft entries and missing quality notes', () => {
     const pair = undercoverWordPairs[0]!
-    for (const words of [['合作社', '福利社'], ['多肉植物', '仙人掌'], ['暗戀', '單戀']] as const) {
+    for (const words of [['合作社', '福利社'], ['多肉植物', '仙人掌'], ['暗戀', '單戀'], ['農場', '牧場'], ['作家', '編劇'], ['超車', '換車道'], ['爆胎', '拋錨']] as const) {
       expect(validateUndercoverPairs([{ ...pair, words }])).toContain(`已淘汰配對回歸：${pair.id}`)
     }
     expect(validateUndercoverPairs([{ ...pair, words: ['雞排', '雞排'] }])).toContain(`兩詞相同：${pair.id}`)
     expect(validateUndercoverPairs([{ ...pair, sharedTraits: [], differences: [], tags: [], status: 'draft' }])).toHaveLength(4)
     expect(validateUndercoverPairs([{ ...pair, category: 'animals', words: ['彩虹', '極光'] }])).toContain(`非動物混入：${pair.id}`)
     expect(validateUndercoverPairs([{ ...pair, words: ['主管說再改一下吧', '客户說不喜歡'] }]).length).toBeGreaterThan(0)
+    expect(validateUndercoverPairs([{ ...pair, sharedTraits: ['学校搬运用品的共同情境'] }])).toContain(`疑似簡體字：${pair.id}`)
     expect(() => definePairs('food', [], 'test-01|Z|貓|狗|都是寵物|叫聲不同')).toThrow()
     expect(() => definePairs('food', [], 'missing-columns')).toThrow()
   })
@@ -68,7 +81,9 @@ describe('undercover vocabulary quality', () => {
     const terms = new Set(undercoverWordPairs.flatMap(pair => [...pair.words]))
     const original = new Map(Object.values(charadesSourceChecks.entries).map(check => [check.term, check]))
     expect(sourceChecks.source).toEqual(charadesSourceChecks.sources['moe-concised'])
-    expect(Object.keys(sourceChecks.entries).length).toBeGreaterThan(150)
+    const exactTerms = [...terms].filter(term => original.get(term)?.source === 'moe-concised').sort()
+    expect(Object.keys(sourceChecks.entries).sort()).toEqual(exactTerms)
+    expect(Object.keys(sourceChecks.entries).length).toBeGreaterThanOrEqual(261)
     for (const [term, check] of Object.entries(sourceChecks.entries)) {
       expect(terms.has(term), term).toBe(true)
       expect(original.get(term), term).toMatchObject(check)
