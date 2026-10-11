@@ -1,6 +1,6 @@
 import { definePairs } from '../definePairs'
 
-export const leisurePairs = definePairs('leisure', ['娛樂', '戶外', '運動'], `
+export const leisurePairs = definePairs('leisure', ['休閒娛樂'], `
 leisure-01|N|追劇|看直播|觀看影音；可能一直停不下來|追劇看分集故事；直播看正在發生的內容
 leisure-02|N|套圈圈|射氣球|攤位遊戲；命中目標可拿獎品|套圈圈投擲圈；射氣球使用射擊道具
 leisure-05|H|簽唱會|粉絲見面會|藝人與粉絲見面；可能表演互動|簽唱會以演唱和簽名為特色；見面會的活動形式較多樣

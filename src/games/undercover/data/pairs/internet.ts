@@ -1,6 +1,6 @@
 import { definePairs } from '../definePairs'
 
-export const internetPairs = definePairs('internet', ['社群', '通訊'], `
+export const internetPairs = definePairs('internet', ['網路互動'], `
 internet-02|H|按讚|收藏|對社群內容做記號；可能之後再看|按讚表示反應且可能公開；收藏主要保存內容方便回看
 internet-03|N|限時動態|一般貼文|社群發布內容；可有文字圖片|限時動態通常有顯示期限；一般貼文通常持續留在頁面
 internet-04|N|私訊|留言|傳送文字互動；可得到回覆|私訊面向特定收件者；留言附在公開或群體可見內容下
