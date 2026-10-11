@@ -19,7 +19,7 @@ onBeforeUnmount(() => {
 
 <template>
   <Transition name="toast">
-    <aside v-if="needRefresh || offlineReady" class="update-toast" role="status">
+    <aside v-if="needRefresh || offlineReady" class="update-toast" :class="{ 'update-toast--offline': !needRefresh }" role="status">
       <component :is="needRefresh ? Download : WifiOff" :size="21" aria-hidden="true" />
       <div class="update-toast__copy">
         <strong>{{ needRefresh ? '新版本已準備好' : '已可離線遊玩' }}</strong>

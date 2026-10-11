@@ -2,7 +2,6 @@ import { expect, test, type Page } from '@playwright/test'
 
 async function ready(page: Page) {
   await page.goto('/#/charades/setup')
-  await page.getByRole('navigation', { name: '設定分頁' }).getByRole('button', { name: /節奏/ }).click()
   await page.getByRole('combobox', { name: '每次時間' }).selectOption('30')
   await page.getByRole('button', { name: '建立牌庫並分隊' }).click()
 }
@@ -32,6 +31,7 @@ test('permission rejection preserves touch play, the full timer starts only afte
   await page.clock.runFor(1000)
   await expect(page.getByRole('timer')).toHaveAttribute('aria-label', '剩餘 30 秒')
   await expect(page.locator('.charades-rec')).toHaveCount(0)
+  await page.getByRole('button', { name: '顯示作答按鈕' }).click()
   await page.getByRole('button', { name: '猜對', exact: true }).click()
   await expect(page.locator('.charades-feedback--correct')).toHaveText('✓ 猜對 +1')
   await expect(page.locator('.charades-card-score')).toContainText('✓ 1')

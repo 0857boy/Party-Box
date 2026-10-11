@@ -11,7 +11,7 @@ async function expectOnScreen(page: Page, locator: Locator): Promise<void> {
   expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width)
 }
 
-test('phone setup keeps actions reachable while switching and editing long settings', async ({ page }, testInfo) => {
+test('all setups show compact defaults, editors preserve context and long names stay inside the viewport', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'Phone-specific layout is covered once.')
   await page.setViewportSize({ width: 393, height: 700 })
   const setups = [
@@ -25,17 +25,19 @@ test('phone setup keeps actions reachable while switching and editing long setti
     await page.goto(`/#/${setup.game}/setup`)
     const start = page.getByRole('button', { name: setup.action, exact: true })
     await expectOnScreen(page, start)
-    await expect(page.locator('.setup-flow > .setup-panel:visible')).toHaveCount(1)
-    const tabs = page.getByRole('navigation', { name: '設定分頁' }).getByRole('button')
-    for (let index = 1; index < await tabs.count(); index += 1) {
-      await tabs.nth(index).click()
-      await expect(tabs.nth(index)).toHaveAttribute('aria-pressed', 'true')
-      await expect(page.locator('.setup-flow > .setup-panel:visible')).toHaveCount(1)
-      await expectOnScreen(page, start)
+    await expect(page.locator('.setup-editor')).not.toBeVisible()
+    const links = page.getByRole('navigation', { name: '設定細項' }).getByRole('button')
+    for (let index = 0; index < await links.count(); index += 1) {
+      await links.nth(index).click()
+      await expect(page.getByRole('dialog')).toBeVisible()
+      await expect(page.locator('.setup-editor__body > .setup-panel:visible')).toHaveCount(1)
+      await expectOnScreen(page, page.getByRole('button', { name: '完成', exact: true }))
+      await page.getByRole('button', { name: '完成', exact: true }).click()
+      await expect(page.getByRole('dialog')).toHaveCount(0)
     }
-    await tabs.first().click()
+    await page.getByRole('button', { name: /^編輯玩家/ }).click()
     await page.getByRole('textbox', { name: '玩家 1 名稱' }).fill('這是一個很長的玩家名稱')
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
+    await page.getByRole('button', { name: '完成', exact: true }).click()
     await expectOnScreen(page, start)
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(393)
     const canvasColor = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--game-background').trim())
@@ -43,15 +45,14 @@ test('phone setup keeps actions reachable while switching and editing long setti
   }
 
   await page.goto('/#/undercover/setup')
-  await page.getByRole('navigation', { name: '設定分頁' }).getByRole('button', { name: /主題/ }).click()
   const categories = page.getByRole('combobox', { name: '選擇題目主題' })
   await categories.selectOption({ label: '台灣美食' })
   await expect(page.locator('.action-dock')).toContainText('台灣美食')
   await page.setViewportSize({ width: 393, height: 852 })
   await page.screenshot({ path: '.artifacts/screenshots/mobile-category-compact.png' })
   await page.setViewportSize({ width: 768, height: 1024 })
-  await expect(page.getByRole('button', { name: /台灣美食/ })).toHaveAttribute('aria-pressed', 'true')
-  await expect(page.locator('.setup-flow > .setup-panel:visible')).toHaveCount(3)
+  await expect(categories).toHaveValue('food')
+  await expect(page.locator('.setup-editor')).not.toBeVisible()
 })
 
 test('phone identity prioritizes the role and private intel without pushing the action away', async ({ page }, testInfo) => {

@@ -197,11 +197,11 @@ onBeforeUnmount(() => {
         <div class="charades-ready-stats"><span><Clock3 :size="17" />{{ game.settings.turnSeconds }} 秒</span><span><Layers3 :size="17" />{{ quick ? difficultyName : `剩下 ${cardsRemaining} 張` }}</span></div>
         <div class="charades-device-options">
           <label>手機怎麼拿<select v-model="playStyle" aria-label="手機玩法" :disabled="preparing"><option value="forehead">放額頭 · 隊友提示，我來猜</option><option value="performer">拿手上 · 我來提示，隊友猜</option></select></label>
-          <template v-if="playStyle === 'forehead'"><button type="button" class="charades-enable-tilt" :disabled="tilt.pending.value || tilt.enabled.value || preparing" @click="tilt.enable">{{ tilt.enabled.value ? '翻轉已啟用' : tilt.pending.value ? '等待權限…' : '啟用翻轉操作' }}</button><p>下翻猜對、上翻跳過，翻完回正。也可左／右滑，或開啟備用按鈕。</p><p v-if="tilt.message.value" role="status">{{ tilt.message.value }}</p></template>
+          <template v-if="playStyle === 'forehead'"><button type="button" class="charades-enable-tilt" :disabled="tilt.pending.value || tilt.enabled.value || preparing" @click="tilt.enable">{{ tilt.enabled.value ? '翻轉已啟用' : tilt.pending.value ? '等待權限…' : '啟用翻轉操作' }}</button><p v-if="tilt.message.value" role="status">{{ tilt.message.value }}</p></template>
           <label class="charades-record-toggle"><input v-model="recordEnabled" type="checkbox" :disabled="preparing" />錄影本回合（前鏡頭）</label>
           <template v-if="recordEnabled"><label class="charades-record-toggle"><input v-model="recordAudio" type="checkbox" :disabled="preparing" />一併錄製聲音</label><p>會請求相機{{ recordAudio ? '與麥克風' : '' }}權限。請先取得在場朋友同意；只存在此裝置、不上傳。</p></template>
           <p v-if="recording.message.value" role="status">{{ recording.message.value }}</p>
-          <small v-if="playStyle === 'forehead'">支援的裝置會震動；iPhone Safari 以色框與文字回饋。</small>
+          <details class="charades-ready-help"><summary>操作說明</summary><p>左滑跳過、右滑猜對。手機橫拿放額頭，啟用翻轉後下翻猜對、上翻跳過，翻完回正。也能開啟備用按鈕；支援的裝置會震動，iPhone Safari 以色框與文字回饋。</p></details>
         </div>
         <ActionDock><GameButton block :disabled="preparing" @click="startTurn"><template #icon><Play :size="20" /></template>{{ preparing ? '等待相機權限…' : '開始計時' }}</GameButton><button v-if="preparing" type="button" @click="cancelCountdown">不錄影，取消等待</button><small v-else>先倒數 3 秒，再開始計時</small></ActionDock>
       </section>

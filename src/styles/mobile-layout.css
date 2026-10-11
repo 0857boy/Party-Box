@@ -1,6 +1,6 @@
 .app-shell { padding-top: env(safe-area-inset-top, 0px); padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px); min-height: 100dvh; }
 .game-header__actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
-.audio-control--compact, .setup-flow__nav, .category-picker__mobile, .identity-portrait, .identity-current-player, .identity-details { display: none; }
+.audio-control--compact, .category-picker__mobile, .identity-portrait, .identity-current-player, .identity-details { display: none; }
 .action-dock { display: grid; gap: 8px; }
 .action-dock__hint { margin: 0; color: var(--game-text-muted); font-size: .85rem; line-height: 1.4; }
 .setup-flow > .action-dock > .action-dock__hint { display: none; }
@@ -27,12 +27,6 @@
   .action-dock__hint { font-size: .8rem; }
   .game-page:has(.action-dock) { padding-bottom: calc(118px + env(safe-area-inset-bottom, 0px)); }
   .setup-flow { gap: 14px; }
-  .setup-flow__nav { display: flex; gap: 6px; padding: 5px; border: 1px solid var(--game-border); border-radius: 15px; background: var(--game-surface); }
-  .setup-flow__nav button { flex: 1; min-width: 0; min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 7px 4px; border: 0; border-radius: 10px; background: transparent; color: var(--game-text-muted); font-size: .9rem; font-weight: 800; cursor: pointer; }
-  .setup-flow__nav button span { font-size: .65rem; opacity: .65; }
-  .setup-flow__nav button[aria-pressed='true'] { background: var(--game-surface-secondary); color: var(--game-primary); }
-  .setup-flow > .setup-panel { display: none; }
-  .setup-flow[data-step='0'] > .setup-panel:nth-of-type(1), .setup-flow[data-step='1'] > .setup-panel:nth-of-type(2), .setup-flow[data-step='2'] > .setup-panel:nth-of-type(3) { display: block; }
   .setup-flow > .action-dock > .action-dock__hint { display: block; text-align: center; }
   .setup-layout { gap: 18px; padding-block: 20px; }
   .setup-intro h1 { margin: 8px 0; font-size: clamp(1.8rem, 7.5vw, 2.5rem); line-height: 1.15; }

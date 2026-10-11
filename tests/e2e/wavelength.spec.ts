@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 test('same frequency keeps the target private through clue, discussion and opposing guess', async ({ page }, testInfo) => {
   if (testInfo.project.name === 'tablet') await page.setViewportSize({ width: 1024, height: 768 })
   await page.goto('/#/wavelength/setup')
-  await expect(page.getByRole('heading', { name: /你說的那個/ })).toBeVisible()
+  await expect(page.locator('.game-header__title')).toContainText('同頻共振')
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(await page.evaluate(() => innerWidth))
   await page.getByRole('button', { name: '開始調頻' }).click()
 
@@ -38,9 +38,8 @@ test('same frequency keeps the target private through clue, discussion and oppos
 test('two players complete the six round cooperative game', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'The cooperative ending is covered once.')
   await page.goto('/#/wavelength/setup')
-  for (let number = 6; number > 2; number -= 1) await page.getByRole('button', { name: `移除玩家 ${number}` }).click()
-  await page.getByRole('navigation', { name: '設定分頁' }).getByRole('button', { name: /隊伍/ }).click()
-  await expect(page.getByText('合作模式', { exact: true })).toBeVisible()
+  for (let number = 6; number > 2; number -= 1) await page.getByRole('button', { name: '減少玩家' }).click()
+  await expect(page.getByRole('navigation', { name: '設定細項' })).toContainText('合作挑戰 6 回合')
   await page.getByRole('button', { name: '開始調頻' }).click()
 
   for (let round = 1; round <= 6; round += 1) {

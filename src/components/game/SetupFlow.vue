@@ -17,17 +17,26 @@ const router = useRouter()
 const remainingSteps = computed(() => (props.visibleSteps ?? props.steps.map((_, index) => index)).filter(index => index !== 0))
 let previousOverflow = ''
 let disposed = false
+let openedHere = false
 
 function open(index: number): void {
+  openedHere = true
   void router.push({ query: { ...route.query, setupPanel: String(index) } })
 }
 function close(): void {
-  if (route.query.setupPanel !== undefined) router.back()
+  if (route.query.setupPanel === undefined) return
+  if (openedHere) router.back()
+  else {
+    const query = { ...route.query }
+    delete query.setupPanel
+    void router.replace({ query })
+  }
 }
 async function syncDialog(): Promise<void> {
   const index = Number(route.query.setupPanel)
   const editing = route.query.setupPanel !== undefined && Number.isInteger(index) && index >= 0 && index < props.steps.length
   if (editing) selectedStep.value = index
+  else openedHere = false
   await nextTick()
   if (disposed || !dialog.value) return
   if (editing && !dialog.value.open) {

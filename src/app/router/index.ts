@@ -48,7 +48,11 @@ export const router = createRouter({
     { path: '/wavelength/play', name: 'wavelength-play', component: WavelengthPlayView, meta: { theme: 'wavelength', requiresWavelengthSession: true } },
     { path: '/:pathMatch(.*)*', redirect: '/' }
   ],
-  scrollBehavior: () => ({ top: 0 })
+  scrollBehavior: (to, from) => {
+    // Editing an optional panel should not move the underlying overview.
+    if (to.path === from.path && (to.query.setupPanel !== undefined || from.query.setupPanel !== undefined)) return false
+    return { left: 0, top: 0 }
+  }
 })
 
 router.beforeEach((to) => {

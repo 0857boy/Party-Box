@@ -175,6 +175,11 @@
 }
 
 /* Gesture-first play: spend the screen on the answer, not permanent controls. */
+.charades-ready-card { gap: 12px; padding: 20px; }
+.charades-ready-card .charades-device-options { gap: 8px; }
+.charades-ready-card .charades-rule-banner small { display: none; }
+.charades-ready-help summary { display: flex; align-items: center; min-height: 44px; color: var(--game-text-muted); font-size: .9rem; cursor: pointer; }
+.charades-ready-help p { padding-block: 8px; }
 .charades-play-page--live { padding-bottom: 0 !important; }
 .charades-live, .charades-play-page--landscape .charades-live { width: 100%; max-width: none; height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); min-height: 0; grid-template-columns: minmax(0, 1fr); grid-template-rows: 60px minmax(0, 1fr) 44px; gap: 8px; padding: 10px max(14px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)); }
 .charades-play-page--landscape .charades-live { height: 100%; }

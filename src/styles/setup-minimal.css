@@ -1,6 +1,6 @@
 /* One-screen defaults; long lists live only in an optional editor. */
 .setup-layout:has(.setup-flow) { width: min(100% - 28px, 680px); grid-template-columns: minmax(0, 1fr); gap: 12px; padding-block: 16px 24px; }
-.setup-layout:has(.setup-flow) .setup-intro { display: flex; flex-wrap: wrap; gap: 8px; }
+.setup-layout:has(.setup-flow) .setup-intro { position: static; display: flex; flex-wrap: wrap; gap: 8px; }
 .setup-layout:has(.setup-flow) .setup-intro > :not(details):not(.team-balance) { display: none; }
 .setup-intro .undercover-rules-details { margin: 0; border: 0; border-radius: 10px; background: transparent; }
 .setup-intro .undercover-rules-details:not([open]) { flex: 0 1 auto; }
@@ -16,6 +16,7 @@
 .setup-edit-row small { color: var(--game-text-muted); font-size: .86rem; }
 .setup-edit-row strong { font-size: 1.08rem; line-height: 1.35; overflow-wrap: anywhere; }
 .setup-edit-row em { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--game-text-muted); font: inherit; font-size: .85rem; }
+.setup-players-row .setup-edit-row em { display: none; }
 .setup-edit-row svg { flex-shrink: 0; color: var(--game-primary); }
 .setup-count-control { display: flex; gap: 4px; flex-shrink: 0; }
 .setup-count-control button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--game-border); border-radius: 12px; background: var(--game-surface-secondary); color: var(--game-text); cursor: pointer; }
@@ -42,6 +43,8 @@
 .app-shell:has(.setup-flow) .game-header .audio-control--compact { position: relative !important; display: flex; right: auto; bottom: auto; padding: 0; background: var(--game-background); box-shadow: none; backdrop-filter: none; }
 .app-shell:has(.setup-flow) .game-header .audio-panel { top: 52px; bottom: auto; }
 .app-shell:has(.setup-flow) .game-page { padding-bottom: 0; }
+.app-shell:has(.setup-flow) .update-toast { top: 72px; bottom: auto; }
+.app-shell:has(.setup-flow) .update-toast--offline { display: none; }
 
 .setup-editor { width: min(100% - 32px, 640px); max-height: calc(100dvh - 48px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); padding: 0; border: 1px solid var(--game-border); border-radius: 22px; background: var(--game-background); color: var(--game-text); box-shadow: 0 24px 80px rgba(0,0,0,.45); }
 .setup-editor[open] { display: flex; flex-direction: column; }
