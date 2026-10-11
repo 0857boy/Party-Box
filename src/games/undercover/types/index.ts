@@ -14,8 +14,9 @@ export type WordCategoryId =
   | 'objects'
   | 'people'
   | 'places'
-  | 'sports'
 export type WordCategorySelection = WordCategoryId | 'mixed' | 'funny'
+export type UndercoverDifficulty = 'easy' | 'normal' | 'hard'
+export type UndercoverDifficultySelection = UndercoverDifficulty | 'all'
 
 export interface WordCategory {
   id: WordCategoryId
@@ -27,6 +28,12 @@ export interface WordPair {
   id: string
   category: WordCategoryId
   words: readonly [string, string]
+  difficulty: UndercoverDifficulty
+  tags: readonly string[]
+  // Editorial notes, never rendered during play or identity reveal.
+  sharedTraits: readonly string[]
+  differences: readonly string[]
+  status: 'draft' | 'reviewed'
 }
 
 export interface UndercoverSetup {
@@ -34,6 +41,7 @@ export interface UndercoverSetup {
   category: WordCategorySelection
   undercoverCount: number
   blankEnabled: boolean
+  difficulty?: UndercoverDifficultySelection
 }
 
 export interface UndercoverPlayer {

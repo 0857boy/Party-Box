@@ -1,4 +1,5 @@
-import { undercoverWordPairs } from '../data/words'
+import { getUndercoverPairs } from '../data/words'
+import { normalizeUndercoverWord } from '../data/quality'
 import type {
   UndercoverPlayer,
   UndercoverRole,
@@ -25,18 +26,35 @@ export function validateUndercoverSetup(setup: UndercoverSetup): UndercoverValid
   if (setup.undercoverCount + (setup.blankEnabled ? 1 : 0) >= Math.ceil(names.length / 2)) {
     errors.push('臥底與白板總數必須少於玩家人數的一半。')
   }
+  if (!getUndercoverPairs(setup.category, setup.difficulty ?? 'all').length) errors.push('此主題與難度沒有可用詞組，請更換設定。')
   return { valid: errors.length === 0, errors }
 }
 
 export function selectWordPair(setup: UndercoverSetup, random: () => number = Math.random): WordPair {
-  const funnyCategories = new Set(['awkward', 'relationship', 'workplace', 'internet'])
-  const pool = setup.category === 'mixed'
-    ? undercoverWordPairs
-    : setup.category === 'funny'
-      ? undercoverWordPairs.filter((pair) => funnyCategories.has(pair.category))
-      : undercoverWordPairs.filter((pair) => pair.category === setup.category)
+  const pool = getUndercoverPairs(setup.category, setup.difficulty ?? 'all')
   if (!pool.length) throw new Error('No undercover word pairs are available')
-  return pool[Math.floor(random() * pool.length) % pool.length]!
+  return pool[randomIndex(pool.length, random)]!
+}
+
+// Never silently reuse a pair. Word reuse is allowed only when no word-fresh
+// unseen pair remains in this filtered pool. History is shared across themes.
+export function pickUndercoverPair(
+  pairs: readonly WordPair[], usedPairIds: Set<string>, usedWords: Set<string>,
+  random: () => number = Math.random
+): WordPair | null {
+  const normalizedUsedWords = new Set([...usedWords].map(normalizeUndercoverWord))
+  const unseen = pairs.filter(pair => pair.status === 'reviewed' && !usedPairIds.has(pair.id))
+  const fresh = unseen.filter(pair => pair.words.every(word => !normalizedUsedWords.has(normalizeUndercoverWord(word))))
+  const pool = fresh.length ? fresh : unseen
+  if (!pool.length) return null
+  const pair = pool[randomIndex(pool.length, random)]!
+  usedPairIds.add(pair.id)
+  pair.words.forEach(word => usedWords.add(normalizeUndercoverWord(word)))
+  return pair
+}
+
+function randomIndex(length: number, random: () => number): number {
+  return Math.min(length - 1, Math.max(0, Math.floor(random() * length)))
 }
 
 export function assignUndercoverPlayers(

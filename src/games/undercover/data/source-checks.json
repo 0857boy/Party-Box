@@ -1,0 +1,718 @@
+{
+  "checkedAt": "2026-10-11",
+  "origin": "Exact headword matches from the existing checked charades source snapshot; not pair semantics validation",
+  "source": {
+    "version": "2014_20260929",
+    "sha256": "5bab99dac44ad7a6ccdcf481e770e8aca05ede7445c4cc25b8199e0e5df64cf2"
+  },
+  "entries": {
+    "三明治": {
+      "row": 38235,
+      "source": "moe-concised"
+    },
+    "大象": {
+      "row": 7139,
+      "source": "moe-concised"
+    },
+    "化妝": {
+      "row": 19883,
+      "source": "moe-concised"
+    },
+    "化妝師": {
+      "row": 44820,
+      "source": "moe-concised"
+    },
+    "天竺鼠": {
+      "row": 11031,
+      "source": "moe-concised"
+    },
+    "太空人": {
+      "row": 9972,
+      "source": "moe-concised"
+    },
+    "水母": {
+      "row": 35056,
+      "source": "moe-concised"
+    },
+    "水蜜桃": {
+      "row": 35054,
+      "source": "moe-concised"
+    },
+    "水餃": {
+      "row": 35105,
+      "source": "moe-concised"
+    },
+    "火鍋": {
+      "row": 20006,
+      "source": "moe-concised"
+    },
+    "牙刷": {
+      "row": 40157,
+      "source": "moe-concised"
+    },
+    "包子": {
+      "row": 630,
+      "source": "moe-concised"
+    },
+    "可樂": {
+      "row": 17717,
+      "source": "moe-concised"
+    },
+    "奶昔": {
+      "row": 12029,
+      "source": "moe-concised"
+    },
+    "布丁": {
+      "row": 2323,
+      "source": "moe-concised"
+    },
+    "打呼": {
+      "row": 6775,
+      "source": "moe-concised"
+    },
+    "白蟻": {
+      "row": 322,
+      "source": "moe-concised"
+    },
+    "企鵝": {
+      "row": 24289,
+      "source": "moe-concised"
+    },
+    "吃醋": {
+      "row": 30903,
+      "source": "moe-concised"
+    },
+    "吐司": {
+      "row": 44708,
+      "source": "moe-concised"
+    },
+    "安全帽": {
+      "row": 39078,
+      "source": "moe-concised"
+    },
+    "年糕": {
+      "row": 12608,
+      "source": "moe-concised"
+    },
+    "老虎": {
+      "row": 13352,
+      "source": "moe-concised"
+    },
+    "耳機": {
+      "row": 39263,
+      "source": "moe-concised"
+    },
+    "西瓜": {
+      "row": 25841,
+      "source": "moe-concised"
+    },
+    "冷氣": {
+      "row": 13692,
+      "source": "moe-concised"
+    },
+    "助聽器": {
+      "row": 30198,
+      "source": "moe-concised"
+    },
+    "吸塵器": {
+      "row": 25865,
+      "source": "moe-concised"
+    },
+    "吹風機": {
+      "row": 32225,
+      "source": "moe-concised"
+    },
+    "床": {
+      "row": 32452,
+      "source": "moe-concised"
+    },
+    "戒指": {
+      "row": 21935,
+      "source": "moe-concised"
+    },
+    "沙發": {
+      "row": 33262,
+      "source": "moe-concised"
+    },
+    "豆花": {
+      "row": 7714,
+      "source": "moe-concised"
+    },
+    "豆漿": {
+      "row": 7716,
+      "source": "moe-concised"
+    },
+    "足球": {
+      "row": 36779,
+      "source": "moe-concised"
+    },
+    "兔子": {
+      "row": 11414,
+      "source": "moe-concised"
+    },
+    "刷牙": {
+      "row": 34949,
+      "source": "moe-concised"
+    },
+    "刷卡": {
+      "row": 34945,
+      "source": "moe-concised"
+    },
+    "披薩": {
+      "row": 2938,
+      "source": "moe-concised"
+    },
+    "抽籤": {
+      "row": 31327,
+      "source": "moe-concised"
+    },
+    "拉麵": {
+      "row": 12971,
+      "source": "moe-concised"
+    },
+    "拔河": {
+      "row": 50,
+      "source": "moe-concised"
+    },
+    "拖地": {
+      "row": 11439,
+      "source": "moe-concised"
+    },
+    "拖鞋": {
+      "row": 11451,
+      "source": "moe-concised"
+    },
+    "枕頭": {
+      "row": 29587,
+      "source": "moe-concised"
+    },
+    "河馬": {
+      "row": 18845,
+      "source": "moe-concised"
+    },
+    "狗": {
+      "row": 16000,
+      "source": "moe-concised"
+    },
+    "金魚": {
+      "row": 22866,
+      "source": "moe-concised"
+    },
+    "長頸鹿": {
+      "row": 31635,
+      "source": "moe-concised"
+    },
+    "門鈴": {
+      "row": 4199,
+      "source": "moe-concised"
+    },
+    "雨衣": {
+      "row": 43611,
+      "source": "moe-concised"
+    },
+    "雨傘": {
+      "row": 43610,
+      "source": "moe-concised"
+    },
+    "青蛙": {
+      "row": 25211,
+      "source": "moe-concised"
+    },
+    "保全": {
+      "row": 670,
+      "source": "moe-concised"
+    },
+    "保鮮膜": {
+      "row": 672,
+      "source": "moe-concised"
+    },
+    "哈密瓜": {
+      "row": 18717,
+      "source": "moe-concised"
+    },
+    "建築師": {
+      "row": 22688,
+      "source": "moe-concised"
+    },
+    "律師": {
+      "row": 15525,
+      "source": "moe-concised"
+    },
+    "拼圖": {
+      "row": 3181,
+      "source": "moe-concised"
+    },
+    "春捲": {
+      "row": 32391,
+      "source": "moe-concised"
+    },
+    "洗衣機": {
+      "row": 26031,
+      "source": "moe-concised"
+    },
+    "香蕉": {
+      "row": 27534,
+      "source": "moe-concised"
+    },
+    "射箭": {
+      "row": 33444,
+      "source": "moe-concised"
+    },
+    "拳擊": {
+      "row": 25719,
+      "source": "moe-concised"
+    },
+    "海豹": {
+      "row": 18964,
+      "source": "moe-concised"
+    },
+    "海豚": {
+      "row": 18981,
+      "source": "moe-concised"
+    },
+    "海獅": {
+      "row": 19012,
+      "source": "moe-concised"
+    },
+    "海龜": {
+      "row": 18994,
+      "source": "moe-concised"
+    },
+    "烏賊": {
+      "row": 41960,
+      "source": "moe-concised"
+    },
+    "烏鴉": {
+      "row": 41961,
+      "source": "moe-concised"
+    },
+    "狼": {
+      "row": 13614,
+      "source": "moe-concised"
+    },
+    "粉筆": {
+      "row": 5761,
+      "source": "moe-concised"
+    },
+    "臭豆腐": {
+      "row": 31407,
+      "source": "moe-concised"
+    },
+    "茶葉蛋": {
+      "row": 31112,
+      "source": "moe-concised"
+    },
+    "草莓": {
+      "row": 37466,
+      "source": "moe-concised"
+    },
+    "荔枝": {
+      "row": 13922,
+      "source": "moe-concised"
+    },
+    "蚊子": {
+      "row": 43203,
+      "source": "moe-concised"
+    },
+    "迴紋針": {
+      "row": 20283,
+      "source": "moe-concised"
+    },
+    "馬": {
+      "row": 3511,
+      "source": "moe-concised"
+    },
+    "剪刀": {
+      "row": 22544,
+      "source": "moe-concised"
+    },
+    "唱歌": {
+      "row": 44751,
+      "source": "moe-concised"
+    },
+    "啄木鳥": {
+      "row": 30351,
+      "source": "moe-concised"
+    },
+    "崇拜": {
+      "row": 32590,
+      "source": "moe-concised"
+    },
+    "掃地": {
+      "row": 38184,
+      "source": "moe-concised"
+    },
+    "掃把": {
+      "row": 38197,
+      "source": "moe-concised"
+    },
+    "救生員": {
+      "row": 22390,
+      "source": "moe-concised"
+    },
+    "理髮師": {
+      "row": 13823,
+      "source": "moe-concised"
+    },
+    "船長": {
+      "row": 32306,
+      "source": "moe-concised"
+    },
+    "荷包蛋": {
+      "row": 18859,
+      "source": "moe-concised"
+    },
+    "釣魚": {
+      "row": 8616,
+      "source": "moe-concised"
+    },
+    "章魚": {
+      "row": 29672,
+      "source": "moe-concised"
+    },
+    "麻雀": {
+      "row": 3493,
+      "source": "moe-concised"
+    },
+    "麻糬": {
+      "row": 3498,
+      "source": "moe-concised"
+    },
+    "斑馬": {
+      "row": 895,
+      "source": "moe-concised"
+    },
+    "棉花糖": {
+      "row": 4552,
+      "source": "moe-concised"
+    },
+    "游泳": {
+      "row": 40673,
+      "source": "moe-concised"
+    },
+    "湯圓": {
+      "row": 10452,
+      "source": "moe-concised"
+    },
+    "無尾熊": {
+      "row": 42179,
+      "source": "moe-concised"
+    },
+    "犀牛": {
+      "row": 25925,
+      "source": "moe-concised"
+    },
+    "菜刀": {
+      "row": 37427,
+      "source": "moe-concised"
+    },
+    "裁判": {
+      "row": 37374,
+      "source": "moe-concised"
+    },
+    "跆拳道": {
+      "row": 9927,
+      "source": "moe-concised"
+    },
+    "郵差": {
+      "row": 40718,
+      "source": "moe-concised"
+    },
+    "黑板": {
+      "row": 19055,
+      "source": "moe-concised"
+    },
+    "搬家": {
+      "row": 906,
+      "source": "moe-concised"
+    },
+    "會計師": {
+      "row": 18436,
+      "source": "moe-concised"
+    },
+    "溜冰": {
+      "row": 14234,
+      "source": "moe-concised"
+    },
+    "滑雪": {
+      "row": 19856,
+      "source": "moe-concised"
+    },
+    "獅子": {
+      "row": 32722,
+      "source": "moe-concised"
+    },
+    "跳高": {
+      "row": 10907,
+      "source": "moe-concised"
+    },
+    "農夫": {
+      "row": 12821,
+      "source": "moe-concised"
+    },
+    "電風扇": {
+      "row": 8771,
+      "source": "moe-concised"
+    },
+    "電視": {
+      "row": 8863,
+      "source": "moe-concised"
+    },
+    "電鍋": {
+      "row": 8813,
+      "source": "moe-concised"
+    },
+    "壽司": {
+      "row": 33849,
+      "source": "moe-concised"
+    },
+    "榴槤": {
+      "row": 14368,
+      "source": "moe-concised"
+    },
+    "歌手": {
+      "row": 15620,
+      "source": "moe-concised"
+    },
+    "滷味": {
+      "row": 15072,
+      "source": "moe-concised"
+    },
+    "演員": {
+      "row": 41180,
+      "source": "moe-concised"
+    },
+    "漢堡": {
+      "row": 19444,
+      "source": "moe-concised"
+    },
+    "漱口": {
+      "row": 34880,
+      "source": "moe-concised"
+    },
+    "熊貓": {
+      "row": 28446,
+      "source": "moe-concised"
+    },
+    "綠茶": {
+      "row": 15544,
+      "source": "moe-concised"
+    },
+    "舞者": {
+      "row": 42296,
+      "source": "moe-concised"
+    },
+    "蜜蜂": {
+      "row": 4465,
+      "source": "moe-concised"
+    },
+    "蜻蜓": {
+      "row": 25289,
+      "source": "moe-concised"
+    },
+    "鳳梨": {
+      "row": 6206,
+      "source": "moe-concised"
+    },
+    "鳳梨酥": {
+      "row": 44534,
+      "source": "moe-concised"
+    },
+    "導遊": {
+      "row": 7558,
+      "source": "moe-concised"
+    },
+    "導演": {
+      "row": 7560,
+      "source": "moe-concised"
+    },
+    "廚師": {
+      "row": 32117,
+      "source": "moe-concised"
+    },
+    "撐竿跳": {
+      "row": 31777,
+      "source": "moe-concised"
+    },
+    "模特兒": {
+      "row": 3620,
+      "source": "moe-concised"
+    },
+    "潛水": {
+      "row": 24882,
+      "source": "moe-concised"
+    },
+    "熱狗": {
+      "row": 35377,
+      "source": "moe-concised"
+    },
+    "蓮霧": {
+      "row": 14484,
+      "source": "moe-concised"
+    },
+    "蝗蟲": {
+      "row": 20676,
+      "source": "moe-concised"
+    },
+    "蝙蝠": {
+      "row": 1519,
+      "source": "moe-concised"
+    },
+    "蝴蝶": {
+      "row": 19641,
+      "source": "moe-concised"
+    },
+    "蝸牛": {
+      "row": 16631,
+      "source": "moe-concised"
+    },
+    "衛生紙": {
+      "row": 42910,
+      "source": "moe-concised"
+    },
+    "衝浪": {
+      "row": 32544,
+      "source": "moe-concised"
+    },
+    "鬧鐘": {
+      "row": 12186,
+      "source": "moe-concised"
+    },
+    "橄欖球": {
+      "row": 16173,
+      "source": "moe-concised"
+    },
+    "橡皮擦": {
+      "row": 27687,
+      "source": "moe-concised"
+    },
+    "燒賣": {
+      "row": 33508,
+      "source": "moe-concised"
+    },
+    "燕子": {
+      "row": 41221,
+      "source": "moe-concised"
+    },
+    "積木": {
+      "row": 20982,
+      "source": "moe-concised"
+    },
+    "糖葫蘆": {
+      "row": 10473,
+      "source": "moe-concised"
+    },
+    "螃蟹": {
+      "row": 2833,
+      "source": "moe-concised"
+    },
+    "螞蟻": {
+      "row": 3556,
+      "source": "moe-concised"
+    },
+    "貓": {
+      "row": 3956,
+      "source": "moe-concised"
+    },
+    "駱駝": {
+      "row": 15284,
+      "source": "moe-concised"
+    },
+    "鴕鳥": {
+      "row": 11506,
+      "source": "moe-concised"
+    },
+    "鴨": {
+      "row": 40120,
+      "source": "moe-concised"
+    },
+    "龍眼": {
+      "row": 15444,
+      "source": "moe-concised"
+    },
+    "龍蝦": {
+      "row": 15429,
+      "source": "moe-concised"
+    },
+    "薯條": {
+      "row": 34841,
+      "source": "moe-concised"
+    },
+    "螳螂": {
+      "row": 10499,
+      "source": "moe-concised"
+    },
+    "鍋貼": {
+      "row": 16676,
+      "source": "moe-concised"
+    },
+    "鴿子": {
+      "row": 15642,
+      "source": "moe-concised"
+    },
+    "鯊魚": {
+      "row": 33307,
+      "source": "moe-concised"
+    },
+    "鵝": {
+      "row": 38753,
+      "source": "moe-concised"
+    },
+    "攀岩": {
+      "row": 2726,
+      "source": "moe-concised"
+    },
+    "蟾蜍": {
+      "row": 31443,
+      "source": "moe-concised"
+    },
+    "鏡子": {
+      "row": 23459,
+      "source": "moe-concised"
+    },
+    "饅頭": {
+      "row": 4081,
+      "source": "moe-concised"
+    },
+    "競走": {
+      "row": 23491,
+      "source": "moe-concised"
+    },
+    "籃球": {
+      "row": 13561,
+      "source": "moe-concised"
+    },
+    "警察": {
+      "row": 23394,
+      "source": "moe-concised"
+    },
+    "攝影師": {
+      "row": 33481,
+      "source": "moe-concised"
+    },
+    "鐵板燒": {
+      "row": 10731,
+      "source": "moe-concised"
+    },
+    "蘿蔔糕": {
+      "row": 15209,
+      "source": "moe-concised"
+    },
+    "體重計": {
+      "row": 10663,
+      "source": "moe-concised"
+    },
+    "鑰匙": {
+      "row": 40529,
+      "source": "moe-concised"
+    },
+    "鱷魚": {
+      "row": 38847,
+      "source": "moe-concised"
+    },
+    "鸚鵡": {
+      "row": 41750,
+      "source": "moe-concised"
+    }
+  }
+}

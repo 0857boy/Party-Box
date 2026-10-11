@@ -1,13 +1,16 @@
 import { computed, reactive, watch } from 'vue'
 import { loadVersioned, saveVersioned } from '@/utils/storage'
 import { getSharedPlayerNames, rememberPlayerRoster } from '@/stores/playerRosters'
-import { wordCategories } from '../data/words'
+import { getUndercoverPairs, undercoverWordPairs, wordCategories } from '../data/words'
+import { getUndercoverUsedWords, normalizeUndercoverHistory } from '../logic/history'
+import { normalizeUndercoverSetup } from '../logic/setup'
 import {
   assignUndercoverPlayers,
   getUndercoverWinner,
   nextAlivePlayerId,
   recommendedUndercoverCount,
-  selectWordPair
+  pickUndercoverPair,
+  validateUndercoverSetup
 } from '../logic/game'
 import type {
   UndercoverGameplayState,
@@ -18,13 +21,13 @@ import type {
 
 const STORAGE_KEY = 'party-box:undercover:setup'
 const VERSION = 3
-const fallbackNames = ['玩家 1', '玩家 2', '玩家 3', '玩家 4', '玩家 5']
-const saved = loadVersioned<UndercoverSetup>(STORAGE_KEY, VERSION, {
-  playerNames: fallbackNames,
-  category: 'funny',
-  undercoverCount: 1,
-  blankEnabled: false
-})
+const HISTORY_KEY = 'party-box:undercover:draw-history'
+const HISTORY_VERSION = 1
+const saved = normalizeUndercoverSetup(loadVersioned<unknown>(STORAGE_KEY, VERSION, null))
+
+export const undercoverDrawHistory = reactive(normalizeUndercoverHistory(
+  loadVersioned<unknown>(HISTORY_KEY, HISTORY_VERSION, null), undercoverWordPairs
+))
 
 interface UndercoverSessionState {
   setup: UndercoverSetup
@@ -37,6 +40,7 @@ export const undercoverSession = reactive<UndercoverSessionState>({
   setup: {
     playerNames: getSharedPlayerNames(saved.playerNames, 4, 12),
     category: saved.category,
+    difficulty: saved.difficulty,
     undercoverCount: saved.undercoverCount,
     blankEnabled: saved.blankEnabled
   },
@@ -50,6 +54,11 @@ export const aliveUndercoverPlayers = computed(() => undercoverSession.players.f
 export const currentSpeaker = computed(() => undercoverSession.players.find((player) => player.id === undercoverSession.gameplay?.startingSpeakerId))
 export const lastEliminatedPlayer = computed(() => undercoverSession.players.find((player) => player.id === undercoverSession.gameplay?.lastEliminatedId))
 export const currentWordCategory = computed(() => wordCategories.find((category) => category.id === undercoverSession.gameplay?.category))
+export const availableUndercoverPairs = computed(() => getUndercoverPairs(undercoverSession.setup.category, undercoverSession.setup.difficulty ?? 'all'))
+export const remainingUndercoverPairs = computed(() => {
+  const usedIds = new Set(undercoverDrawHistory.usedPairIds)
+  return availableUndercoverPairs.value.filter(pair => !usedIds.has(pair.id)).length
+})
 
 watch(() => undercoverSession.setup, () => {
   saveVersioned(STORAGE_KEY, VERSION, undercoverSession.setup)
@@ -59,9 +68,13 @@ export function syncRecommendedUndercoverCount(): void {
   undercoverSession.setup.undercoverCount = recommendedUndercoverCount(undercoverSession.setup.playerNames.length)
 }
 
-export function startUndercoverGame(): void {
+export function startUndercoverGame(): boolean {
+  if (!validateUndercoverSetup(undercoverSession.setup).valid) return false
+  const ids = new Set(undercoverDrawHistory.usedPairIds)
+  const words = getUndercoverUsedWords(undercoverDrawHistory, undercoverWordPairs)
+  const pair = pickUndercoverPair(availableUndercoverPairs.value, ids, words, cryptoRandom)
+  if (!pair) return false
   rememberPlayerRoster(undercoverSession.setup.playerNames)
-  const pair = selectWordPair(undercoverSession.setup, cryptoRandom)
   undercoverSession.players = assignUndercoverPlayers(undercoverSession.setup, pair, cryptoRandom)
   undercoverSession.currentRevealIndex = 0
   const firstSpeaker = undercoverSession.players[Math.floor(cryptoRandom() * undercoverSession.players.length)]!
@@ -79,6 +92,16 @@ export function startUndercoverGame(): void {
     category: pair.category
   }
   saveVersioned(STORAGE_KEY, VERSION, undercoverSession.setup)
+  undercoverDrawHistory.usedPairIds = [...ids]
+  saveVersioned(HISTORY_KEY, HISTORY_VERSION, undercoverDrawHistory)
+  return true
+}
+
+// Reset only this filtered deck; histories for other themes/levels remain.
+export function resetUndercoverDrawHistory(): void {
+  const resetIds = new Set(availableUndercoverPairs.value.map(pair => pair.id))
+  undercoverDrawHistory.usedPairIds = undercoverDrawHistory.usedPairIds.filter(id => !resetIds.has(id))
+  saveVersioned(HISTORY_KEY, HISTORY_VERSION, undercoverDrawHistory)
 }
 
 export function beginUndercoverElimination(): void {

@@ -4,14 +4,13 @@ import { useRouter } from 'vue-router'
 import { FileQuestion, Fingerprint, Home, RotateCcw, Tag, Trophy, UsersRound } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
 import GameButton from '@/components/ui/GameButton.vue'
-import { categoryName, resetUndercoverSession, startUndercoverGame, undercoverSession } from '../stores/session'
+import { categoryName, remainingUndercoverPairs, resetUndercoverSession, startUndercoverGame, undercoverSession } from '../stores/session'
 
 const router = useRouter()
 const game = computed(() => undercoverSession.gameplay)
 
 function replay(): void {
-  startUndercoverGame()
-  void router.replace({ name: 'undercover-reveal' })
+  void router.replace({ name: startUndercoverGame() ? 'undercover-reveal' : 'undercover-setup' })
 }
 
 function goHome(): void {
@@ -54,7 +53,7 @@ function roleLabel(role: 'civilian' | 'undercover' | 'blank'): string {
         <div class="undercover-timeline"><div v-for="record in game.eliminations" :key="record.playerId"><span>第 {{ record.round }} 輪</span><strong>{{ undercoverSession.players.find((player) => player.id === record.playerId)?.name }}</strong><em>{{ roleLabel(record.role) }}</em></div></div>
       </section>
 
-      <div class="result-actions"><GameButton block @click="replay"><template #icon><RotateCcw :size="19" /></template>使用相同設定再玩一次</GameButton><GameButton block variant="secondary" @click="goHome"><template #icon><Home :size="19" /></template>回 Party Box</GameButton></div>
+      <div class="result-actions"><GameButton block @click="replay"><template #icon><RotateCcw :size="19" /></template>{{ remainingUndercoverPairs ? '使用相同設定再玩一次' : '題庫已玩完，回設定選新題' }}</GameButton><GameButton block variant="secondary" @click="goHome"><template #icon><Home :size="19" /></template>回 Party Box</GameButton></div>
     </main>
   </div>
 </template>

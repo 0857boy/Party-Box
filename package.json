@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "check:charades": "vitest run src/games/charades/data/cards.test.ts",
-    "prebuild": "npm run check:charades",
+    "check:undercover": "vitest run src/games/undercover/data/words.test.ts src/games/undercover/logic/game.test.ts src/games/undercover/logic/history.test.ts",
+    "prebuild": "npm run check:charades && npm run check:undercover",
     "dev": "vite --host 0.0.0.0",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",

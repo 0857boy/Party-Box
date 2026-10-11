@@ -262,6 +262,12 @@ test('undercover can distribute words and resolve an elimination', async ({ page
   await expect(page.getByRole('heading', { name: '本局詞語' })).toBeVisible()
   await expect(page.getByRole('heading', { name: '身份揭曉' })).toBeVisible()
   await page.screenshot({ path: '.artifacts/screenshots/playwright-mobile-undercover-result.png' })
+  const before = await page.evaluate(() => JSON.parse(localStorage.getItem('party-box:undercover:draw-history')!).data.usedPairIds)
+  await page.getByRole('button', { name: '使用相同設定再玩一次' }).click()
+  await expect(page).toHaveURL(/undercover\/reveal$/)
+  const after = await page.evaluate(() => JSON.parse(localStorage.getItem('party-box:undercover:draw-history')!).data.usedPairIds)
+  expect(after).toHaveLength(before.length + 1)
+  expect(after.at(-1)).not.toBe(before.at(-1))
 })
 
 test('undercover can include exactly one blank card', async ({ page }, testInfo) => {

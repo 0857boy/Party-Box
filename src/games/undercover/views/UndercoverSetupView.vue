@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AlertTriangle, ArrowRight, Fingerprint, Plus, Sparkles, Trash2, UsersRound } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
@@ -7,14 +7,17 @@ import SetupFlow from '@/components/game/SetupFlow.vue'
 import CategoryPicker from '@/components/game/CategoryPicker.vue'
 import GameButton from '@/components/ui/GameButton.vue'
 import ToggleSwitch from '@/components/ui/ToggleSwitch.vue'
+import GameModal from '@/components/ui/GameModal.vue'
 import PlayerRosterHistory from '@/components/player/PlayerRosterHistory.vue'
 import { normalizeRosterForGame, playerRosterStore } from '@/stores/playerRosters'
 import { wordCategories } from '../data/words'
+import { undercoverReferences } from '../data/references'
 import { validateUndercoverSetup } from '../logic/game'
-import { startUndercoverGame, syncRecommendedUndercoverCount, undercoverSession } from '../stores/session'
+import { availableUndercoverPairs, remainingUndercoverPairs, resetUndercoverDrawHistory, startUndercoverGame, syncRecommendedUndercoverCount, undercoverSession } from '../stores/session'
 import type { WordCategorySelection } from '../types'
 
 const router = useRouter()
+const resetConfirmationOpen = ref(false)
 const validation = computed(() => validateUndercoverSetup(undercoverSession.setup))
 const categoryOptions: readonly { id: WordCategorySelection; name: string; description: string }[] = [
   { id: 'funny', name: '爆笑混合', description: '尷尬、感情、職場與網路修羅場' },
@@ -47,9 +50,13 @@ function applyRecentRoster(names: string[]): void {
 }
 
 function start(): void {
-  if (!validation.value.valid) return
-  startUndercoverGame()
+  if (!validation.value.valid || !startUndercoverGame()) return
   void router.push({ name: 'undercover-reveal' })
+}
+
+function resetDeck(): void {
+  resetUndercoverDrawHistory()
+  resetConfirmationOpen.value = false
 }
 </script>
 
@@ -75,11 +82,26 @@ function start(): void {
             <li><strong>平民勝利：</strong>找出並淘汰所有臥底與白板。</li>
             <li><strong>潛伏方勝利：</strong>存活臥底與白板總數不少於存活平民人數。</li>
           </ol>
+          <p>詞義與候選來源（配對與難度由 Party Box 編輯）：
+            <a v-for="source in undercoverReferences.slice(0, 3)" :key="source.url" :href="source.url" target="_blank" rel="noopener noreferrer">{{ source.title }}；</a>
+            <a href="./licenses/moe-concised-public-license.pdf" target="_blank" rel="noopener noreferrer">教育部原始公眾授權說明</a>
+          </p>
         </details>
       </section>
 
       <SetupFlow :steps="['玩家', '主題', '進階規則']" :visible-steps="[0, 2]" :values="['改名字・使用最近名單', '', `${undercoverSession.setup.undercoverCount} 名臥底${undercoverSession.setup.blankEnabled ? '＋白板' : '・無白板'}`]" :player-count="undercoverSession.setup.playerNames.length" :min-players="4" :max-players="12" :summary="`${undercoverSession.setup.playerNames.length} 人 · ${categoryOptions.find(option => option.id === undercoverSession.setup.category)?.name} · ${undercoverSession.setup.undercoverCount} 名臥底${undercoverSession.setup.blankEnabled ? '＋白板' : ''}`" @add-player="addPlayer" @remove-player="removePlayer(undercoverSession.setup.playerNames.length - 1)" @submit="start">
-        <template #quick><CategoryPicker v-model="undercoverSession.setup.category" :options="categoryOptions" compact /></template>
+        <template #quick>
+          <div class="setup-inline-grid">
+            <CategoryPicker v-model="undercoverSession.setup.category" :options="categoryOptions" compact />
+            <label>配對難度
+              <select v-model="undercoverSession.setup.difficulty" aria-label="配對難度">
+                <option value="all">全部難度</option><option value="easy">簡單・差異明顯</option>
+                <option value="normal">普通・相近可辨</option><option value="hard">困難・細節推理</option>
+              </select>
+            </label>
+          </div>
+          <p class="setup-mode-hint" role="status">此設定還有 {{ remainingUndercoverPairs }} / {{ availableUndercoverPairs.length }} 組未玩；優先避開用過的詞。</p>
+        </template>
         <section class="setup-panel">
           <header class="setup-panel__header">
             <div><span>01</span><h2>玩家</h2><small>{{ undercoverSession.setup.playerNames.length }} / 12</small></div>
@@ -113,10 +135,20 @@ function start(): void {
           <p class="undercover-setup-note">臥底彼此不知道對方身分；除白板外，每位玩家只會看到自己的詞，不會直接看到陣營。</p>
         </section>
 
-        <template #feedback><div v-if="validation.errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in validation.errors" :key="error">{{ error }}</p></div></div></template>
-        <template #action><GameButton type="submit" block :disabled="!validation.valid">抽詞並分配<template #trailing><ArrowRight :size="20" /></template></GameButton></template>
-        <template #note><p class="setup-privacy">重新整理會安全清除本局詞語與身份。</p></template>
+        <template #feedback>
+          <div v-if="validation.errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in validation.errors" :key="error">{{ error }}</p></div></div>
+          <div v-if="availableUndercoverPairs.length && !remainingUndercoverPairs" class="undercover-deck-exhausted">
+            <p role="status">這份題庫都玩過了。換主題或難度，或確認重洗後再抽。</p>
+            <GameButton variant="secondary" @click="resetConfirmationOpen = true">重新洗這份題庫</GameButton>
+          </div>
+        </template>
+        <template #action><GameButton type="submit" block :disabled="!validation.valid || !remainingUndercoverPairs">抽詞並分配<template #trailing><ArrowRight :size="20" /></template></GameButton></template>
+        <template #note><p class="setup-privacy">身份只留在記憶體；抽題紀錄保存在這台裝置。</p></template>
       </SetupFlow>
     </div>
+    <GameModal :open="resetConfirmationOpen" title="重新洗這份題庫？" @close="resetConfirmationOpen = false">
+      <p>只清除目前主題與難度的抽題紀錄，其他題庫不受影響。重洗後可能再次遇到玩過的詞。</p>
+      <template #footer><div class="modal-actions"><GameButton variant="secondary" @click="resetConfirmationOpen = false">先不要</GameButton><GameButton @click="resetDeck">確認重洗</GameButton></div></template>
+    </GameModal>
   </div>
 </template>
