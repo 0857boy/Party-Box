@@ -301,7 +301,7 @@ test('player roster is shared between games', async ({ page }, testInfo) => {
 test('party charades reuses the same deck across all three rounds', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'The complete three-round charades game is covered once.')
   await page.goto('/#/charades/setup')
-  await expect(page.getByRole('heading', { name: /同一個答案/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /不用演三輪/ })).toBeVisible()
   await page.setViewportSize({ width: 320, height: 568 })
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(320)
   await page.setViewportSize({ width: 390, height: 844 })
@@ -312,6 +312,7 @@ test('party charades reuses the same deck across all three rounds', async ({ pag
   const teamsAfterShuffle = await page.locator('.charades-team-preview article > span').allTextContents()
   expect(teamsAfterShuffle).not.toEqual(teamsBeforeShuffle)
   await page.getByRole('navigation', { name: '設定分頁' }).getByRole('button', { name: /節奏/ }).click()
+  await page.getByRole('button', { name: /記憶三輪/ }).click()
   await page.getByRole('button', { name: '24 張' }).click()
   await page.getByRole('button', { name: '建立牌庫並分隊' }).click()
   await expect(page.getByText(/珍奶隊|雞排隊/).first()).toBeVisible()

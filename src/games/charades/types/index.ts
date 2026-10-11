@@ -1,15 +1,30 @@
 import type { PartyTeam, TeamScore, WordDeckCard } from '@/types/gameplay'
 
-export type CharadesCategory = 'mixed' | 'characters' | 'life' | 'things'
+export type CharadesCategory = 'mixed' | 'characters' | 'life' | 'things' | 'animals' | 'food' | 'idioms'
+export type CharadesDifficulty = 'easy' | 'normal' | 'hard'
+export type CharadesMode = 'quick' | 'classic'
+export type CharadesClueStyle = 'acting' | 'describe'
 export type CharadesPhase = 'turn-ready' | 'playing' | 'turn-result' | 'round-result' | 'result'
 
-export interface CharadesSetup {
+export interface CharadesMatchSettings {
+  mode: CharadesMode
+  difficulty: CharadesDifficulty
+  clueStyle: CharadesClueStyle
+  turnsPerTeam: 1 | 2 | 3
+  turnSeconds: number
+}
+
+export interface CharadesSetup extends CharadesMatchSettings {
   playerNames: string[]
   teamNames: [string, string]
   teamAssignments: Array<0 | 1>
   category: CharadesCategory
   deckSize: number
-  turnSeconds: number
+}
+
+export interface CharadesCard extends WordDeckCard {
+  category: Exclude<CharadesCategory, 'mixed'>
+  difficulty: CharadesDifficulty
 }
 
 export interface CharadesPlayer {
@@ -22,14 +37,16 @@ export interface CharadesTurnRecord {
   teamId: string
   clueGiverId: string
   guessedCardIds: string[]
+  skippedCardIds: string[]
 }
 
 export interface CharadesGameState {
   phase: CharadesPhase
+  settings: CharadesMatchSettings
   roundIndex: number
   currentTeamIndex: number
   currentClueGiverIds: Record<string, string>
-  selectedCards: WordDeckCard[]
+  selectedCards: CharadesCard[]
   remainingCardIds: string[]
   skippedCardIds: string[]
   currentCardId?: string

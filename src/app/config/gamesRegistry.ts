@@ -32,7 +32,7 @@ export const gamesRegistry: readonly PartyGame[] = [
     id: 'charades',
     name: '爆笑猜詞',
     eyebrow: '團隊猜詞 · 4–16 人',
-    description: '同一副牌連玩三輪：自由描述、一字提示，最後只能靠肢體演到隊友懂。',
+    description: '短詞、大動作、限時換隊。自選難度與出場次數，也能挑戰經典記憶三輪。',
     minPlayers: 4,
     maxPlayers: 16,
     theme: 'charades',
