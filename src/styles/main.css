@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 * { box-sizing: border-box; }
-html { color-scheme: dark; background-color: var(--game-background); scroll-padding-bottom: 120px; }
+html { color-scheme: dark; background-color: var(--game-background); scroll-padding-bottom: 120px; touch-action: manipulation; overscroll-behavior-x: none; }
 body {
   margin: 0;
   min-width: 320px;
@@ -17,6 +17,9 @@ body {
 }
 button, input { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
+/* Keep scrolling and pinch zoom accessible, but remove accidental double-tap
+   zoom and its click delay. Drawing/swipe surfaces retain their own policy. */
+body, .app-shell, button, a, input, select, textarea, summary, [role="button"] { touch-action: manipulation; }
 button { color: inherit; }
 a { color: inherit; text-decoration: none; }
 button:focus-visible, a:focus-visible, input:focus-visible {
@@ -38,6 +41,11 @@ em { color: var(--game-primary); font-family: 'Playfair Display Variable', Georg
 .app-main { min-height: 100svh; }
 
 .home-nav { height: 88px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--game-border); }
+.home-nav__actions { display: flex; align-items: center; gap: 10px; }
+.fullscreen-control { position: relative; }
+.fullscreen-control__message { position: absolute; z-index: 100; top: 52px; right: 0; width: min(320px, calc(100vw - 32px)); padding: 16px; border: 1px solid var(--game-border); border-radius: 15px; background: var(--game-background); box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+.fullscreen-control__message p { margin: 0 0 12px; font-size: .94rem; line-height: 1.6; }
+.fullscreen-control__message button { min-height: 44px; padding: 8px 14px; border: 1px solid var(--game-border); border-radius: 10px; color: var(--game-text); background: var(--game-surface-secondary); cursor: pointer; }
 .home-brand { display: flex; align-items: center; gap: 12px; }
 .home-brand > span:last-child { display: grid; gap: 1px; }
 .home-brand strong { font-size: .88rem; letter-spacing: .13em; }

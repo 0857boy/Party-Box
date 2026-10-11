@@ -153,7 +153,7 @@ test('fast flips change text immediately without remounting the card or waiting 
   await expect(page.getByRole('timer')).toHaveAttribute('aria-label', '剩餘 30 秒')
 })
 
-test('native orientation lock is requested from Start and released after the turn', async ({ page }, testInfo) => {
+test('native orientation lock is released after the turn without exiting app fullscreen', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'Native lock lifecycle is covered once.')
   await page.addInitScript(() => {
     const state = { fullscreen: false, locks: [] as string[], unlocks: 0 }
@@ -173,7 +173,7 @@ test('native orientation lock is requested from Start and released after the tur
   expect(locking).toEqual(['landscape'])
   await page.clock.runFor(3000)
   await page.getByRole('button', { name: '提前結束回合' }).click()
-  expect(await page.evaluate(() => (window as Window & { testOrientationState?: { fullscreen: boolean; unlocks: number } }).testOrientationState)).toMatchObject({ fullscreen: false, unlocks: 1 })
+  expect(await page.evaluate(() => (window as Window & { testOrientationState?: { fullscreen: boolean; unlocks: number } }).testOrientationState)).toMatchObject({ fullscreen: true, unlocks: 1 })
 })
 
 test('real MediaRecorder saves a local video, releases camera, survives reload and supports export/delete', async ({ page }, testInfo) => {

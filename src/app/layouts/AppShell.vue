@@ -2,6 +2,9 @@
 import { computed, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import AudioControl from '@/components/audio/AudioControl.vue'
+import { useAutoAppFullscreen } from '@/composables/useAppFullscreen'
+
+useAutoAppFullscreen()
 
 const route = useRoute()
 const theme = computed(() => String(route.meta.theme ?? 'party-box'))

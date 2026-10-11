@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ArrowRight, Download, Sparkles, UsersRound, WifiOff } from '@lucide/vue'
 import { gamesRegistry } from '@/app/config/gamesRegistry'
+import FullscreenControl from '@/components/ui/FullscreenControl.vue'
 </script>
 
 <template>
@@ -10,7 +11,7 @@ import { gamesRegistry } from '@/app/config/gamesRegistry'
         <span class="brand-mark"><span>PB</span></span>
         <span><strong>PARTY BOX</strong><small>PLAY TOGETHER</small></span>
       </RouterLink>
-      <span class="local-pill"><WifiOff :size="15" /> 離線也能玩</span>
+      <div class="home-nav__actions"><span class="local-pill"><WifiOff :size="15" /> 離線也能玩</span><FullscreenControl /></div>
     </header>
 
     <section class="hero page-container">

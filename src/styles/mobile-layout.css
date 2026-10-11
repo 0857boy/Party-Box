@@ -48,6 +48,7 @@
   .category-picker__mobile select { width: 100%; min-height: 56px; padding: 10px 14px; border: 1px solid var(--game-card-border); border-radius: 12px; background: var(--game-surface-secondary); color: var(--game-text); font: inherit; font-size: 1.1rem; font-weight: 750; }
   .category-picker__mobile p { margin: 0; color: var(--game-text-muted); font-size: .94rem; line-height: 1.6; }
   .player-input input, .charades-team-preview input { font-size: 16px; }
+  input[type="text"], input[type="number"], textarea { font-size: max(16px, 1em); }
   .roster-history { margin-top: 16px; }
   .roster-history > div { max-height: 190px; overflow-y: auto; }
   .update-toast { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
