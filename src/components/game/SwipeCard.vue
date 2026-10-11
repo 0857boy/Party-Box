@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const emit = defineEmits<{ left: []; right: [] }>()
+const props = defineProps<{ resetKey?: string }>()
 const startX = ref<number | null>(null)
 const offsetX = ref(0)
 const dragging = ref(false)
@@ -21,10 +22,16 @@ function pointerMove(event: PointerEvent): void {
 function pointerUp(): void {
   if (offsetX.value <= -80) emit('left')
   if (offsetX.value >= 80) emit('right')
+  resetGesture()
+}
+
+function resetGesture(): void {
   startX.value = null
   offsetX.value = 0
   dragging.value = false
 }
+
+watch(() => props.resetKey, resetGesture)
 
 function keydown(event: KeyboardEvent): void {
   if (event.key === 'ArrowLeft') emit('left')
@@ -43,7 +50,7 @@ function keydown(event: KeyboardEvent): void {
     @pointerdown="pointerDown"
     @pointermove="pointerMove"
     @pointerup="pointerUp"
-    @pointercancel="pointerUp"
+    @pointercancel="resetGesture"
     @keydown="keydown"
   >
     <span class="swipe-card__hint swipe-card__hint--left">跳過</span>

@@ -9,6 +9,7 @@ import GameButton from '@/components/ui/GameButton.vue'
 import { useCountdownTimer } from '@/composables/useCountdownTimer'
 import { useDeviceTilt } from '@/composables/useDeviceTilt'
 import { useLocalRecording } from '@/composables/useLocalRecording'
+import { useLandscapeStage } from '@/composables/useLandscapeStage'
 import RecordingGallery from '@/components/game/RecordingGallery.vue'
 import { loadVersioned, saveVersioned } from '@/utils/storage'
 import { totalScore } from '@/engine/scoreManager'
@@ -43,6 +44,7 @@ const interruption = ref('')
 const feedback = ref<'correct' | 'skip' | null>(null)
 const recording = useLocalRecording()
 const tilt = useDeviceTilt(action => action === 'correct' ? correct() : skip())
+const landscape = useLandscapeStage()
 let countdownId: number | undefined
 let feedbackId: number | undefined
 let startToken = 0
@@ -72,6 +74,7 @@ async function startTurn(): Promise<void> {
   recording.clip.value = null
   recording.message.value = ''
   preparing.value = true
+  if (playStyle.value === 'forehead' && tilt.enabled.value) landscape.start()
   if (recordEnabled.value) await recording.prepare(recordAudio.value)
   if (disposed || token !== startToken || document.hidden) return
   preparing.value = false
@@ -90,6 +93,7 @@ async function startTurn(): Promise<void> {
 }
 
 function cancelCountdown(): void {
+  landscape.stop()
   ++startToken
   if (countdownId !== undefined) window.clearInterval(countdownId)
   countdownId = undefined
@@ -102,11 +106,12 @@ function cancelCountdown(): void {
 function showFeedback(kind: 'correct' | 'skip'): void {
   feedback.value = kind
   if (feedbackId !== undefined) window.clearTimeout(feedbackId)
-  feedbackId = window.setTimeout(() => { feedback.value = null }, 550)
+  feedbackId = window.setTimeout(() => { feedback.value = null }, 220)
   try { navigator.vibrate?.(kind === 'correct' ? 45 : [30, 45, 30]) } catch { /* Optional hardware feedback. */ }
 }
 
 function finishTurn(): void {
+  landscape.stop()
   tilt.setActive(false)
   endCharadesTurn()
   void finishRecording()
@@ -123,6 +128,7 @@ function correct(): void {
   showFeedback('correct')
   const outcome = guessCurrentCard()
   if (outcome !== 'continue') {
+    landscape.stop()
     timer.stop()
     tilt.setActive(false)
     void finishRecording().then(() => {
@@ -135,7 +141,7 @@ function skip(): void {
   if (!timer.running.value) return
   showFeedback('skip')
   const outcome = skipCurrentCard()
-  if (outcome === 'turn-ended') { timer.stop(); tilt.setActive(false); void finishRecording() }
+  if (outcome === 'turn-ended') { landscape.stop(); timer.stop(); tilt.setActive(false); void finishRecording() }
 }
 
 function nextTeam(): void {
@@ -172,9 +178,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div v-if="game && currentRound && currentTeam" class="game-page charades-page charades-play-page" :class="{ 'charades-play-page--live': game.phase === 'playing' || countdown > 0, 'charades-play-page--forehead': playStyle === 'forehead' }">
+  <div v-if="game && currentRound && currentTeam" class="game-page charades-page charades-play-page" :class="{ 'charades-play-page--live': game.phase === 'playing' || countdown > 0, 'charades-play-page--forehead': playStyle === 'forehead', 'charades-play-page--landscape': landscape.active.value && (game.phase === 'playing' || countdown > 0) }" :style="{ '--stage-rotation': `${landscape.rotation.value}deg` }">
     <template v-if="countdown > 0">
-      <main class="charades-countdown" aria-live="assertive"><span class="eyebrow">{{ currentTeam.name }} · {{ currentClueGiver?.name }}</span><p>{{ playStyle === 'forehead' ? '手機放額頭，螢幕朝隊友' : '提示者看題目，隊友猜答案' }}</p><strong :key="countdown">{{ countdown }}</strong><span>準備開始</span><button type="button" @click="cancelCountdown">取消倒數</button></main>
+      <main class="charades-countdown" aria-live="assertive"><span class="eyebrow">{{ currentTeam.name }} · {{ currentClueGiver?.name }}</span><p>{{ playStyle === 'forehead' ? '手機橫拿放額頭，螢幕朝隊友' : '提示者看題目，隊友猜答案' }}</p><strong :key="countdown">{{ countdown }}</strong><span>準備開始</span><button type="button" @click="cancelCountdown">取消倒數</button></main>
     </template>
     <template v-else>
     <GameHeader :title="currentRound.name" :step="step" />
@@ -190,7 +196,7 @@ onBeforeUnmount(() => {
         <div class="charades-ready-stats"><span><Clock3 :size="17" />{{ game.settings.turnSeconds }} 秒</span><span><Layers3 :size="17" />{{ quick ? difficultyName : `剩下 ${cardsRemaining} 張` }}</span></div>
         <div class="charades-device-options">
           <label>手機怎麼拿<select v-model="playStyle" aria-label="手機玩法" :disabled="preparing"><option value="forehead">放額頭 · 隊友提示，我來猜</option><option value="performer">拿手上 · 我來提示，隊友猜</option></select></label>
-          <template v-if="playStyle === 'forehead'"><button type="button" class="charades-enable-tilt" :disabled="tilt.pending.value || tilt.enabled.value || preparing" @click="tilt.enable">{{ tilt.enabled.value ? '翻轉已啟用' : tilt.pending.value ? '等待權限…' : '啟用翻轉操作' }}</button><p>螢幕向下翻＝猜對，向上翻＝跳過；每次翻完回正。也能滑動或按鈕操作。</p><p v-if="tilt.message.value" role="status">{{ tilt.message.value }}</p></template>
+          <template v-if="playStyle === 'forehead'"><button type="button" class="charades-enable-tilt" :disabled="tilt.pending.value || tilt.enabled.value || preparing" @click="tilt.enable">{{ tilt.enabled.value ? '翻轉已啟用' : tilt.pending.value ? '等待權限…' : '啟用翻轉操作' }}</button><p>手機橫拿。螢幕向下翻＝猜對，向上翻＝跳過；回正即可接下一題。翻轉模式的畫面會固定橫向，仍可用按鈕操作。</p><p v-if="tilt.message.value" role="status">{{ tilt.message.value }}</p></template>
           <label class="charades-record-toggle"><input v-model="recordEnabled" type="checkbox" :disabled="preparing" />錄影本回合（前鏡頭）</label>
           <template v-if="recordEnabled"><label class="charades-record-toggle"><input v-model="recordAudio" type="checkbox" :disabled="preparing" />一併錄製聲音</label><p>會請求相機{{ recordAudio ? '與麥克風' : '' }}權限。請先取得在場朋友同意；只存在此裝置、不上傳。</p></template>
           <p v-if="recording.message.value" role="status">{{ recording.message.value }}</p>
@@ -202,7 +208,7 @@ onBeforeUnmount(() => {
 
     <main v-else-if="game.phase === 'playing' && currentCharadesCard" class="charades-live page-container page-container--game">
       <header class="charades-live__header"><button type="button" aria-label="提前結束回合" @click="timer.finish"><ArrowLeft :size="24" /></button><div class="charades-timer-ring" :class="{ 'charades-timer--urgent': timer.secondsLeft.value <= 10 }" :style="{ '--timer-progress': `${timer.progress.value * 360}deg` }" role="timer" :aria-label="`剩餘 ${timer.secondsLeft.value} 秒`"><strong>{{ timer.secondsLeft.value }}</strong><small>秒</small></div><span v-if="recording.recording.value" class="charades-rec" role="status">● REC</span><small v-else>{{ currentTeam.name }}</small></header>
-      <SwipeCard :key="currentCharadesCard.id" @left="skip" @right="correct">
+      <SwipeCard :reset-key="currentCharadesCard.id" @left="skip" @right="correct">
         <div class="charades-word-card">
           <span class="charades-word-card__category">{{ categoryName }}</span>
           <h1 :class="{ 'charades-word--long': [...currentCharadesCard.label].length >= 5 }">{{ currentCharadesCard.label }}</h1>

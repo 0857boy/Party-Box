@@ -57,7 +57,10 @@ test('permission rejection preserves touch play, the full timer starts only afte
 
 test('gyro triggers one answer per flip, requires neutral, and does not act outside live play', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile', 'Sensor events are covered once.')
-  await page.addInitScript(() => Object.defineProperty(DeviceOrientationEvent, 'requestPermission', { value: async () => 'granted', configurable: true }))
+  await page.addInitScript(() => {
+    Object.defineProperty(DeviceOrientationEvent, 'requestPermission', { value: async () => 'granted', configurable: true })
+    Object.defineProperty(screen.orientation, 'lock', { value: undefined, configurable: true }) // Safari fallback.
+  })
   await page.clock.install()
   await ready(page)
   await page.getByRole('button', { name: '啟用翻轉操作' }).click()
@@ -67,6 +70,10 @@ test('gyro triggers one answer per flip, requires neutral, and does not act outs
   await page.getByRole('button', { name: '開始計時' }).click()
   await orientation(page, 180)
   await page.clock.runFor(3000)
+  await expect(page.locator('.charades-play-page')).toHaveClass(/charades-play-page--landscape/)
+  const stageSize = await page.locator('.charades-play-page').evaluate(element => ({ width: (element as HTMLElement).offsetWidth, height: (element as HTMLElement).offsetHeight }))
+  expect(stageSize.width).toBeGreaterThan(stageSize.height)
+  await page.screenshot({ path: '.artifacts/screenshots/charades-locked-portrait.png' })
   await expect(page.locator('.charades-card-score')).toContainText('✓ 0')
   await orientation(page, 90)
   await page.clock.runFor(210)
@@ -80,6 +87,7 @@ test('gyro triggers one answer per flip, requires neutral, and does not act outs
   await orientation(page, 0)
   await expect(page.locator('.charades-card-score')).toContainText('✓ 1')
   await page.setViewportSize({ width: 852, height: 393 })
+  await page.screenshot({ path: '.artifacts/screenshots/charades-locked-landscape.png' })
   await orientation(page, 0, 90)
   await page.clock.runFor(210)
   await orientation(page, 0, 90)
@@ -92,8 +100,80 @@ test('gyro triggers one answer per flip, requires neutral, and does not act outs
     document.dispatchEvent(new Event('visibilitychange'))
   })
   await expect(page.getByText(/本回合已提前結束/)).toBeVisible()
+  await expect(page.locator('.charades-play-page')).not.toHaveClass(/charades-play-page--landscape/)
   await orientation(page, 180)
   await expect(page.getByRole('heading', { name: /1 張/ })).toBeVisible()
+})
+
+test('fast flips change text immediately without remounting the card or waiting for feedback', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'Fast sensor cadence is covered once.')
+  await page.addInitScript(() => {
+    Object.defineProperty(DeviceOrientationEvent, 'requestPermission', { value: async () => 'granted', configurable: true })
+    Object.defineProperty(screen.orientation, 'lock', { value: undefined, configurable: true })
+  })
+  await page.clock.install()
+  await ready(page)
+  await page.getByRole('button', { name: '啟用翻轉操作' }).click()
+  await page.getByRole('button', { name: '開始計時' }).click()
+  await page.clock.runFor(2800)
+  await orientation(page, 90)
+  await page.clock.runFor(85)
+  await orientation(page, 90)
+  await page.clock.runFor(115)
+  const word = await page.locator('.charades-word-card h1').textContent()
+  await page.evaluate(() => {
+    const surface = document.querySelector('.swipe-card')!
+    ;(window as Window & { testCardSurface?: Element }).testCardSurface = surface
+  })
+  await orientation(page, 180)
+  await page.clock.runFor(65)
+  await orientation(page, 180) // Primed during countdown: no live neutral wait.
+  await expect(page.locator('.charades-card-score')).toContainText('✓ 1')
+  await expect(page.locator('.charades-word-card h1')).not.toHaveText(word!)
+  await expect(page.locator('.charades-feedback--correct')).toBeVisible()
+  await orientation(page, 90)
+  await page.clock.runFor(85)
+  await orientation(page, 90)
+  await orientation(page, 0)
+  await page.clock.runFor(65)
+  await orientation(page, 0) // Second answer just 150ms after the first.
+  await expect(page.locator('.charades-card-score')).toContainText('× 1')
+  expect(await page.evaluate(() => document.querySelector('.swipe-card') === (window as Window & { testCardSurface?: Element }).testCardSurface)).toBe(true)
+  await page.clock.runFor(225)
+  await expect(page.locator('.charades-feedback')).toHaveCount(0)
+  // A cancelled touch must not submit an answer when the OS handles rotation.
+  const card = page.locator('.swipe-card')
+  await card.dispatchEvent('pointerdown', { pointerId: 1, clientX: 200 })
+  await card.dispatchEvent('pointermove', { pointerId: 1, clientX: 80 })
+  await card.dispatchEvent('pointercancel', { pointerId: 1 })
+  await expect(page.locator('.charades-card-score')).toContainText('× 1')
+  await page.setViewportSize({ width: 852, height: 393 })
+  await page.setViewportSize({ width: 390, height: 844 })
+  await expect(page.locator('.charades-play-page')).toHaveClass(/charades-play-page--landscape/)
+  await expect(page.getByRole('timer')).toHaveAttribute('aria-label', '剩餘 30 秒')
+})
+
+test('native orientation lock is requested from Start and released after the turn', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'Native lock lifecycle is covered once.')
+  await page.addInitScript(() => {
+    const state = { fullscreen: false, locks: [] as string[], unlocks: 0 }
+    ;(window as Window & { testOrientationState?: typeof state }).testOrientationState = state
+    Object.defineProperty(DeviceOrientationEvent, 'requestPermission', { value: async () => 'granted', configurable: true })
+    HTMLElement.prototype.requestFullscreen = async () => { state.fullscreen = true }
+    Object.defineProperty(document, 'fullscreenElement', { configurable: true, get: () => state.fullscreen ? document.documentElement : null })
+    document.exitFullscreen = async () => { state.fullscreen = false }
+    Object.defineProperty(screen.orientation, 'lock', { configurable: true, value: async (direction: string) => { state.locks.push(direction) } })
+    screen.orientation.unlock = () => { state.unlocks += 1 }
+  })
+  await page.clock.install()
+  await ready(page)
+  await page.getByRole('button', { name: '啟用翻轉操作' }).click()
+  await page.getByRole('button', { name: '開始計時' }).click()
+  const locking = await page.evaluate(() => (window as Window & { testOrientationState?: { locks: string[] } }).testOrientationState?.locks)
+  expect(locking).toEqual(['landscape'])
+  await page.clock.runFor(3000)
+  await page.getByRole('button', { name: '提前結束回合' }).click()
+  expect(await page.evaluate(() => (window as Window & { testOrientationState?: { fullscreen: boolean; unlocks: number } }).testOrientationState)).toMatchObject({ fullscreen: false, unlocks: 1 })
 })
 
 test('real MediaRecorder saves a local video, releases camera, survives reload and supports export/delete', async ({ page }, testInfo) => {

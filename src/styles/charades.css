@@ -147,3 +147,29 @@
   .charades-countdown > button { margin-top: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .charades-countdown > strong { animation: none; } }
+
+/* A landscape-sized surface even if a nod changes the browser to portrait.
+   Native orientation locking is optional; CSS also covers Safari. */
+.app-shell:has(.charades-play-page--live) .ambient { display: none; }
+.charades-live .charades-word-card { background: none; }
+.charades-play-page--landscape { position: fixed; z-index: 60; inset: 0; width: 100dvw; height: 100dvh; min-height: 0; padding: 0 !important; overflow: hidden; background: var(--game-background); transform: translateZ(0); contain: layout paint; }
+.charades-play-page--landscape .charades-live { width: 100%; max-width: none; min-height: 0; height: 100%; grid-template-columns: minmax(0, 1fr); grid-template-rows: 56px minmax(0, 1fr) 48px; gap: 8px; padding: 10px max(14px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)); }
+.charades-play-page--landscape .charades-live__header { grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr); }
+.charades-play-page--landscape .charades-timer-ring { width: 54px; height: 54px; }
+.charades-play-page--landscape .charades-timer-ring strong { font-size: 1.25rem; }
+.charades-play-page--landscape .charades-word-card { padding: 8px 18px; gap: 8px; }
+.charades-play-page--landscape .charades-word-card h1 { font-size: clamp(2.5rem, 12vmin, 5rem); }
+.charades-play-page--landscape .charades-word-card h1.charades-word--long { font-size: clamp(2rem, 10vmin, 4.2rem); }
+.charades-play-page--landscape .charades-card-score { font-size: 1.1rem; }
+.charades-play-page--landscape .action-dock { position: static; inset: auto; width: 100%; max-width: 500px; display: block; padding: 0; margin: 0 auto; border: 0; background: transparent; box-shadow: none; }
+.charades-play-page--landscape .charades-live-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.charades-play-page--landscape .charades-live-actions button { min-height: 44px; padding: 8px; font-size: .95rem; }
+.charades-play-page--landscape .charades-swipe-help { display: none; }
+.charades-play-page--landscape .charades-countdown { width: 100%; height: 100%; min-height: 0; gap: 6px; padding: 12px; }
+.charades-play-page--landscape .charades-countdown p { margin: 4px 0; }
+.charades-play-page--landscape .charades-countdown > strong { font-size: clamp(5rem, 23vmin, 10rem); }
+.charades-play-page--landscape .charades-countdown > button { margin-top: 0; }
+@media (orientation: portrait) {
+  .charades-play-page--landscape { inset: auto; left: 50%; top: 50%; width: 100dvh; height: 100dvw; transform: translate(-50%, -50%) rotate(var(--stage-rotation, 90deg)); }
+  .charades-play-page--landscape .charades-live { padding-inline: max(14px, env(safe-area-inset-top, 0px), env(safe-area-inset-bottom, 0px)); }
+}
