@@ -55,7 +55,7 @@ function start(): void {
 
 <template>
   <div class="game-page undercover-page undercover-setup-page">
-    <GameHeader title="遊戲設定" step="UNDERCOVER · SETUP" />
+    <GameHeader title="誰是臥底" step="遊戲設定" />
     <div class="setup-layout page-container page-container--game">
       <section class="setup-intro undercover-intro">
         <span class="eyebrow"><Fingerprint :size="15" /> WHO IS UNDERCOVER?</span>
@@ -78,7 +78,8 @@ function start(): void {
         </details>
       </section>
 
-      <SetupFlow :steps="['玩家', '主題', '規則']" :summary="`${undercoverSession.setup.playerNames.length} 人 · ${categoryOptions.find(option => option.id === undercoverSession.setup.category)?.name} · ${undercoverSession.setup.undercoverCount} 名臥底${undercoverSession.setup.blankEnabled ? '＋白板' : ''}`" @submit="start">
+      <SetupFlow :steps="['玩家', '主題', '進階規則']" :visible-steps="[0, 2]" :values="['改名字・使用最近名單', '', `${undercoverSession.setup.undercoverCount} 名臥底${undercoverSession.setup.blankEnabled ? '＋白板' : '・無白板'}`]" :player-count="undercoverSession.setup.playerNames.length" :min-players="4" :max-players="12" :summary="`${undercoverSession.setup.playerNames.length} 人 · ${categoryOptions.find(option => option.id === undercoverSession.setup.category)?.name} · ${undercoverSession.setup.undercoverCount} 名臥底${undercoverSession.setup.blankEnabled ? '＋白板' : ''}`" @add-player="addPlayer" @remove-player="removePlayer(undercoverSession.setup.playerNames.length - 1)" @submit="start">
+        <template #quick><CategoryPicker v-model="undercoverSession.setup.category" :options="categoryOptions" compact /></template>
         <section class="setup-panel">
           <header class="setup-panel__header">
             <div><span>01</span><h2>玩家</h2><small>{{ undercoverSession.setup.playerNames.length }} / 12</small></div>
@@ -112,9 +113,9 @@ function start(): void {
           <p class="undercover-setup-note">臥底彼此不知道對方身分；除白板外，每位玩家只會看到自己的詞，不會直接看到陣營。</p>
         </section>
 
-        <div v-if="validation.errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in validation.errors" :key="error">{{ error }}</p></div></div>
+        <template #feedback><div v-if="validation.errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in validation.errors" :key="error">{{ error }}</p></div></div></template>
         <template #action><GameButton type="submit" block :disabled="!validation.valid">抽詞並分配<template #trailing><ArrowRight :size="20" /></template></GameButton></template>
-        <p class="setup-privacy">詞語與身份只在本局記憶體中使用，重新整理會安全返回設定。</p>
+        <template #note><p class="setup-privacy">重新整理會安全清除本局詞語與身份。</p></template>
       </SetupFlow>
     </div>
   </div>

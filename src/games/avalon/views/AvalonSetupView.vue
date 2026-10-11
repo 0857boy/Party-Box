@@ -78,7 +78,7 @@ function formatCompletedAt(value: string): string {
 
 <template>
   <div class="game-page setup-page">
-    <GameHeader title="遊戲設定" step="AVALON · SETUP" />
+    <GameHeader title="阿瓦隆" step="遊戲設定" />
     <div class="setup-layout page-container page-container--game">
       <section class="setup-intro">
         <span class="eyebrow">THE RESISTANCE: AVALON</span>
@@ -91,7 +91,7 @@ function formatCompletedAt(value: string): string {
         </div>
       </section>
 
-      <SetupFlow :steps="['玩家', '角色', '規則']" :summary="`${avalonSession.setup.playerNames.length} 人 · 正義 ${composition?.good}／邪惡 ${composition?.evil}`" @submit="start">
+      <SetupFlow :steps="['玩家', '特殊角色', '進階規則']" :values="['改名字・使用最近名單', selectableRoles.filter(role => avalonSession.setup.enabledRoles.includes(role.id)).map(role => role.displayName).join('、'), avalonSession.setup.ladyOfLakeEnabled ? '湖中女神已開啟' : '湖中女神未開啟']" :player-count="avalonSession.setup.playerNames.length" :min-players="5" :max-players="10" :summary="`${avalonSession.setup.playerNames.length} 人 · 正義 ${composition?.good}／邪惡 ${composition?.evil}`" @add-player="addPlayer" @remove-player="removePlayer(avalonSession.setup.playerNames.length - 1)" @submit="start">
         <section class="setup-panel">
           <header class="setup-panel__header">
             <div><span>01</span><h2>玩家</h2><small>{{ avalonSession.setup.playerNames.length }} / 10</small></div>
@@ -153,16 +153,16 @@ function formatCompletedAt(value: string): string {
           </div>
         </section></details></template>
 
-        <div v-if="validation.errors.length || validation.warnings.length" class="validation-box" :class="{ 'validation-box--error': validation.errors.length }">
+        <template #feedback><div v-if="validation.errors.length || validation.warnings.length" class="validation-box" :class="{ 'validation-box--error': validation.errors.length }">
           <AlertTriangle :size="20" />
           <div><p v-for="message in [...validation.errors, ...validation.warnings]" :key="message">{{ message }}</p></div>
-        </div>
+        </div></template>
 
         <template #action><GameButton type="submit" block :disabled="!validation.valid">
           洗牌並分配身份
           <template #trailing><ArrowRight :size="20" /></template>
         </GameButton></template>
-        <p class="setup-privacy">進行中的秘密身份不會儲存；遊戲結束並公開身份後，復盤才會保留在此裝置。</p>
+        <template #note><p class="setup-privacy">秘密身份不存檔，結束後保留復盤。</p></template>
       </SetupFlow>
     </div>
   </div>

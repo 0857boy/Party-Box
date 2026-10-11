@@ -6,5 +6,6 @@ import '@fontsource-variable/playfair-display'
 import './styles/main.css'
 import './styles/mobile-layout.css'
 import './styles/charades.css'
+import './styles/setup-minimal.css'
 
 createApp(App).use(router).mount('#app')

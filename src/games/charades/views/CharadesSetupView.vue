@@ -93,7 +93,7 @@ onMounted(() => {
 
 <template>
   <div class="game-page charades-page">
-    <GameHeader title="遊戲設定" step="PARTY CHARADES · SETUP" />
+    <GameHeader title="爆笑猜詞" step="遊戲設定" />
     <div class="setup-layout page-container page-container--game">
       <section class="setup-intro charades-intro">
         <span class="eyebrow"><Shuffle :size="15" /> SHORT WORDS. BIG LAUGHS.</span>
@@ -114,7 +114,16 @@ onMounted(() => {
         <details class="undercover-rules-details"><summary>裝置錄影中心</summary><RecordingGallery /></details>
       </section>
 
-      <SetupFlow :steps="['玩家分隊', '題庫難度', '玩法節奏']" :summary="summary" @submit="start">
+      <SetupFlow :steps="['玩家分隊', '題庫難度', '更多玩法']" :visible-steps="[0, 2]" :values="[setup.teamNames.join(' vs '), '', setup.mode === 'quick' ? '快節奏隊伍賽' : '記憶三輪']" :player-count="setup.playerNames.length" :min-players="4" :max-players="16" :summary="summary" @add-player="addPlayer" @remove-player="removePlayer(setup.playerNames.length - 1)" @submit="start">
+        <template #quick>
+          <CategoryPicker v-model="setup.category" :options="categoryOptions" compact />
+          <div class="setup-inline-grid">
+            <label>難度<select v-model="setup.difficulty" aria-label="題目難度"><option v-for="difficulty in charadesDifficulties" :key="difficulty.id" :value="difficulty.id">{{ difficulty.name }}</option></select></label>
+            <label>時間<select v-model.number="setup.turnSeconds" aria-label="每次時間"><option v-for="seconds in [30, 45, 60, 90]" :key="seconds" :value="seconds">{{ seconds }} 秒</option></select></label>
+            <label v-if="setup.mode === 'quick'">提示方式<select v-model="setup.clueStyle" aria-label="提示方式"><option value="acting">比手畫腳</option><option value="describe">自由描述</option></select></label>
+            <label v-if="setup.mode === 'quick'">每隊出場<select v-model.number="setup.turnsPerTeam" aria-label="每隊出場"><option v-for="count in [1, 2, 3]" :key="count" :value="count">{{ count }} 次</option></select></label>
+          </div>
+        </template>
         <section class="setup-panel">
           <header class="setup-panel__header"><div><span>01</span><h2>玩家與隊伍</h2><small>{{ charadesSession.setup.playerNames.length }} / 16</small></div><UsersRound :size="22" /></header>
           <div class="player-inputs">
@@ -166,7 +175,7 @@ onMounted(() => {
           </div><p>實際使用 {{ actualDeckSize }} 張；若主題題量較少，使用全部符合難度的詞。整副牌會重用三輪。</p></fieldset>
         </section>
 
-        <div v-if="errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in errors" :key="error">{{ error }}</p></div></div>
+        <template #feedback><div v-if="errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in errors" :key="error">{{ error }}</p></div></div></template>
         <template #action><GameButton type="submit" block :disabled="Boolean(errors.length)">建立牌庫並分隊<template #trailing><ArrowRight :size="20" /></template></GameButton></template>
       </SetupFlow>
     </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowLeft, ArrowRight, Check, Clock3, Layers3, Play, RotateCcw, Sparkles, UsersRound } from '@lucide/vue'
+import { ArrowLeft, ArrowRight, Check, Clock3, Hand, Layers3, Play, RotateCcw, Sparkles, UsersRound } from '@lucide/vue'
 import GameHeader from '@/components/game/GameHeader.vue'
 import ActionDock from '@/components/game/ActionDock.vue'
 import SwipeCard from '@/components/game/SwipeCard.vue'
@@ -42,6 +42,7 @@ const preparing = ref(false)
 const finalizing = ref(false)
 const interruption = ref('')
 const feedback = ref<'correct' | 'skip' | null>(null)
+const manualControls = ref(false)
 const recording = useLocalRecording()
 const tilt = useDeviceTilt(action => action === 'correct' ? correct() : skip())
 const landscape = useLandscapeStage()
@@ -196,7 +197,7 @@ onBeforeUnmount(() => {
         <div class="charades-ready-stats"><span><Clock3 :size="17" />{{ game.settings.turnSeconds }} 秒</span><span><Layers3 :size="17" />{{ quick ? difficultyName : `剩下 ${cardsRemaining} 張` }}</span></div>
         <div class="charades-device-options">
           <label>手機怎麼拿<select v-model="playStyle" aria-label="手機玩法" :disabled="preparing"><option value="forehead">放額頭 · 隊友提示，我來猜</option><option value="performer">拿手上 · 我來提示，隊友猜</option></select></label>
-          <template v-if="playStyle === 'forehead'"><button type="button" class="charades-enable-tilt" :disabled="tilt.pending.value || tilt.enabled.value || preparing" @click="tilt.enable">{{ tilt.enabled.value ? '翻轉已啟用' : tilt.pending.value ? '等待權限…' : '啟用翻轉操作' }}</button><p>手機橫拿。螢幕向下翻＝猜對，向上翻＝跳過；回正即可接下一題。翻轉模式的畫面會固定橫向，仍可用按鈕操作。</p><p v-if="tilt.message.value" role="status">{{ tilt.message.value }}</p></template>
+          <template v-if="playStyle === 'forehead'"><button type="button" class="charades-enable-tilt" :disabled="tilt.pending.value || tilt.enabled.value || preparing" @click="tilt.enable">{{ tilt.enabled.value ? '翻轉已啟用' : tilt.pending.value ? '等待權限…' : '啟用翻轉操作' }}</button><p>下翻猜對、上翻跳過，翻完回正。也可左／右滑，或開啟備用按鈕。</p><p v-if="tilt.message.value" role="status">{{ tilt.message.value }}</p></template>
           <label class="charades-record-toggle"><input v-model="recordEnabled" type="checkbox" :disabled="preparing" />錄影本回合（前鏡頭）</label>
           <template v-if="recordEnabled"><label class="charades-record-toggle"><input v-model="recordAudio" type="checkbox" :disabled="preparing" />一併錄製聲音</label><p>會請求相機{{ recordAudio ? '與麥克風' : '' }}權限。請先取得在場朋友同意；只存在此裝置、不上傳。</p></template>
           <p v-if="recording.message.value" role="status">{{ recording.message.value }}</p>
@@ -211,15 +212,15 @@ onBeforeUnmount(() => {
       <SwipeCard :reset-key="currentCharadesCard.id" @left="skip" @right="correct">
         <div class="charades-word-card">
           <span class="charades-word-card__category">{{ categoryName }}</span>
-          <h1 :class="{ 'charades-word--long': [...currentCharadesCard.label].length >= 5 }">{{ currentCharadesCard.label }}</h1>
+          <h1 :style="{ '--word-length': [...currentCharadesCard.label].length }">{{ currentCharadesCard.label }}</h1>
           <small class="sr-only">{{ currentRound.shortRule }}</small>
           <div class="charades-card-score"><span>✓ {{ turnScore }}</span><span>× {{ game.skippedCardIds.length }}</span></div>
         </div>
       </SwipeCard>
-      <ActionDock><div class="charades-live-actions">
+      <footer class="charades-gesture-bar"><p class="charades-swipe-help">{{ playStyle === 'forehead' && tilt.enabled.value ? '下翻猜對 · 上翻跳過 · 翻完回正' : '左滑跳過 · 右滑猜對' }}</p><button type="button" class="charades-controls-toggle" :aria-expanded="manualControls" :aria-label="manualControls ? '隱藏作答按鈕' : '顯示作答按鈕'" @click="manualControls = !manualControls"><Hand :size="18" /><span>按鈕</span></button><div v-if="manualControls" class="charades-live-actions">
         <button type="button" class="charades-skip" @click="skip"><ArrowLeft :size="22" /><span>跳過</span></button>
         <button type="button" class="charades-correct" @click="correct"><span>猜對</span><ArrowRight :size="22" /></button>
-      </div><p class="charades-swipe-help">{{ playStyle === 'forehead' && tilt.enabled.value ? '向下猜對 · 向上跳過 · 翻完回正' : '左滑跳過 · 右滑猜對 · 跳過不扣分' }}</p></ActionDock>
+      </div></footer>
     </main>
 
     <main v-else-if="game.phase === 'turn-result'" class="charades-stage page-container page-container--game">

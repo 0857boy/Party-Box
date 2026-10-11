@@ -46,7 +46,7 @@ onMounted(() => {
 
 <template>
   <div class="game-page wavelength-page">
-    <GameHeader title="遊戲設定" step="SAME FREQUENCY · SETUP" />
+    <GameHeader title="同頻共振" step="遊戲設定" />
     <div class="setup-layout page-container page-container--game">
       <section class="setup-intro wavelength-intro">
         <span class="eyebrow"><Radio :size="16" /> FIND THE SAME FREQUENCY</span>
@@ -67,7 +67,8 @@ onMounted(() => {
         </details>
       </section>
 
-      <SetupFlow :steps="['玩家', '隊伍']" :summary="`${setup.playerNames.length} 人 · ${mode === 'co-op' ? '合作挑戰 6 回合' : '兩隊對戰・12 分獲勝'}`" @submit="start">
+      <SetupFlow :steps="['玩家', '隊伍']" :values="['改名字・使用最近名單', mode === 'co-op' ? '合作挑戰 6 回合' : setup.teamNames.join(' vs ')]" :player-count="setup.playerNames.length" :min-players="2" :max-players="12" :summary="`${setup.playerNames.length} 人 · ${mode === 'co-op' ? '合作挑戰 6 回合' : '兩隊對戰・12 分獲勝'}`" @add-player="addPlayer" @remove-player="removePlayer(setup.playerNames.length - 1)" @submit="start">
+        <template #quick><p class="setup-mode-hint">{{ mode === 'co-op' ? '一起找默契，目標 15 分。' : '兩隊輪流出題，12 分決勝。' }}人數變動時自動切換模式。</p></template>
         <section class="setup-panel">
           <header class="setup-panel__header"><div><span>01</span><h2>玩家</h2><small>{{ setup.playerNames.length }} / 12</small></div><UsersRound :size="22" /></header>
           <div class="player-inputs">
@@ -87,7 +88,7 @@ onMounted(() => {
             </div>
           </template>
         </section>
-        <div v-if="errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in errors" :key="error">{{ error }}</p></div></div>
+        <template #feedback><div v-if="errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in errors" :key="error">{{ error }}</p></div></div></template>
         <template #action><GameButton type="submit" block :disabled="Boolean(errors.length)">開始調頻<template #trailing><ArrowRight :size="20" /></template></GameButton></template>
       </SetupFlow>
     </div>

@@ -1,0 +1,86 @@
+/* One-screen defaults; long lists live only in an optional editor. */
+.setup-layout:has(.setup-flow) { width: min(100% - 28px, 680px); grid-template-columns: minmax(0, 1fr); gap: 12px; padding-block: 16px 24px; }
+.setup-layout:has(.setup-flow) .setup-intro { display: flex; flex-wrap: wrap; gap: 8px; }
+.setup-layout:has(.setup-flow) .setup-intro > :not(details):not(.team-balance) { display: none; }
+.setup-intro .undercover-rules-details { margin: 0; border: 0; border-radius: 10px; background: transparent; }
+.setup-intro .undercover-rules-details:not([open]) { flex: 0 1 auto; }
+.setup-intro .undercover-rules-details[open] { flex: 1 0 100%; border: 1px solid var(--game-border); background: var(--game-surface); }
+.setup-intro .undercover-rules-details > summary { display: flex; align-items: center; min-height: 44px; padding: 8px 12px; font-size: .9rem; }
+.setup-intro .team-balance { width: 100%; margin: 0; padding: 10px 18px; }
+.setup-intro .team-balance strong { font-size: 1.25rem; }
+.setup-flow { gap: 12px; }
+.setup-overview { overflow: hidden; padding: 8px 16px; border: 1px solid var(--game-border); border-radius: 20px; background: var(--game-surface); }
+.setup-players-row { display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--game-border); }
+.setup-edit-row { width: 100%; min-width: 0; min-height: 66px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border: 0; background: none; color: var(--game-text); text-align: left; cursor: pointer; }
+.setup-edit-row > span { display: grid; min-width: 0; gap: 3px; }
+.setup-edit-row small { color: var(--game-text-muted); font-size: .86rem; }
+.setup-edit-row strong { font-size: 1.08rem; line-height: 1.35; overflow-wrap: anywhere; }
+.setup-edit-row em { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--game-text-muted); font: inherit; font-size: .85rem; }
+.setup-edit-row svg { flex-shrink: 0; color: var(--game-primary); }
+.setup-count-control { display: flex; gap: 4px; flex-shrink: 0; }
+.setup-count-control button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--game-border); border-radius: 12px; background: var(--game-surface-secondary); color: var(--game-text); cursor: pointer; }
+.setup-count-control button:disabled { opacity: .3; cursor: default; }
+.setup-detail-links { display: grid; }
+.setup-detail-links .setup-edit-row + .setup-edit-row { border-top: 1px solid var(--game-border); }
+.setup-quick-options { display: grid; gap: 12px; padding-block: 14px; }
+.setup-quick-options + .setup-detail-links { border-top: 1px solid var(--game-border); }
+.setup-quick-options .category-picker--compact .word-category-grid { display: none; }
+.setup-quick-options .category-picker--compact .category-picker__mobile { display: grid; gap: 6px; }
+.setup-quick-options label, .setup-quick-label { display: grid; gap: 6px; color: var(--game-text-muted); font-size: .86rem; }
+.setup-quick-options select { width: 100%; min-width: 0; min-height: 48px; padding: 9px 12px; border: 1px solid var(--game-border); border-radius: 12px; background: var(--game-surface-secondary); color: var(--game-text); font: inherit; font-size: 1rem; font-weight: 700; }
+.setup-inline-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.setup-mode-hint { margin: 0; font-size: .95rem; line-height: 1.6; color: var(--game-text-muted); }
+.setup-overview .validation-box { margin-block: 12px; font-size: .9rem; }
+.setup-overview .setup-history-extra { margin-block: 8px; border: 0; background: none; }
+.setup-overview .setup-history-extra > summary { min-height: 44px; padding: 10px 0; }
+.setup-flow > .action-dock { position: static; padding: 0; border: 0; box-shadow: none; background: none; gap: 8px; }
+.setup-flow > .action-dock > .action-dock__hint { display: block; font-size: .9rem; line-height: 1.5; text-align: center; }
+.setup-flow > .action-dock > .game-button { min-height: 54px; }
+.setup-flow > .setup-privacy { margin: 0; font-size: .8rem; }
+.app-shell:has(.setup-flow) > .audio-control { display: none; }
+.app-shell:has(.setup-flow) .game-header { height: 68px; grid-template-columns: 44px minmax(0, 1fr) 96px; }
+.app-shell:has(.setup-flow) .game-header .audio-control--compact { position: relative !important; display: flex; right: auto; bottom: auto; padding: 0; background: var(--game-background); box-shadow: none; backdrop-filter: none; }
+.app-shell:has(.setup-flow) .game-header .audio-panel { top: 52px; bottom: auto; }
+.app-shell:has(.setup-flow) .game-page { padding-bottom: 0; }
+
+.setup-editor { width: min(100% - 32px, 640px); max-height: calc(100dvh - 48px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); padding: 0; border: 1px solid var(--game-border); border-radius: 22px; background: var(--game-background); color: var(--game-text); box-shadow: 0 24px 80px rgba(0,0,0,.45); }
+.setup-editor[open] { display: flex; flex-direction: column; }
+.setup-editor::backdrop { background: rgba(0,0,0,.66); }
+.setup-editor__header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-shrink: 0; padding: 14px 18px; border-bottom: 1px solid var(--game-border); }
+.setup-editor__header h2 { margin: 0; font-size: 1.15rem; }
+.setup-editor__body { min-height: 0; padding: 16px 18px; overflow-y: auto; overscroll-behavior: contain; }
+.setup-editor__body > .setup-panel { display: none; padding: 0; border: 0; background: none; box-shadow: none; }
+.setup-editor__body[data-step='0'] > .setup-panel:nth-of-type(1), .setup-editor__body[data-step='1'] > .setup-panel:nth-of-type(2), .setup-editor__body[data-step='2'] > .setup-panel:nth-of-type(3) { display: block; }
+.setup-editor .setup-panel__header { display: none; }
+.setup-editor .role-setup .setup-panel__header { display: flex; }
+.setup-editor .role-setup .setup-panel__header > div { display: none; }
+.setup-editor .player-inputs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.setup-editor .player-input { min-height: 50px; }
+.setup-editor input[type='text'] { font-size: 16px; }
+.setup-editor__footer { flex-shrink: 0; padding: 12px 18px; border-top: 1px solid var(--game-border); background: var(--game-background); }
+.setup-editor__footer > button { width: 100%; min-height: 48px; border: 0; border-radius: 12px; background: var(--game-primary); color: var(--game-background); font: inherit; font-weight: 800; cursor: pointer; }
+@media (max-width: 767px) {
+  .setup-editor { width: 100%; max-width: none; margin: auto 0 0; border-radius: 22px 22px 0 0; max-height: calc(100dvh - 68px - env(safe-area-inset-top, 0px)); }
+  .setup-editor__footer { padding-bottom: max(12px, env(safe-area-inset-bottom, 0px)); }
+  .setup-editor .player-inputs { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .setup-layout:has(.setup-flow) { width: min(100% - 40px, 900px); padding-block: 10px; }
+  .app-shell:has(.setup-flow) .game-header { height: 56px; }
+  .setup-intro .undercover-rules-details > summary { min-height: 44px; font-size: .82rem; }
+  .setup-intro .undercover-rules-details[open] { max-width: 600px; }
+  .setup-overview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; }
+  .setup-players-row { grid-column: 1; }
+  .setup-quick-options { grid-column: 2; grid-row: 1 / span 3; padding-block: 10px; }
+  .setup-detail-links { grid-column: 1; }
+  .setup-quick-options + .setup-detail-links { border-top: 0; }
+  .setup-flow > .action-dock { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .setup-editor { width: min(100% - 32px, 700px); margin: auto; max-height: calc(100dvh - 24px); border-radius: 20px; }
+  .charades-page .setup-detail-links { grid-column: 2; grid-row: 1; }
+  .charades-page .setup-quick-options { grid-column: 1 / -1; grid-row: 2; grid-template-columns: minmax(110px, 1fr) minmax(0, 3fr); gap: 12px; }
+  .charades-page .setup-inline-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .setup-page .setup-overview { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .setup-page .setup-detail-links { display: contents; }
+  .setup-page .setup-players-row { border-bottom: 0; }
+  .setup-page .setup-detail-links .setup-edit-row { border: 0; }
+}

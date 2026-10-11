@@ -44,7 +44,7 @@ onMounted(() => {
 
 <template>
   <div class="game-page fake-artist-page">
-    <GameHeader title="遊戲設定" step="FAKE ARTIST · SETUP" />
+    <GameHeader title="誰是假畫家" step="遊戲設定" />
     <div class="setup-layout page-container page-container--game">
       <section class="setup-intro fake-artist-intro">
         <span class="eyebrow"><Palette :size="15" /> ONE CANVAS. ONE IMPOSTOR.</span>
@@ -64,7 +64,11 @@ onMounted(() => {
         </details>
       </section>
 
-      <SetupFlow :steps="['玩家', '主題', '勝利分數']" :summary="`${fakeArtistSession.setup.playerNames.length} 人 · ${categoryOptions.find(option => option.id === fakeArtistSession.setup.category)?.name} · ${fakeArtistSession.setup.targetScore === 1 ? '單局決勝' : `先得 ${fakeArtistSession.setup.targetScore} 分`}`" @submit="start">
+      <SetupFlow :steps="['玩家', '主題', '勝利分數']" :visible-steps="[0]" :values="['改名字・使用最近名單']" :player-count="fakeArtistSession.setup.playerNames.length" :min-players="5" :max-players="10" :summary="`${fakeArtistSession.setup.playerNames.length} 人 · ${categoryOptions.find(option => option.id === fakeArtistSession.setup.category)?.name} · ${fakeArtistSession.setup.targetScore === 1 ? '單局決勝' : `先得 ${fakeArtistSession.setup.targetScore} 分`}`" @add-player="addPlayer" @remove-player="removePlayer(fakeArtistSession.setup.playerNames.length - 1)" @submit="start">
+        <template #quick>
+          <CategoryPicker v-model="fakeArtistSession.setup.category" :options="categoryOptions" compact />
+          <label class="setup-quick-label">賽制<select v-model.number="fakeArtistSession.setup.targetScore" aria-label="勝利分數"><option :value="1">單局決勝</option><option :value="3">先得 3 分</option><option :value="5">先得 5 分</option></select></label>
+        </template>
         <section class="setup-panel">
           <header class="setup-panel__header"><div><span>01</span><h2>玩家</h2><small>{{ fakeArtistSession.setup.playerNames.length }} / 10</small></div><UsersRound :size="22" /></header>
           <div class="player-inputs">
@@ -85,7 +89,7 @@ onMounted(() => {
           <p class="undercover-setup-note">原版以先得 5 分獲勝；聚會時間較短時可選單局或 3 分。</p>
         </section>
 
-        <div v-if="errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in errors" :key="error">{{ error }}</p></div></div>
+        <template #feedback><div v-if="errors.length" class="validation-box validation-box--error"><AlertTriangle :size="20" /><div><p v-for="error in errors" :key="error">{{ error }}</p></div></div></template>
         <template #action><GameButton type="submit" block :disabled="Boolean(errors.length)">抽題並分配身份<template #trailing><ArrowRight :size="20" /></template></GameButton></template>
       </SetupFlow>
     </div>
