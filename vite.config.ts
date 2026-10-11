@@ -8,7 +8,7 @@ export default defineConfig({
     vue(),
     VitePWA({
       registerType: 'prompt',
-      includeAssets: ['favicon.svg', 'icons/*.svg', 'assets/*.webp'],
+      includeAssets: ['favicon.svg', 'icons/*.svg', 'assets/*.webp', 'licenses/*.pdf'],
       manifest: {
         name: 'Party Box — 聚會遊戲盒',
         short_name: 'Party Box',

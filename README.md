@@ -50,11 +50,14 @@ npm run dev
 
 ```bash
 npm run test
+npm run check:charades
 npm run build
 npm run test:e2e
 ```
 
 `test:e2e` 會先建立正式版本，再以本機 Chrome 驗證 390×844 與 768×1024 版面、完整五人身份輪替，以及 service worker 快取後的離線流程。
+
+爆笑猜詞題庫已分為 10 類，共 1,335 題；歡樂混合自動組合，題目使用固定 ID 和細分類標籤。95 題成語全部核對教育部《成語典》，另有 609 題對上《國語辭典簡編本》。建置前會檢查重複／別名、短詞長度、分類邊界與成語來源。完整分類數量、來源版本、授權及核對流程見 [題庫維護說明](docs/charades-deck.md)。
 
 ### 手機翻轉與錄影
 

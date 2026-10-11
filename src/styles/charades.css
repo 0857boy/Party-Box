@@ -183,7 +183,7 @@
 .charades-play-page--live { padding-bottom: 0 !important; }
 .charades-live, .charades-play-page--landscape .charades-live { width: 100%; max-width: none; height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); min-height: 0; grid-template-columns: minmax(0, 1fr); grid-template-rows: 60px minmax(0, 1fr) 44px; gap: 8px; padding: 10px max(14px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px)); }
 .charades-play-page--landscape .charades-live { height: 100%; }
-.charades-live .swipe-card { container-type: size; border-radius: 22px; }
+.charades-live .swipe-card { container-type: size; border-radius: 22px; touch-action: pinch-zoom; }
 .charades-live .charades-word-card { padding: 16px; gap: 14px; }
 .charades-live .charades-word-card h1 { font-size: clamp(2rem, min(36cqw, 48cqh, calc(88cqw / var(--word-length, 4))), 12rem); line-height: 1.12; letter-spacing: 0; }
 .charades-live .charades-word-card__category { display: none; }

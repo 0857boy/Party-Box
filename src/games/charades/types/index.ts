@@ -1,6 +1,6 @@
 import type { PartyTeam, TeamScore, WordDeckCard } from '@/types/gameplay'
 
-export type CharadesCategory = 'mixed' | 'characters' | 'life' | 'things' | 'animals' | 'food' | 'idioms'
+export type CharadesCategory = 'mixed' | 'animals' | 'food' | 'life' | 'jobs' | 'sports' | 'things' | 'characters' | 'idioms' | 'emotions' | 'celebrities'
 export type CharadesDifficulty = 'easy' | 'normal' | 'hard'
 export type CharadesMode = 'quick' | 'classic'
 export type CharadesClueStyle = 'acting' | 'describe'
@@ -25,6 +25,7 @@ export interface CharadesSetup extends CharadesMatchSettings {
 export interface CharadesCard extends WordDeckCard {
   category: Exclude<CharadesCategory, 'mixed'>
   difficulty: CharadesDifficulty
+  tags?: string[]
 }
 
 export interface CharadesPlayer {

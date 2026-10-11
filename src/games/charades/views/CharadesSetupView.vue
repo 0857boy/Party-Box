@@ -20,8 +20,11 @@ const setup = charadesSession.setup
 const availableCount = computed(() => cardsForCategory(setup.category, setup.difficulty).length)
 const actualDeckSize = computed(() => Math.min(setup.deckSize, availableCount.value))
 const categoryOptions = computed(() => charadesCategories.map(category => ({
-  ...category, description: `${category.description} · ${cardsForCategory(category.id, setup.difficulty).length} 題`
+  ...category,
+  name: `${category.name} · ${cardsForCategory(category.id, setup.difficulty).length} 題`,
+  description: category.description
 })))
+const licenseBase = `${import.meta.env.BASE_URL}licenses/`
 const estimatedMinutes = computed(() => {
   const seconds = quickPlaySeconds(setup)
   return seconds % 60 ? `${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒` : `${seconds / 60} 分鐘`
@@ -109,6 +112,7 @@ onMounted(() => {
             <li><strong>提示方式：</strong>比手畫腳只能用動作，不能說話、寫字或比出答案文字；自由描述可以說話，但不能講出答案或答案中的字。</li>
             <li><strong>記憶三輪：</strong>可選的舊玩法。整副牌猜完才換輪，依序用自由描述、一個詞、無聲動作，重用同一副牌。</li>
             <li><strong>決定勝負：</strong>猜對一題得 1 分，總分較高者獲勝。快節奏模式保證兩隊的出場次數相同。</li>
+            <li><strong>題庫來源：</strong>中華民國教育部《成語典》2020_20260929、《國語辭典簡編本》2014_20260929，詞目依原文核對；分類、難度與表演適合度由 Party Box 自行整理，非教育部評定。<a :href="`${licenseBase}moe-idioms-public-license.pdf`" target="_blank" rel="noopener">成語典使用說明</a>、<a :href="`${licenseBase}moe-concised-public-license.pdf`" target="_blank" rel="noopener">簡編本使用說明</a>。其他角色、名人與生活題目由編輯選取，不代表皆收在辭典。</li>
           </ol>
         </details>
         <details class="undercover-rules-details"><summary>裝置錄影中心</summary><RecordingGallery /></details>

@@ -5,6 +5,7 @@ import { createTeamsFromAssignments, nextTeamMember } from '@/engine/teamManager
 import { getSharedPlayerNames, rememberPlayerRoster } from '@/stores/playerRosters'
 import { loadVersioned, saveVersioned } from '@/utils/storage'
 import { rebuildRoundDeck, roundsForSettings, selectCharadesDeck, validateCharadesSetup } from '../logic/game'
+import { normalizeCharadesCategory } from '../data/cards'
 import type { CharadesGameState, CharadesSessionState, CharadesSetup } from '../types'
 
 const STORAGE_KEY = 'party-box:charades:setup'
@@ -35,7 +36,7 @@ export const charadesSession = reactive<CharadesSessionState>({
     playerNames: initialNames,
     teamNames: [...saved.teamNames],
     teamAssignments: [...initialAssignments],
-    category: saved.category,
+    category: normalizeCharadesCategory(saved.category),
     deckSize: saved.deckSize,
     turnSeconds: saved.turnSeconds,
     mode: saved.mode,

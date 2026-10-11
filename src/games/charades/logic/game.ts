@@ -1,5 +1,5 @@
 import { shuffleItems } from '../../../engine/wordDeck'
-import { charadesCards } from '../data/cards'
+import { getCharadesCards } from '../data/cards'
 import { classicGuessingRounds } from '../../../engine/roundManager'
 import type { CharadesCategory, CharadesDifficulty, CharadesMatchSettings, CharadesSetup } from '../types'
 
@@ -32,8 +32,7 @@ export function validateCharadesSetup(setup: CharadesSetup): string[] {
 }
 
 export function cardsForCategory(category: CharadesCategory, difficulty: CharadesDifficulty = 'normal') {
-  return charadesCards.filter(card =>
-    (category === 'mixed' || card.category === category) &&
+  return getCharadesCards(category).filter(card =>
     (difficulty === 'easy' ? card.difficulty === 'easy' : difficulty === 'normal' ? card.difficulty !== 'hard' : card.difficulty !== 'easy')
   )
 }
